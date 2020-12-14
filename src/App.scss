@@ -1,0 +1,44 @@
+$top-menu-height: 2rem;
+$editor-width: 30%;
+
+#top-menu {
+    display: flex;
+    justify-content: space-between;
+    height: $top-menu-height;
+}
+
+#main-view {
+    width: 100vw;
+    height: calc(100vh - #{$top-menu-height});
+
+    display: flex;
+
+    #left-panel {
+        width: $editor-width;
+        height: 100%;
+    }
+
+    #center-panel {
+        width: calc(100% - #{$editor-width});
+        height: 100%;
+
+        $threads-height: 40%;
+
+        #variables-panel {
+            width: 100%;
+            height: calc(100% - #{$threads-height});
+        }
+
+        #threads-panel {
+            width: 100%;
+            height: $threads-height;
+
+            #threads-container {
+                height: calc(100% - 24px);
+
+                display: flex;
+                justify-content: space-between;
+            }
+        }
+    }
+}
