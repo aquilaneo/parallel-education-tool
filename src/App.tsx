@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useRef} from 'react';
 import Blockly from "blockly";
 import * as Ja from "blockly/msg/ja"
 
@@ -12,8 +12,9 @@ function App () {
 		{index: 1},
 		{index: 2},
 		{index: 3}
-	])
+	]);
 	const [threadCount, setThreadCount] = useState (threads.length);
+	const editorRef = useRef<Editor> (null);
 
 	return (
 		<div style={{width: "100vw", height: "100vh"}}>
@@ -24,7 +25,7 @@ function App () {
 			</div>
 			<div id={"main-view"}>
 				<div id={"left-panel"}>
-					<Editor/>
+					<Editor ref={editorRef}/>
 				</div>
 
 				<div id={"center-panel"}>
@@ -35,6 +36,13 @@ function App () {
 							setThreadCount (threadCount + 1);
 						}}>
 							スレッドを追加
+						</button>
+						<button onClick={() => {
+							if (editorRef.current) {
+								console.log (editorRef.current.getXml ());
+							}
+						}}>
+							XML作成
 						</button>
 					</div>
 					<div id={"threads-panel"}>
@@ -53,25 +61,56 @@ function App () {
 	)
 }
 
-const Editor = React.memo (() => {
-	Blocks.initBlocks ();
-	const xml = Blocks.getInitialXml ();
+class Editor extends React.Component {
+	workspace: Blockly.Workspace | undefined;
 
-	const xmlParser = new DOMParser ();
-	const xmlDom = xmlParser.parseFromString (xml, "text/xml");
+	componentDidMount () {
+		Blocks.initBlocks ();
+		const xml = Blocks.getInitialXml ();
 
-	const document: HTMLElement | undefined = xmlDom.getElementById ("toolbox") || undefined; // 要素取得して型合わせ
+		const xmlParser = new DOMParser ();
+		const xmlDom = xmlParser.parseFromString (xml, "text/xml");
 
-	useEffect (() => {
+		const document: HTMLElement | undefined = xmlDom.getElementById ("toolbox") || undefined; // 要素取得して型合わせ
 		Blockly.setLocale (Ja);
-		Blockly.inject ("blocklyDiv", {
+		this.workspace = Blockly.inject ("blocklyDiv", {
 			toolbox: document
 		});
-	});
+	}
 
-	return (
-		<div id="blocklyDiv" style={{width: "100%", height: "100%"}}/>
-	);
-});
+	getXml () {
+		if (this.workspace) {
+			const xml = Blockly.Xml.workspaceToDom (this.workspace);
+			return Blockly.Xml.domToText (xml);
+		} else {
+			return "";
+		}
+	}
+
+	render () {
+		return <div id="blocklyDiv" style={{width: "100%", height: "100%"}}/>;
+	}
+}
+
+// const Editor = React.memo (() => {
+// 	Blocks.initBlocks ();
+// 	const xml = Blocks.getInitialXml ();
+//
+// 	const xmlParser = new DOMParser ();
+// 	const xmlDom = xmlParser.parseFromString (xml, "text/xml");
+//
+// 	const document: HTMLElement | undefined = xmlDom.getElementById ("toolbox") || undefined; // 要素取得して型合わせ
+//
+// 	useEffect (() => {
+// 		Blockly.setLocale (Ja);
+// 		Blockly.inject ("blocklyDiv", {
+// 			toolbox: document
+// 		});
+// 	});
+//
+// 	return (
+// 		<div id="blocklyDiv" style={{width: "100%", height: "100%"}}/>
+// 	);
+// });
 
 export default App;
