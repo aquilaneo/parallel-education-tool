@@ -3,7 +3,8 @@ import Blockly from "blockly";
 import * as Ja from "blockly/msg/ja"
 
 import Thread from "./Thread";
-import * as Blocks from "./blockDefinition"
+import * as BlockSettings from "./blockSettings"
+import {CommandBlock} from "./blockDefinitions"
 import "./App.scss";
 
 function App () {
@@ -65,8 +66,8 @@ class Editor extends React.Component {
 	workspace: Blockly.Workspace | undefined;
 
 	componentDidMount () {
-		Blocks.initBlocks ();
-		const xml = Blocks.getInitialXml ();
+		BlockSettings.initBlocks ();
+		const xml = BlockSettings.getBlockListXml ();
 
 		const xmlParser = new DOMParser ();
 		const xmlDom = xmlParser.parseFromString (xml, "text/xml");
@@ -81,6 +82,8 @@ class Editor extends React.Component {
 	getXml () {
 		if (this.workspace) {
 			const xml = Blockly.Xml.workspaceToDom (this.workspace);
+			const test = new CommandBlock (xml.getElementsByTagName ("block")[0], 0.2);
+
 			return Blockly.Xml.domToText (xml);
 		} else {
 			return "";
@@ -93,8 +96,8 @@ class Editor extends React.Component {
 }
 
 // const Editor = React.memo (() => {
-// 	Blocks.initBlocks ();
-// 	const xml = Blocks.getInitialXml ();
+// 	BlockSettings.initBlocks ();
+// 	const xml = BlockSettings.getBlockListXml ();
 //
 // 	const xmlParser = new DOMParser ();
 // 	const xmlDom = xmlParser.parseFromString (xml, "text/xml");
