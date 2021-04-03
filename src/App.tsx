@@ -4,7 +4,7 @@ import * as Ja from "blockly/msg/ja"
 
 import Thread from "./Thread";
 import * as BlockSettings from "./blockSettings"
-import {CommandBlock} from "./blockDefinitions"
+import {UserProgram} from "./blockDefinitions"
 import "./App.scss";
 
 function App () {
@@ -40,7 +40,7 @@ function App () {
 						</button>
 						<button onClick={() => {
 							if (editorRef.current) {
-								console.log (editorRef.current.getXml ());
+								editorRef.current.getXml ();
 							}
 						}}>
 							XML作成
@@ -64,29 +64,33 @@ function App () {
 
 class Editor extends React.Component {
 	workspace: Blockly.Workspace | undefined;
+	initialWorkspace = "<xml xmlns=\"https://developers.google.com/blockly/xml\"><block type=\"entry_point\" id=\"5e{JeNdzKRK}Nyg(x2Ul\" x=\"58\" y=\"59\"></block></xml>";
 
 	componentDidMount () {
+		// ブロック定義とブロックリストを読み込み
 		BlockSettings.initBlocks ();
 		const xml = BlockSettings.getBlockListXml ();
-
 		const xmlParser = new DOMParser ();
 		const xmlDom = xmlParser.parseFromString (xml, "text/xml");
 
+		// ワークスペースを生成
 		const document: HTMLElement | undefined = xmlDom.getElementById ("toolbox") || undefined; // 要素取得して型合わせ
 		Blockly.setLocale (Ja);
 		this.workspace = Blockly.inject ("blocklyDiv", {
-			toolbox: document
+			toolbox: document,
+			disable: true
 		});
+
+		// 最初のワークスペースを読み込み
+		const initialWorkspaceDom = Blockly.Xml.textToDom (this.initialWorkspace);
+		Blockly.Xml.domToWorkspace (initialWorkspaceDom, this.workspace);
 	}
 
 	getXml () {
+		// ワークスペース上のブロックをプログラム化
 		if (this.workspace) {
 			const xml = Blockly.Xml.workspaceToDom (this.workspace);
-			const test = new CommandBlock (xml.getElementsByTagName ("block")[0], 0.2);
-
-			return Blockly.Xml.domToText (xml);
-		} else {
-			return "";
+			const program = new UserProgram (xml);
 		}
 	}
 

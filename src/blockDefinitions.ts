@@ -1,25 +1,66 @@
 // ========== ブロック形状や動作を定義するファイル ==========
 
+export class UserProgram {
+	constructor (xml: Element) {
+		// 関数定義ブロックをリストアップ
+		const functionsXml = [];
+		const blocks = xml.getElementsByTagName ("block");
+		for (let i = 0; i < blocks.length; i++) {
+			switch (blocks[i].getAttribute ("type")) {
+				case "entry_point":
+				case "function_definition":
+					functionsXml.push (blocks[i]);
+					break;
+			}
+		}
+
+		for (const functionXml of functionsXml) {
+			// 関数ブロックに命令が入っているか
+			const statement = functionXml.getElementsByTagName ("statement");
+			if (statement.length > 0) {
+				// ユーザが作成したブロックプログラムのxmlを解析
+				const constructedBlocks = [];
+				let block: Element = statement[0];
+				// nextタグで繋がっているブロックを配列化
+				do {
+					block = block.getElementsByTagName ("block")[0];
+					if (block) {
+						constructedBlocks.push (new CommandBlock (block, 0.2));
+						block = block.getElementsByTagName ("next")[0];
+					} else {
+						break;
+					}
+				} while (block);
+				console.log (constructedBlocks);
+			}
+		}
+	}
+}
+
 export class CommandBlock {
+	blockType: string;
 	id: string;
-	next: Element | null;
 	wait: number;
 
 	constructor (blockXml: Element, wait: number) {
-		this.id = blockXml.id ? blockXml.id : "";
+		const blockType = blockXml.getAttribute ("type");
+		this.blockType = blockType ? blockType : "";
 
-		const next = blockXml.getElementsByTagName ("next")[0].getElementsByTagName ("block")[0];
-		this.next = next ? next : null;
+		const id = blockXml.getAttribute ("id");
+		this.id = id ? id : "";
 
 		this.wait = wait;
-
-		console.log (this);
 	}
+}
+
+export class ValueBlock {
+
 }
 
 export const commandBlocks = [
 	// ========== print ==========
 	{
+		type: "text_print",
 		definition: class PrintBlock extends CommandBlock {
 
 		}
@@ -27,6 +68,7 @@ export const commandBlocks = [
 
 	// ========== 秒数待機 ==========
 	{
+		type: "wait_s",
 		definition: class SecondsWaitBlock extends CommandBlock {
 
 		},
@@ -51,6 +93,7 @@ export const commandBlocks = [
 
 	// ========== if ==========
 	{
+		type: "controls_if",
 		definition: class IfBlock extends CommandBlock {
 
 		}
@@ -58,6 +101,7 @@ export const commandBlocks = [
 
 	// ========== if-else ==========
 	{
+		type: "controls-ifelse",
 		definition: class IfElseBlock extends CommandBlock {
 
 		}
@@ -65,6 +109,7 @@ export const commandBlocks = [
 
 	// ========== 比較 ==========
 	{
+		type: "logic_compare",
 		definition: class CompareBlock extends CommandBlock {
 
 		}
@@ -72,6 +117,7 @@ export const commandBlocks = [
 
 	// ========== 論理演算 ==========
 	{
+		type: "logic_operation",
 		definition: class LogicOperationBlock extends CommandBlock {
 
 		}
@@ -79,6 +125,7 @@ export const commandBlocks = [
 
 	// ========== 否定 ==========
 	{
+		type: "logic_negate",
 		definition: class NotBlock extends CommandBlock {
 
 		}
@@ -86,6 +133,7 @@ export const commandBlocks = [
 
 	// ========== for ==========
 	{
+		type: "controls_repeat_ext",
 		definition: class ForBlock extends CommandBlock {
 
 		}
@@ -93,6 +141,7 @@ export const commandBlocks = [
 
 	// ========== while ==========
 	{
+		type: "controls_whileUntil",
 		definition: class WhileBlock extends CommandBlock {
 
 		}
@@ -100,6 +149,7 @@ export const commandBlocks = [
 
 	// ========== 数字 ==========
 	{
+		type: "math_number",
 		definition: class NumberBlock extends CommandBlock {
 
 		}
@@ -107,6 +157,7 @@ export const commandBlocks = [
 
 	// ========== テキスト ==========
 	{
+		type: "text",
 		definition: class TextBlock extends CommandBlock {
 
 		}
@@ -114,6 +165,7 @@ export const commandBlocks = [
 
 	// ========== ローカル変数書き込み ==========
 	{
+		type: "local_variable_write",
 		definition: class LocalVariableWriteBlock extends CommandBlock {
 
 		},
@@ -146,6 +198,7 @@ export const commandBlocks = [
 
 	// ========== ローカル変数読み込み ==========
 	{
+		type: "local_variable_read",
 		definition: class LocalVariableReadBlock extends CommandBlock {
 
 		},
@@ -169,6 +222,7 @@ export const commandBlocks = [
 
 	// ========== グローバル変数書き込み ==========
 	{
+		type: "global_variable_write",
 		definition: class GlobalVariableWriteBlock extends CommandBlock {
 
 		},
@@ -201,6 +255,7 @@ export const commandBlocks = [
 
 	// ========== グローバル変数書き込み ==========
 	{
+		type: "global_variable_read",
 		definition: class GlobalVariableWriteBlock extends CommandBlock {
 
 		},
@@ -224,6 +279,7 @@ export const commandBlocks = [
 
 	// ========== 関数定義 ==========
 	{
+		type: "function_definition",
 		definition: class FunctionDefinitionBlock extends CommandBlock {
 
 		},
@@ -253,6 +309,7 @@ export const commandBlocks = [
 
 	// ========== 関数実行 ==========
 	{
+		type: "function_call",
 		definition: class FunctionCallBlock extends CommandBlock {
 
 		},
@@ -275,8 +332,34 @@ export const commandBlocks = [
 		}
 	},
 
+	// ========== スタート関数 ==========
+	{
+		type: "entry_point",
+		definition: class EntryPointBlock extends CommandBlock {
+
+		},
+		blocklyJson: {
+			"type": "entry_point",
+			"message0": "関数 スタート %1 %2",
+			"args0": [
+				{
+					"type": "input_dummy"
+				},
+				{
+					"type": "input_statement",
+					"name": "routine"
+				}
+			],
+			"inputsInline": false,
+			"colour": 230,
+			"tooltip": "プログラムが最初に始まる関数です。",
+			"helpUrl": ""
+		}
+	},
+
 	// ========== ストップウォッチ開始 ==========
 	{
+		type: "stopwatch_start",
 		definition: class StopwatchStartBlock extends CommandBlock {
 
 		},
@@ -301,6 +384,7 @@ export const commandBlocks = [
 
 	// ========== ストップウォッチ停止 ==========
 	{
+		type: "stopwatch_stop",
 		definition: class StopwatchStopBlock extends CommandBlock {
 
 		},
@@ -325,6 +409,7 @@ export const commandBlocks = [
 
 	// ========== ストップウォッチリセット ==========
 	{
+		type: "stopwatch_reset",
 		definition: class StopwatchResetBlock extends CommandBlock {
 
 		},
@@ -349,6 +434,7 @@ export const commandBlocks = [
 
 	// ========== ストップウォッチ読み取り ==========
 	{
+		type: "stopwatch_read",
 		definition: class StopwatchReadBlock extends CommandBlock {
 
 		},
@@ -372,6 +458,7 @@ export const commandBlocks = [
 
 	// ========== スレッド作成 ==========
 	{
+		type: "thread_create",
 		definition: class ThreadCreateBlock extends CommandBlock {
 
 		},
@@ -401,6 +488,7 @@ export const commandBlocks = [
 
 	// ========== スレッド終了待ち ==========
 	{
+		type: "thread_join",
 		definition: class ThreadJoinBlock extends CommandBlock {
 
 		},

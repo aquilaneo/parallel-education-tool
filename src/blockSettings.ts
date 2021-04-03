@@ -216,6 +216,7 @@ export const getBlockListXml = () => {
 		<category name="関数">
 			<block type="function_definition"></block>
 			<block type="function_call"></block>
+			<block type="entry_point"></block>
 		</category>
 		
 		
