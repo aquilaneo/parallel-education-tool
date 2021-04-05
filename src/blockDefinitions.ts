@@ -1,6 +1,8 @@
 // ========== ブロック形状や動作を定義するファイル ==========
 
 export class UserProgram {
+	functions: CommandBlock[] | null = null;
+
 	constructor (xml: Element) {
 		// 関数定義ブロックをリストアップ
 		const functionsXml = [];
@@ -14,23 +16,12 @@ export class UserProgram {
 			}
 		}
 
+		// 関数ブロックのXMLをパース
 		for (const functionXml of functionsXml) {
-			// 関数ブロックに命令が入っているか
+			console.log (functionXml);
 			const statement = functionXml.getElementsByTagName ("statement");
-			if (statement.length > 0) {
-				// ユーザが作成したブロックプログラムのxmlを解析
-				const constructedBlocks = [];
-				let block: Element = statement[0];
-				// nextタグで繋がっているブロックを配列化
-				do {
-					block = block.getElementsByTagName ("block")[0];
-					if (block) {
-						constructedBlocks.push (new CommandBlock (block, 0.2));
-						block = block.getElementsByTagName ("next")[0];
-					} else {
-						break;
-					}
-				} while (block);
+			if (statement.length > 0 && statement[0].getAttribute ("name") === "routine") {
+				const constructedBlocks = CommandBlock.constructBlock (statement[0]);
 				console.log (constructedBlocks);
 			}
 		}
@@ -50,6 +41,23 @@ export class CommandBlock {
 		this.id = id ? id : "";
 
 		this.wait = wait;
+	}
+
+	static constructBlock (blockXml: Element) {
+		// nextタグでつながっているブロックを配列化
+		const constructedBlocks = [];
+		let block = blockXml;
+		do {
+			block = block.getElementsByTagName ("block")[0];
+			if (block) {
+				constructedBlocks.push (new CommandBlock (block, 0.2));
+				block = block.getElementsByTagName ("next")[0];
+			} else {
+				break;
+			}
+		} while (block);
+
+		return constructedBlocks;
 	}
 }
 
