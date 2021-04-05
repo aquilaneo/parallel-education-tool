@@ -4,7 +4,7 @@ export class UserProgram {
 	functions: CommandBlock[] | null = null;
 
 	constructor (xml: Element) {
-		// 関数定義ブロックをリストアップ
+		// ワークスペース内にある全ての関数定義ブロックをリストアップ
 		const functionsXml = [];
 		const blocks = xml.getElementsByTagName ("block");
 		for (let i = 0; i < blocks.length; i++) {
@@ -18,12 +18,8 @@ export class UserProgram {
 
 		// 関数ブロックのXMLをパース
 		for (const functionXml of functionsXml) {
-			console.log (functionXml);
-			const statement = functionXml.getElementsByTagName ("statement");
-			if (statement.length > 0 && statement[0].getAttribute ("name") === "routine") {
-				const constructedBlocks = CommandBlock.constructBlock (statement[0]);
-				console.log (constructedBlocks);
-			}
+			const constructedBlocks = CommandBlock.constructBlock (functionXml);
+			console.log (constructedBlocks);
 		}
 	}
 }
@@ -34,6 +30,7 @@ export class CommandBlock {
 	wait: number;
 
 	constructor (blockXml: Element, wait: number) {
+		// ブロックのxmlからブロックタイプとブロックIDを取得
 		const blockType = blockXml.getAttribute ("type");
 		this.blockType = blockType ? blockType : "";
 
@@ -47,15 +44,28 @@ export class CommandBlock {
 		// nextタグでつながっているブロックを配列化
 		const constructedBlocks = [];
 		let block = blockXml;
-		do {
-			block = block.getElementsByTagName ("block")[0];
-			if (block) {
-				constructedBlocks.push (new CommandBlock (block, 0.2));
-				block = block.getElementsByTagName ("next")[0];
+		while (true) {
+			// 該当するブロック定義を探し、そのクラスをインスタンス化
+			for (const blockDefinition of blockDefinitions) {
+				if (blockDefinition.type === block.getAttribute ("type")) {
+					constructedBlocks.push (new blockDefinition.definition (block, 0.2));
+					break;
+				}
+			}
+
+			// 次のブロックが存在するか調べる
+			let nextExists = false;
+			for (let i = 0; i < block.childNodes.length; i++) {
+				if (block.childNodes[i].nodeName === "next") {
+					nextExists = true;
+				}
+			}
+			if (nextExists) {
+				block = block.getElementsByTagName ("next")[0].getElementsByTagName ("block")[0];
 			} else {
 				break;
 			}
-		} while (block);
+		}
 
 		return constructedBlocks;
 	}
@@ -65,7 +75,7 @@ export class ValueBlock {
 
 }
 
-export const commandBlocks = [
+export const blockDefinitions = [
 	// ========== print ==========
 	{
 		type: "text_print",
@@ -109,7 +119,7 @@ export const commandBlocks = [
 
 	// ========== if-else ==========
 	{
-		type: "controls-ifelse",
+		type: "controls_ifelse",
 		definition: class IfElseBlock extends CommandBlock {
 
 		}
@@ -289,7 +299,18 @@ export const commandBlocks = [
 	{
 		type: "function_definition",
 		definition: class FunctionDefinitionBlock extends CommandBlock {
+			statement: CommandBlock[];
 
+			constructor (blockXml: Element, wait: number) {
+				super (blockXml, wait);
+
+				const statement = blockXml.getElementsByTagName ("statement");
+				if (statement.length > 0 && statement[0].getAttribute ("name") === "routine") {
+					this.statement = CommandBlock.constructBlock (statement[0].getElementsByTagName ("block")[0]);
+				} else {
+					this.statement = [];
+				}
+			}
 		},
 		blocklyJson: {
 			"type": "function_definition",

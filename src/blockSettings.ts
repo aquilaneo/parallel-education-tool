@@ -1,12 +1,12 @@
 // ========== ブロックの定義をBlocklyに渡すファイル ==========
 
 import Blockly from "blockly";
-import {commandBlocks} from "./blockDefinitions";
+import {blockDefinitions} from "./blockDefinitions";
 
 export const initBlocks = () => {
 	// ブロック自体の定義を読み込み
 	let jsonArray = [];
-	for (const commandBlock of commandBlocks) {
+	for (const commandBlock of blockDefinitions) {
 		if (commandBlock.blocklyJson) {
 			jsonArray.push (commandBlock.blocklyJson);
 		}
