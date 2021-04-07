@@ -1,15 +1,19 @@
 // ========== ブロック形状や動作を定義するファイル ==========
 
 export class UserProgram {
-	functions: CommandBlock[] | null = null;
+	entryFunction: CommandBlock | null = null;
+	functions: CommandBlock[] = [];
 
 	constructor (xml: Element) {
 		// ワークスペース内にある全ての関数定義ブロックをリストアップ
-		const functionsXml = [];
+		let entryFunctionXml: Element | null = null;
+		const functionsXml: Element[] = [];
 		const blocks = xml.getElementsByTagName ("block");
 		for (let i = 0; i < blocks.length; i++) {
 			switch (blocks[i].getAttribute ("type")) {
 				case "entry_point":
+					entryFunctionXml = blocks[i];
+					break;
 				case "function_definition":
 					functionsXml.push (blocks[i]);
 					break;
@@ -17,10 +21,16 @@ export class UserProgram {
 		}
 
 		// 関数ブロックのXMLをパース
-		for (const functionXml of functionsXml) {
-			const constructedBlocks = CommandBlock.constructBlock (functionXml);
-			console.log (constructedBlocks);
+		if (entryFunctionXml) {
+			this.entryFunction = CommandBlock.constructBlock (entryFunctionXml)[0];
 		}
+		for (const functionXml of functionsXml) {
+			const constructedBlock = CommandBlock.constructBlock (functionXml);
+			this.functions.push (constructedBlock[0]);
+		}
+
+		console.log ("エントリポイント", this.entryFunction);
+		console.log ("関数", this.functions);
 	}
 }
 
@@ -365,7 +375,18 @@ export const blockDefinitions = [
 	{
 		type: "entry_point",
 		definition: class EntryPointBlock extends CommandBlock {
+			statement: CommandBlock[];
 
+			constructor (blockXml: Element, wait: number) {
+				super (blockXml, wait);
+
+				const statement = blockXml.getElementsByTagName ("statement");
+				if (statement.length > 0 && statement[0].getAttribute ("name") === "routine") {
+					this.statement = CommandBlock.constructBlock (statement[0].getElementsByTagName ("block")[0]);
+				} else {
+					this.statement = [];
+				}
+			}
 		},
 		blocklyJson: {
 			"type": "entry_point",
