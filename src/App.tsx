@@ -40,10 +40,17 @@ function App () {
 						</button>
 						<button onClick={() => {
 							if (editorRef.current) {
-								editorRef.current.getXml ();
+								editorRef.current.parseBlocks ();
 							}
 						}}>
-							XML作成
+							ブロックをパース
+						</button>
+						<button onClick={() => {
+							if (editorRef.current) {
+								console.log (editorRef.current.getXml ());
+							}
+						}}>
+							XML出力
 						</button>
 					</div>
 					<div id={"threads-panel"}>
@@ -63,7 +70,7 @@ function App () {
 }
 
 class Editor extends React.Component {
-	workspace: Blockly.Workspace | undefined;
+	workspace: Blockly.Workspace | null = null;
 	initialWorkspace = "<xml xmlns=\"https://developers.google.com/blockly/xml\"><block type=\"entry_point\" id=\"5e{JeNdzKRK}Nyg(x2Ul\" x=\"58\" y=\"59\"></block></xml>";
 
 	componentDidMount () {
@@ -87,10 +94,21 @@ class Editor extends React.Component {
 	}
 
 	getXml () {
+		if (this.workspace) {
+			const dom = Blockly.Xml.workspaceToDom (this.workspace);
+			return Blockly.Xml.domToText (dom);
+		} else {
+			return "";
+		}
+	}
+
+	parseBlocks () {
 		// ワークスペース上のブロックをプログラム化
 		if (this.workspace) {
 			const xml = Blockly.Xml.workspaceToDom (this.workspace);
-			const program = new UserProgram (xml);
+			return new UserProgram (xml);
+		} else {
+			return null;
 		}
 	}
 
@@ -98,26 +116,5 @@ class Editor extends React.Component {
 		return <div id="blocklyDiv" style={{width: "100%", height: "100%"}}/>;
 	}
 }
-
-// const Editor = React.memo (() => {
-// 	BlockSettings.initBlocks ();
-// 	const xml = BlockSettings.getBlockListXml ();
-//
-// 	const xmlParser = new DOMParser ();
-// 	const xmlDom = xmlParser.parseFromString (xml, "text/xml");
-//
-// 	const document: HTMLElement | undefined = xmlDom.getElementById ("toolbox") || undefined; // 要素取得して型合わせ
-//
-// 	useEffect (() => {
-// 		Blockly.setLocale (Ja);
-// 		Blockly.inject ("blocklyDiv", {
-// 			toolbox: document
-// 		});
-// 	});
-//
-// 	return (
-// 		<div id="blocklyDiv" style={{width: "100%", height: "100%"}}/>
-// 	);
-// });
 
 export default App;
