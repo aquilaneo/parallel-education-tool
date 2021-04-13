@@ -5,6 +5,8 @@ export class UserProgram {
 	functions: CommandBlock[] = [];
 
 	constructor (xml: Element) {
+		console.log (xml);
+
 		// ワークスペース内にある全ての関数定義ブロックをリストアップ
 		let entryFunctionXml: Element | null = null;
 		const functionsXml: Element[] = [];
@@ -56,9 +58,9 @@ export class CommandBlock {
 		let block = blockXml;
 		while (true) {
 			// 該当するブロック定義を探し、そのクラスをインスタンス化
-			for (const blockDefinition of blockDefinitions) {
-				if (blockDefinition.type === block.getAttribute ("type")) {
-					constructedBlocks.push (new blockDefinition.definition (block, 0.2));
+			for (const commandBlockDefinition of commandBlockDefinitions) {
+				if (commandBlockDefinition.type === block.getAttribute ("type")) {
+					constructedBlocks.push (new commandBlockDefinition.definition (block, 0.2));
 					break;
 				}
 			}
@@ -82,10 +84,32 @@ export class CommandBlock {
 }
 
 export class ValueBlock {
+	blockType: string;
+	id: string;
+	wait: number;
 
+	constructor (blockXml: Element, wait: number) {
+		// ブロックのxmlからブロックタイプとブロックIDを取得
+		const blockType = blockXml.getAttribute ("type");
+		this.blockType = blockType ? blockType : "";
+
+		const id = blockXml.getAttribute ("id");
+		this.id = id ? id : "";
+
+		this.wait = wait;
+	}
+
+	static constructBlock (blockXml: Element) {
+		for (const valueBlockDefinition of valueBlockDefinitions) {
+			if (valueBlockDefinition.type === blockXml.getAttribute ("type")) {
+				return new valueBlockDefinition.definition (blockXml, 0.2);
+			}
+		}
+		return null;
+	}
 }
 
-export const blockDefinitions = [
+export const commandBlockDefinitions = [
 	// ========== print ==========
 	{
 		type: "text_print",
@@ -98,7 +122,11 @@ export const blockDefinitions = [
 	{
 		type: "wait_s",
 		definition: class SecondsWaitBlock extends CommandBlock {
+			// second: ValueBlock | null;
 
+			constructor (blockXml: Element, wait: number) {
+				super (blockXml, wait);
+			}
 		},
 		blocklyJson: {
 			"type": "wait_s",
@@ -135,30 +163,6 @@ export const blockDefinitions = [
 		}
 	},
 
-	// ========== 比較 ==========
-	{
-		type: "logic_compare",
-		definition: class CompareBlock extends CommandBlock {
-
-		}
-	},
-
-	// ========== 論理演算 ==========
-	{
-		type: "logic_operation",
-		definition: class LogicOperationBlock extends CommandBlock {
-
-		}
-	},
-
-	// ========== 否定 ==========
-	{
-		type: "logic_negate",
-		definition: class NotBlock extends CommandBlock {
-
-		}
-	},
-
 	// ========== for ==========
 	{
 		type: "controls_repeat_ext",
@@ -171,22 +175,6 @@ export const blockDefinitions = [
 	{
 		type: "controls_whileUntil",
 		definition: class WhileBlock extends CommandBlock {
-
-		}
-	},
-
-	// ========== 数字 ==========
-	{
-		type: "math_number",
-		definition: class NumberBlock extends CommandBlock {
-
-		}
-	},
-
-	// ========== テキスト ==========
-	{
-		type: "text",
-		definition: class TextBlock extends CommandBlock {
 
 		}
 	},
@@ -224,30 +212,6 @@ export const blockDefinitions = [
 		}
 	},
 
-	// ========== ローカル変数読み込み ==========
-	{
-		type: "local_variable_read",
-		definition: class LocalVariableReadBlock extends CommandBlock {
-
-		},
-		blocklyJson: {
-			"type": "local_variable_read",
-			"message0": "ローカル変数 %1",
-			"args0": [
-				{
-					"type": "field_input",
-					"name": "name",
-					"text": "変数名"
-				}
-			],
-			"inputsInline": true,
-			"output": "Number",
-			"colour": 230,
-			"tooltip": "ローカル変数の値を読み込みます。",
-			"helpUrl": ""
-		}
-	},
-
 	// ========== グローバル変数書き込み ==========
 	{
 		type: "global_variable_write",
@@ -277,30 +241,6 @@ export const blockDefinitions = [
 			"nextStatement": null,
 			"colour": 230,
 			"tooltip": "グローバル変数に値を書き込みます。",
-			"helpUrl": ""
-		}
-	},
-
-	// ========== グローバル変数書き込み ==========
-	{
-		type: "global_variable_read",
-		definition: class GlobalVariableWriteBlock extends CommandBlock {
-
-		},
-		blocklyJson: {
-			"type": "global_variable_read",
-			"message0": "グローバル変数 %1",
-			"args0": [
-				{
-					"type": "field_input",
-					"name": "name",
-					"text": "変数名"
-				}
-			],
-			"inputsInline": true,
-			"output": "Number",
-			"colour": 230,
-			"tooltip": "グローバル変数の値を読み込みます。",
 			"helpUrl": ""
 		}
 	},
@@ -482,30 +422,6 @@ export const blockDefinitions = [
 		}
 	},
 
-	// ========== ストップウォッチ読み取り ==========
-	{
-		type: "stopwatch_read",
-		definition: class StopwatchReadBlock extends CommandBlock {
-
-		},
-		blocklyJson: {
-			"type": "stopwatch_read",
-			"message0": "ストップウォッチ %1 番読み取り",
-			"args0": [
-				{
-					"type": "input_value",
-					"name": "number",
-					"check": "Number"
-				}
-			],
-			"inputsInline": true,
-			"output": "Number",
-			"colour": 230,
-			"tooltip": "指定した番号のストップウォッチの値(秒)を読み取ります。",
-			"helpUrl": ""
-		}
-	},
-
 	// ========== スレッド作成 ==========
 	{
 		type: "thread_create",
@@ -560,4 +476,126 @@ export const blockDefinitions = [
 			"helpUrl": ""
 		}
 	}
-]
+];
+
+export const valueBlockDefinitions = [
+	// ========== 比較 ==========
+	{
+		type: "logic_compare",
+		definition: class CompareBlock extends ValueBlock {
+
+		}
+	},
+
+	// ========== 論理演算 ==========
+	{
+		type: "logic_operation",
+		definition: class LogicOperationBlock extends ValueBlock {
+
+		}
+	},
+
+	// ========== 否定 ==========
+	{
+		type: "logic_negate",
+		definition: class NotBlock extends ValueBlock {
+
+		}
+	},
+
+	// ========== 数字 ==========
+	{
+		type: "math_number",
+		definition: class NumberBlock extends ValueBlock {
+
+		}
+	},
+
+	// ========== 四則演算 ==========
+	{
+		type: "math_arithmetic",
+		definition: class CalculateBlock extends ValueBlock {
+
+		}
+	},
+
+	// ========== テキスト ==========
+	{
+		type: "text",
+		definition: class TextBlock extends ValueBlock {
+
+		}
+	},
+
+	// ========== ローカル変数読み込み ==========
+	{
+		type: "local_variable_read",
+		definition: class LocalVariableReadBlock extends ValueBlock {
+
+		},
+		blocklyJson: {
+			"type": "local_variable_read",
+			"message0": "ローカル変数 %1",
+			"args0": [
+				{
+					"type": "field_input",
+					"name": "name",
+					"text": "変数名"
+				}
+			],
+			"inputsInline": true,
+			"output": "Number",
+			"colour": 230,
+			"tooltip": "ローカル変数の値を読み込みます。",
+			"helpUrl": ""
+		}
+	},
+
+	// ========== グローバル変数書き込み ==========
+	{
+		type: "global_variable_read",
+		definition: class GlobalVariableWriteBlock extends ValueBlock {
+
+		},
+		blocklyJson: {
+			"type": "global_variable_read",
+			"message0": "グローバル変数 %1",
+			"args0": [
+				{
+					"type": "field_input",
+					"name": "name",
+					"text": "変数名"
+				}
+			],
+			"inputsInline": true,
+			"output": "Number",
+			"colour": 230,
+			"tooltip": "グローバル変数の値を読み込みます。",
+			"helpUrl": ""
+		}
+	},
+
+	// ========== ストップウォッチ読み取り ==========
+	{
+		type: "stopwatch_read",
+		definition: class StopwatchReadBlock extends ValueBlock {
+
+		},
+		blocklyJson: {
+			"type": "stopwatch_read",
+			"message0": "ストップウォッチ %1 番読み取り",
+			"args0": [
+				{
+					"type": "input_value",
+					"name": "number",
+					"check": "Number"
+				}
+			],
+			"inputsInline": true,
+			"output": "Number",
+			"colour": 230,
+			"tooltip": "指定した番号のストップウォッチの値(秒)を読み取ります。",
+			"helpUrl": ""
+		}
+	}
+];
