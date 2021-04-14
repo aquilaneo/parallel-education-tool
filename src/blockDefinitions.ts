@@ -1,8 +1,8 @@
 // ========== ブロック形状や動作を定義するファイル ==========
 
 export class UserProgram {
-	entryFunction: CommandBlock | null = null;
-	functions: CommandBlock[] = [];
+	entryFunction: CommandBlock | null = null; // エントリポイント
+	functions: CommandBlock[] = []; // 関数一覧
 
 	constructor (xml: Element) {
 		console.log (xml);
@@ -39,21 +39,44 @@ export class UserProgram {
 export class CommandBlock {
 	blockType: string;
 	id: string;
+	blockXml: Element;
 	wait: number;
 
 	constructor (blockXml: Element, wait: number) {
-		// ブロックのxmlからブロックタイプとブロックIDを取得
+		// ブロックのxmlからブロックタイプを取得
 		const blockType = blockXml.getAttribute ("type");
 		this.blockType = blockType ? blockType : "";
-
+		// ブロックのxmlからブロックIDを取得
 		const id = blockXml.getAttribute ("id");
 		this.id = id ? id : "";
+		// ブロックのxmlを取得
+		this.blockXml = blockXml;
 
 		this.wait = wait;
 	}
 
+	// 指定した名前のパラメータ(value or shadow)を取得
+	getValue (type: string) {
+		const children = this.blockXml.children;
+
+		for (let i = 0; i < children.length; i++) {
+			if (children[i].getAttribute ("name") === type) {
+				// blockタグを探索
+				const grandchildren = children[i].children;
+				for (let j = 0; j < grandchildren.length; j++) {
+					if (grandchildren[j].tagName === "block") {
+						return grandchildren[j];
+					}
+				}
+				return grandchildren[0];
+			}
+		}
+
+		return null;
+	}
+
+	// nextタグでつながっているコマンドブロックをオブジェクト化し配列化
 	static constructBlock (blockXml: Element) {
-		// nextタグでつながっているブロックを配列化
 		const constructedBlocks = [];
 		let block = blockXml;
 		while (true) {
@@ -86,19 +109,56 @@ export class CommandBlock {
 export class ValueBlock {
 	blockType: string;
 	id: string;
+	blockXml: Element;
 	wait: number;
 
 	constructor (blockXml: Element, wait: number) {
-		// ブロックのxmlからブロックタイプとブロックIDを取得
+		// ブロックのxmlからブロックタイプを取得
 		const blockType = blockXml.getAttribute ("type");
 		this.blockType = blockType ? blockType : "";
-
+		// ブロックのxmlからブロックIDを取得
 		const id = blockXml.getAttribute ("id");
 		this.id = id ? id : "";
+		// ブロックのxmlを取得
+		this.blockXml = blockXml;
 
 		this.wait = wait;
 	}
 
+	// 指定した名前のパラメータ(block or shadow)を取得
+	getValue (type: string) {
+		const children = this.blockXml.children;
+
+		for (let i = 0; i < children.length; i++) {
+			if (children[i].getAttribute ("name") === type && children[i].children[0]) {
+				// blockタグを探索
+				const grandchildren = children[i].children;
+				for (let j = 0; j < grandchildren.length; j++) {
+					if (grandchildren[j].tagName === "block") {
+						return grandchildren[j];
+					}
+				}
+				return grandchildren[0];
+			}
+		}
+
+		return null;
+	}
+
+	// 指定した名前の値(field)を取得
+	getField (type: string) {
+		const children = this.blockXml.children;
+		for (let i = 0; i < children.length; i++) {
+			if (children[i].tagName === "field") {
+				if (children[i].getAttribute ("name") === type) {
+					return children[i].textContent;
+				}
+			}
+		}
+		return null;
+	}
+
+	// 与えられた値ブロックをオブジェクトに変換
 	static constructBlock (blockXml: Element) {
 		for (const valueBlockDefinition of valueBlockDefinitions) {
 			if (valueBlockDefinition.type === blockXml.getAttribute ("type")) {
@@ -122,10 +182,13 @@ export const commandBlockDefinitions = [
 	{
 		type: "wait_s",
 		definition: class SecondsWaitBlock extends CommandBlock {
-			// second: ValueBlock | null;
+			second: ValueBlock | null;
 
 			constructor (blockXml: Element, wait: number) {
 				super (blockXml, wait);
+
+				const second = super.getValue ("second");
+				this.second = second ? ValueBlock.constructBlock (second) : null;
 			}
 		},
 		blocklyJson: {
@@ -507,7 +570,13 @@ export const valueBlockDefinitions = [
 	{
 		type: "math_number",
 		definition: class NumberBlock extends ValueBlock {
+			num: number | null;
 
+			constructor (blockXml: Element, wait: number) {
+				super (blockXml, wait);
+				const num = super.getField ("NUM");
+				this.num = num ? Number (num) : null;
+			}
 		}
 	},
 
