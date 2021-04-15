@@ -7,29 +7,22 @@ export class UserProgram {
 	constructor (xml: Element) {
 		console.log (xml);
 
-		// ワークスペース内にある全ての関数定義ブロックをリストアップ
-		let entryFunctionXml: Element | null = null;
-		const functionsXml: Element[] = [];
+		// ワークスペース内にあるエントリポイントと全ての関数定義ブロックをリストアップ
 		const blocks = xml.getElementsByTagName ("block");
-		for (let i = 0; i < blocks.length; i++) {
-			switch (blocks[i].getAttribute ("type")) {
-				case "entry_point":
-					entryFunctionXml = blocks[i];
-					break;
-				case "function_definition":
-					functionsXml.push (blocks[i]);
-					break;
-			}
-		}
+		const entryFunctionXml = Array.from (blocks).find ((block) => {
+			return block.getAttribute ("type") === "entry_point";
+		})
+		const functionsXml = Array.from (blocks).filter ((block) => {
+			return block.getAttribute ("type") === "function_definition";
+		});
 
-		// 関数ブロックのXMLをパース
+		// エントリポイントと関数ブロックのXMLをパース
 		if (entryFunctionXml) {
 			this.entryFunction = CommandBlock.constructBlock (entryFunctionXml)[0];
 		}
-		for (const functionXml of functionsXml) {
-			const constructedBlock = CommandBlock.constructBlock (functionXml);
-			this.functions.push (constructedBlock[0]);
-		}
+		this.functions = functionsXml.map ((functionXml) => {
+			return CommandBlock.constructBlock (functionXml)[0];
+		});
 
 		console.log ("エントリポイント", this.entryFunction);
 		console.log ("関数", this.functions);
@@ -57,22 +50,17 @@ export class CommandBlock {
 
 	// 指定した名前のパラメータ(value or shadow)を取得
 	getValue (type: string) {
-		const children = this.blockXml.children;
-
-		for (let i = 0; i < children.length; i++) {
-			if (children[i].getAttribute ("name") === type) {
-				// blockタグを探索
-				const grandchildren = children[i].children;
-				for (let j = 0; j < grandchildren.length; j++) {
-					if (grandchildren[j].tagName === "block") {
-						return grandchildren[j];
-					}
-				}
-				return grandchildren[0];
-			}
+		// typeに合致するタグを探す
+		const value = Array.from (this.blockXml.children).find ((child) => {
+			return child.getAttribute ("name") === type;
+		});
+		if (value) {
+			// blockタグを探す
+			const block = Array.from (value.children).find ((child) => {
+				return child.tagName === "block";
+			});
+			return block ? block : value.children[0]; // blockがあったらそれを、なかったらshadowタグを返す
 		}
-
-		return null;
 	}
 
 	// nextタグでつながっているコマンドブロックをオブジェクト化し配列化
@@ -89,13 +77,9 @@ export class CommandBlock {
 			}
 
 			// 次のブロックが存在するか調べる
-			let nextExists = false;
-			for (let i = 0; i < block.childNodes.length; i++) {
-				if (block.childNodes[i].nodeName === "next") {
-					nextExists = true;
-				}
-			}
-			if (nextExists) {
+			if (Array.from (block.childNodes).find ((child) => {
+				return child.nodeName === "next";
+			})) {
 				block = block.getElementsByTagName ("next")[0].getElementsByTagName ("block")[0];
 			} else {
 				break;
@@ -127,45 +111,33 @@ export class ValueBlock {
 
 	// 指定した名前のパラメータ(block or shadow)を取得
 	getValue (type: string) {
-		const children = this.blockXml.children;
-
-		for (let i = 0; i < children.length; i++) {
-			if (children[i].getAttribute ("name") === type && children[i].children[0]) {
-				// blockタグを探索
-				const grandchildren = children[i].children;
-				for (let j = 0; j < grandchildren.length; j++) {
-					if (grandchildren[j].tagName === "block") {
-						return grandchildren[j];
-					}
-				}
-				return grandchildren[0];
-			}
+		// typeに合致するタグを探す
+		const value = Array.from (this.blockXml.children).find ((child) => {
+			return child.getAttribute ("name") === type;
+		});
+		if (value) {
+			// blockタグを探す
+			const block = Array.from (value.children).find ((child) => {
+				return child.tagName === "block";
+			});
+			return block ? block : value.children[0]; // blockがあったらそれを、なかったらshadowタグを返す
 		}
-
-		return null;
 	}
 
 	// 指定した名前の値(field)を取得
 	getField (type: string) {
-		const children = this.blockXml.children;
-		for (let i = 0; i < children.length; i++) {
-			if (children[i].tagName === "field") {
-				if (children[i].getAttribute ("name") === type) {
-					return children[i].textContent;
-				}
-			}
-		}
-		return null;
+		const field = Array.from (this.blockXml.children).find ((child) => {
+			return child.tagName === "field" && child.getAttribute ("name") === type;
+		});
+		return field ? field.textContent : null;
 	}
 
 	// 与えられた値ブロックをオブジェクトに変換
-	static constructBlock (blockXml: Element) {
-		for (const valueBlockDefinition of valueBlockDefinitions) {
-			if (valueBlockDefinition.type === blockXml.getAttribute ("type")) {
-				return new valueBlockDefinition.definition (blockXml, 0.2);
-			}
-		}
-		return null;
+	static constructBlock (blockXml: Element): ValueBlock | null {
+		const definition = valueBlockDefinitions.find ((valueBlockDefinition) => {
+			return valueBlockDefinition.type === blockXml.getAttribute ("type");
+		})
+		return definition ? new definition.definition (blockXml, 0.2) : null;
 	}
 }
 
