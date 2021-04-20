@@ -63,6 +63,14 @@ export class CommandBlock {
 		}
 	}
 
+	// 指定した名前の値(field)を取得
+	getField (type: string) {
+		const field = Array.from (this.blockXml.children).find ((child) => {
+			return child.tagName === "field" && child.getAttribute ("name") === type;
+		});
+		return field ? field.textContent : null;
+	}
+
 	// nextタグでつながっているコマンドブロックをオブジェクト化し配列化
 	static constructBlock (blockXml: Element) {
 		const constructedBlocks = [];
@@ -129,6 +137,7 @@ export class ValueBlock {
 		const field = Array.from (this.blockXml.children).find ((child) => {
 			return child.tagName === "field" && child.getAttribute ("name") === type;
 		});
+
 		return field ? field.textContent : null;
 	}
 
@@ -146,7 +155,14 @@ export const commandBlockDefinitions = [
 	{
 		type: "text_print",
 		definition: class PrintBlock extends CommandBlock {
+			text: ValueBlock | null;
 
+			constructor (blockXml: Element, wait: number) {
+				super (blockXml, wait);
+
+				const text = super.getValue ("TEXT");
+				this.text = text ? ValueBlock.constructBlock (text) : null;
+			}
 		}
 	},
 
@@ -218,7 +234,17 @@ export const commandBlockDefinitions = [
 	{
 		type: "local_variable_write",
 		definition: class LocalVariableWriteBlock extends CommandBlock {
+			name: string | null;
+			value: ValueBlock | null;
 
+			constructor (blockXml: Element, wait: number) {
+				super (blockXml, wait);
+
+				const name = super.getField ("name");
+				this.name = name ? name : null;
+				const value = super.getValue ("value");
+				this.value = value ? ValueBlock.constructBlock (value) : null;
+			}
 		},
 		blocklyJson: {
 			"type": "local_variable_write",
@@ -251,7 +277,17 @@ export const commandBlockDefinitions = [
 	{
 		type: "global_variable_write",
 		definition: class GlobalVariableWriteBlock extends CommandBlock {
+			name: string | null;
+			value: ValueBlock | null;
 
+			constructor (blockXml: Element, wait: number) {
+				super (blockXml, wait);
+
+				const name = super.getField ("name");
+				this.name = name ? name : null;
+				const value = super.getValue ("value");
+				this.value = value ? ValueBlock.constructBlock (value) : null;
+			}
 		},
 		blocklyJson: {
 			"type": "global_variable_write",
@@ -325,7 +361,14 @@ export const commandBlockDefinitions = [
 	{
 		type: "function_call",
 		definition: class FunctionCallBlock extends CommandBlock {
+			name: string | null;
 
+			constructor (blockXml: Element, wait: number) {
+				super (blockXml, wait);
+
+				const name = super.getField ("name");
+				this.name = name ? name : null;
+			}
 		},
 		blocklyJson: {
 			"type": "function_call",
@@ -386,7 +429,14 @@ export const commandBlockDefinitions = [
 	{
 		type: "stopwatch_start",
 		definition: class StopwatchStartBlock extends CommandBlock {
+			swNumber: ValueBlock | null;
 
+			constructor (blockXml: Element, wait: number) {
+				super (blockXml, wait);
+
+				const swNumber = super.getValue ("number");
+				this.swNumber = swNumber ? ValueBlock.constructBlock (swNumber) : null;
+			}
 		},
 		blocklyJson: {
 			"type": "stopwatch_start",
@@ -411,7 +461,14 @@ export const commandBlockDefinitions = [
 	{
 		type: "stopwatch_stop",
 		definition: class StopwatchStopBlock extends CommandBlock {
+			swNumber: ValueBlock | null;
 
+			constructor (blockXml: Element, wait: number) {
+				super (blockXml, wait);
+
+				const swNumber = super.getValue ("number");
+				this.swNumber = swNumber ? ValueBlock.constructBlock (swNumber) : null;
+			}
 		},
 		blocklyJson: {
 			"type": "stopwatch_stop",
@@ -436,7 +493,14 @@ export const commandBlockDefinitions = [
 	{
 		type: "stopwatch_reset",
 		definition: class StopwatchResetBlock extends CommandBlock {
+			swNumber: ValueBlock | null;
 
+			constructor (blockXml: Element, wait: number) {
+				super (blockXml, wait);
+
+				const swNumber = super.getValue ("number");
+				this.swNumber = swNumber ? ValueBlock.constructBlock (swNumber) : null;
+			}
 		},
 		blocklyJson: {
 			"type": "stopwatch_reset",
@@ -461,7 +525,17 @@ export const commandBlockDefinitions = [
 	{
 		type: "thread_create",
 		definition: class ThreadCreateBlock extends CommandBlock {
+			threadName: ValueBlock | null;
+			functionName: ValueBlock | null;
 
+			constructor (blockXml: Element, wait: number) {
+				super (blockXml, wait);
+
+				const threadName = super.getValue ("thread_name");
+				this.threadName = threadName ? ValueBlock.constructBlock (threadName) : null;
+				const functionName = super.getValue ("thread_function_name");
+				this.functionName = functionName ? ValueBlock.constructBlock (functionName) : null;
+			}
 		},
 		blocklyJson: {
 			"type": "thread_create",
@@ -491,7 +565,14 @@ export const commandBlockDefinitions = [
 	{
 		type: "thread_join",
 		definition: class ThreadJoinBlock extends CommandBlock {
+			threadName: ValueBlock | null;
 
+			constructor (blockXml: Element, wait: number) {
+				super (blockXml, wait);
+
+				const threadName = super.getValue ("thread_name");
+				this.threadName = threadName ? ValueBlock.constructBlock (threadName) : null;
+			}
 		},
 		blocklyJson: {
 			"type": "thread_join",
@@ -518,7 +599,19 @@ export const valueBlockDefinitions = [
 	{
 		type: "logic_compare",
 		definition: class CompareBlock extends ValueBlock {
+			operand1: ValueBlock | null;
+			operand2: ValueBlock | null;
+			operator: string | null;
 
+			constructor (blockXml: Element, wait: number) {
+				super (blockXml, wait);
+				const operand1 = super.getValue ("A");
+				this.operand1 = operand1 ? ValueBlock.constructBlock (operand1) : null;
+				const operand2 = super.getValue ("B");
+				this.operand2 = operand2 ? ValueBlock.constructBlock (operand2) : null;
+				const operator = super.getField ("OP");
+				this.operator = operator ? operator : null;
+			}
 		}
 	},
 
@@ -526,7 +619,19 @@ export const valueBlockDefinitions = [
 	{
 		type: "logic_operation",
 		definition: class LogicOperationBlock extends ValueBlock {
+			operand1: ValueBlock | null;
+			operand2: ValueBlock | null;
+			operator: string | null;
 
+			constructor (blockXml: Element, wait: number) {
+				super (blockXml, wait);
+				const operand1 = super.getValue ("A");
+				this.operand1 = operand1 ? ValueBlock.constructBlock (operand1) : null;
+				const operand2 = super.getValue ("B");
+				this.operand2 = operand2 ? ValueBlock.constructBlock (operand2) : null;
+				const operator = super.getField ("OP");
+				this.operator = operator ? operator : null;
+			}
 		}
 	},
 
@@ -534,7 +639,13 @@ export const valueBlockDefinitions = [
 	{
 		type: "logic_negate",
 		definition: class NotBlock extends ValueBlock {
+			value: ValueBlock | null;
 
+			constructor (blockXml: Element, wait: number) {
+				super (blockXml, wait);
+				const value = super.getValue ("BOOL");
+				this.value = value ? ValueBlock.constructBlock (value) : null;
+			}
 		}
 	},
 
@@ -556,7 +667,19 @@ export const valueBlockDefinitions = [
 	{
 		type: "math_arithmetic",
 		definition: class CalculateBlock extends ValueBlock {
+			operand1: ValueBlock | null;
+			operand2: ValueBlock | null;
+			operator: string | null;
 
+			constructor (blockXml: Element, wait: number) {
+				super (blockXml, wait);
+				const operand1 = super.getValue ("A");
+				this.operand1 = operand1 ? ValueBlock.constructBlock (operand1) : null;
+				const operand2 = super.getValue ("B");
+				this.operand2 = operand2 ? ValueBlock.constructBlock (operand2) : null;
+				const operator = super.getField ("OP");
+				this.operator = operator ? operator : null;
+			}
 		}
 	},
 
@@ -564,7 +687,13 @@ export const valueBlockDefinitions = [
 	{
 		type: "text",
 		definition: class TextBlock extends ValueBlock {
+			text: string | null;
 
+			constructor (blockXml: Element, wait: number) {
+				super (blockXml, wait);
+				const text = super.getField ("TEXT");
+				this.text = text != null ? text : null;
+			}
 		}
 	},
 
@@ -572,7 +701,13 @@ export const valueBlockDefinitions = [
 	{
 		type: "local_variable_read",
 		definition: class LocalVariableReadBlock extends ValueBlock {
+			name: string | null;
 
+			constructor (blockXml: Element, wait: number) {
+				super (blockXml, wait);
+				const name = super.getField ("name");
+				this.name = name ? name : null;
+			}
 		},
 		blocklyJson: {
 			"type": "local_variable_read",
@@ -596,7 +731,13 @@ export const valueBlockDefinitions = [
 	{
 		type: "global_variable_read",
 		definition: class GlobalVariableWriteBlock extends ValueBlock {
+			name: string | null;
 
+			constructor (blockXml: Element, wait: number) {
+				super (blockXml, wait);
+				const name = super.getField ("name");
+				this.name = name ? name : null;
+			}
 		},
 		blocklyJson: {
 			"type": "global_variable_read",
@@ -620,7 +761,13 @@ export const valueBlockDefinitions = [
 	{
 		type: "stopwatch_read",
 		definition: class StopwatchReadBlock extends ValueBlock {
+			swNumber: ValueBlock | null;
 
+			constructor (blockXml: Element, wait: number) {
+				super (blockXml, wait);
+				const threadNumber = super.getValue ("number");
+				this.swNumber = threadNumber ? ValueBlock.constructBlock (threadNumber) : null;
+			}
 		},
 		blocklyJson: {
 			"type": "stopwatch_read",
