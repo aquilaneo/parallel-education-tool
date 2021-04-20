@@ -71,6 +71,14 @@ export class CommandBlock {
 		return field ? field.textContent : null;
 	}
 
+	// 指定した名前のステートメント(statement)を取得
+	getStatement (type: string) {
+		const statement = Array.from (this.blockXml.children).find ((child) => {
+			return child.tagName === "statement" && child.getAttribute ("name") === type;
+		});
+		return statement ? statement.children[0] : null;
+	}
+
 	// nextタグでつながっているコマンドブロックをオブジェクト化し配列化
 	static constructBlock (blockXml: Element) {
 		const constructedBlocks = [];
@@ -202,7 +210,16 @@ export const commandBlockDefinitions = [
 	{
 		type: "controls_if",
 		definition: class IfBlock extends CommandBlock {
+			condition: ValueBlock | null;
+			statement: CommandBlock[];
 
+			constructor (blockXml: Element, wait: number) {
+				super (blockXml, wait);
+				const condition = super.getValue ("IF0");
+				this.condition = condition ? ValueBlock.constructBlock (condition) : null;
+				const statement = super.getStatement ("DO0");
+				this.statement = statement ? CommandBlock.constructBlock (statement) : [];
+			}
 		}
 	},
 
@@ -210,7 +227,19 @@ export const commandBlockDefinitions = [
 	{
 		type: "controls_ifelse",
 		definition: class IfElseBlock extends CommandBlock {
+			condition: ValueBlock | null;
+			statement1: CommandBlock[];
+			statement2: CommandBlock[];
 
+			constructor (blockXml: Element, wait: number) {
+				super (blockXml, wait);
+				const condition = super.getValue ("IF0");
+				this.condition = condition ? ValueBlock.constructBlock (condition) : null;
+				const statement1 = super.getStatement ("DO0");
+				this.statement1 = statement1 ? CommandBlock.constructBlock (statement1) : [];
+				const statement2 = super.getStatement ("ELSE");
+				this.statement2 = statement2 ? CommandBlock.constructBlock (statement2) : [];
+			}
 		}
 	},
 
@@ -218,7 +247,16 @@ export const commandBlockDefinitions = [
 	{
 		type: "controls_repeat_ext",
 		definition: class ForBlock extends CommandBlock {
+			count: ValueBlock | null;
+			statement: CommandBlock [];
 
+			constructor (blockXml: Element, wait: number) {
+				super (blockXml, wait);
+				const count = super.getValue ("TIMES");
+				this.count = count ? ValueBlock.constructBlock (count) : null;
+				const statement = super.getStatement ("DO");
+				this.statement = statement ? CommandBlock.constructBlock (statement) : [];
+			}
 		}
 	},
 
@@ -226,7 +264,19 @@ export const commandBlockDefinitions = [
 	{
 		type: "controls_whileUntil",
 		definition: class WhileBlock extends CommandBlock {
+			mode: string | null;
+			condition: ValueBlock | null;
+			statement: CommandBlock[];
 
+			constructor (blockXml: Element, wait: number) {
+				super (blockXml, wait);
+				const mode = super.getField ("MODE");
+				this.mode = mode ? mode : null;
+				const condition = super.getValue ("BOOL");
+				this.condition = condition ? ValueBlock.constructBlock (condition) : null;
+				const statement = super.getStatement ("DO");
+				this.statement = statement ? CommandBlock.constructBlock (statement) : [];
+			}
 		}
 	},
 
