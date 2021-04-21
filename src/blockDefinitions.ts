@@ -371,10 +371,13 @@ export const commandBlockDefinitions = [
 		type: "function_definition",
 		definition: class FunctionDefinitionBlock extends CommandBlock {
 			statement: CommandBlock[];
+			functionName: string | null;
 
 			constructor (blockXml: Element, wait: number) {
 				super (blockXml, wait);
 
+				const functionName = super.getField ("name");
+				this.functionName = functionName ? functionName : null;
 				const statement = blockXml.getElementsByTagName ("statement");
 				if (statement.length > 0 && statement[0].getAttribute ("name") === "routine") {
 					this.statement = CommandBlock.constructBlock (statement[0].getElementsByTagName ("block")[0]);
