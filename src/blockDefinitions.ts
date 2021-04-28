@@ -27,6 +27,19 @@ export class UserProgram {
 		console.log ("エントリポイント", this.entryFunction);
 		console.log ("関数", this.functions);
 	}
+
+	executeEntryFunction () {
+		if (this.entryFunction) {
+			this.entryFunction.executeBlock ();
+		} else {
+			console.error ("entryFunctionがnullです！");
+		}
+	}
+
+	executeFunction (functionName: string) {
+		if (this.functions) {
+		}
+	}
 }
 
 export class CommandBlock {
@@ -46,6 +59,10 @@ export class CommandBlock {
 		this.blockXml = blockXml;
 
 		this.wait = wait;
+	}
+
+	executeBlock () {
+		console.log (this.blockType);
 	}
 
 	// 指定した名前のパラメータ(value or shadow)を取得
@@ -123,6 +140,10 @@ export class ValueBlock {
 		this.blockXml = blockXml;
 
 		this.wait = wait;
+	}
+
+	executeBlock () {
+
 	}
 
 	// 指定した名前のパラメータ(block or shadow)を取得
@@ -385,6 +406,15 @@ export const commandBlockDefinitions = [
 					this.statement = [];
 				}
 			}
+
+			executeBlock () {
+				super.executeBlock ();
+				if (this.statement) {
+					for (const block of this.statement) {
+						block.executeBlock ();
+					}
+				}
+			}
 		},
 		blocklyJson: {
 			"type": "function_definition",
@@ -456,6 +486,15 @@ export const commandBlockDefinitions = [
 					this.statement = CommandBlock.constructBlock (statement[0].getElementsByTagName ("block")[0]);
 				} else {
 					this.statement = [];
+				}
+			}
+
+			executeBlock () {
+				super.executeBlock ();
+				if (this.statement) {
+					for (const block of this.statement) {
+						block.executeBlock ();
+					}
 				}
 			}
 		},

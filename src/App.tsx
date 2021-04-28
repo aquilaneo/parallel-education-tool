@@ -47,6 +47,13 @@ function App () {
 						</button>
 						<button onClick={() => {
 							if (editorRef.current) {
+								editorRef.current.executeEntryFunction ();
+							}
+						}}>
+							ブロックを実行
+						</button>
+						<button onClick={() => {
+							if (editorRef.current) {
 								console.log (editorRef.current.getXml ());
 							}
 						}}>
@@ -110,6 +117,11 @@ class Editor extends React.Component {
 		} else {
 			return null;
 		}
+	}
+
+	executeEntryFunction () {
+		const parsedBlocks = this.parseBlocks ();
+		parsedBlocks?.executeEntryFunction ();
 	}
 
 	render () {
