@@ -1,8 +1,11 @@
 // ========== ブロック形状や動作を定義するファイル ==========
 
+import * as CommandBlockBehaviors from "./commandBlockBehavior";
+import * as ValueBlockBehaviors from "./valueBlockBehaviors";
+
 export class UserProgram {
-	entryFunction: CommandBlock | null = null; // エントリポイント
-	functions: CommandBlock[] = []; // 関数一覧
+	entryFunction: CommandBlockBehaviors.EntryPointBlock | null = null; // エントリポイント
+	functions: CommandBlockBehaviors.FunctionDefinitionBlock[] = []; // 関数一覧
 
 	constructor (xml: Element) {
 		console.log (xml);
@@ -18,10 +21,10 @@ export class UserProgram {
 
 		// エントリポイントと関数ブロックのXMLをパース
 		if (entryFunctionXml) {
-			this.entryFunction = CommandBlock.constructBlock (entryFunctionXml)[0];
+			this.entryFunction = CommandBlockBehaviors.EntryPointBlock.constructBlock (entryFunctionXml)[0];
 		}
 		this.functions = functionsXml.map ((functionXml) => {
-			return CommandBlock.constructBlock (functionXml)[0];
+			return CommandBlockBehaviors.FunctionDefinitionBlock.constructBlock (functionXml)[0];
 		});
 
 		console.log ("エントリポイント", this.entryFunction);
@@ -38,144 +41,8 @@ export class UserProgram {
 
 	executeFunction (functionName: string) {
 		if (this.functions) {
+			
 		}
-	}
-}
-
-export class CommandBlock {
-	blockType: string;
-	id: string;
-	blockXml: Element;
-	wait: number;
-
-	constructor (blockXml: Element, wait: number) {
-		// ブロックのxmlからブロックタイプを取得
-		const blockType = blockXml.getAttribute ("type");
-		this.blockType = blockType ? blockType : "";
-		// ブロックのxmlからブロックIDを取得
-		const id = blockXml.getAttribute ("id");
-		this.id = id ? id : "";
-		// ブロックのxmlを取得
-		this.blockXml = blockXml;
-
-		this.wait = wait;
-	}
-
-	executeBlock () {
-		console.log (this.blockType);
-	}
-
-	// 指定した名前のパラメータ(value or shadow)を取得
-	getValue (type: string) {
-		// typeに合致するタグを探す
-		const value = Array.from (this.blockXml.children).find ((child) => {
-			return child.getAttribute ("name") === type;
-		});
-		if (value) {
-			// blockタグを探す
-			const block = Array.from (value.children).find ((child) => {
-				return child.tagName === "block";
-			});
-			return block ? block : value.children[0]; // blockがあったらそれを、なかったらshadowタグを返す
-		}
-	}
-
-	// 指定した名前の値(field)を取得
-	getField (type: string) {
-		const field = Array.from (this.blockXml.children).find ((child) => {
-			return child.tagName === "field" && child.getAttribute ("name") === type;
-		});
-		return field ? field.textContent : null;
-	}
-
-	// 指定した名前のステートメント(statement)を取得
-	getStatement (type: string) {
-		const statement = Array.from (this.blockXml.children).find ((child) => {
-			return child.tagName === "statement" && child.getAttribute ("name") === type;
-		});
-		return statement ? statement.children[0] : null;
-	}
-
-	// nextタグでつながっているコマンドブロックをオブジェクト化し配列化
-	static constructBlock (blockXml: Element) {
-		const constructedBlocks = [];
-		let block = blockXml;
-		while (true) {
-			// 該当するブロック定義を探し、そのクラスをインスタンス化
-			for (const commandBlockDefinition of commandBlockDefinitions) {
-				if (commandBlockDefinition.type === block.getAttribute ("type")) {
-					constructedBlocks.push (new commandBlockDefinition.definition (block, 0.2));
-					break;
-				}
-			}
-
-			// 次のブロックが存在するか調べる
-			if (Array.from (block.childNodes).find ((child) => {
-				return child.nodeName === "next";
-			})) {
-				block = block.getElementsByTagName ("next")[0].getElementsByTagName ("block")[0];
-			} else {
-				break;
-			}
-		}
-
-		return constructedBlocks;
-	}
-}
-
-export class ValueBlock {
-	blockType: string;
-	id: string;
-	blockXml: Element;
-	wait: number;
-
-	constructor (blockXml: Element, wait: number) {
-		// ブロックのxmlからブロックタイプを取得
-		const blockType = blockXml.getAttribute ("type");
-		this.blockType = blockType ? blockType : "";
-		// ブロックのxmlからブロックIDを取得
-		const id = blockXml.getAttribute ("id");
-		this.id = id ? id : "";
-		// ブロックのxmlを取得
-		this.blockXml = blockXml;
-
-		this.wait = wait;
-	}
-
-	executeBlock () {
-
-	}
-
-	// 指定した名前のパラメータ(block or shadow)を取得
-	getValue (type: string) {
-		// typeに合致するタグを探す
-		const value = Array.from (this.blockXml.children).find ((child) => {
-			return child.getAttribute ("name") === type;
-		});
-		if (value) {
-			// blockタグを探す
-			const block = Array.from (value.children).find ((child) => {
-				return child.tagName === "block";
-			});
-			return block ? block : value.children[0]; // blockがあったらそれを、なかったらshadowタグを返す
-		}
-	}
-
-	// 指定した名前の値(field)を取得
-	getField (type: string) {
-		const field = Array.from (this.blockXml.children).find ((child) => {
-			return child.tagName === "field" && child.getAttribute ("name") === type;
-		});
-
-		return field ? field.textContent : null;
-	}
-
-	// 与えられた値ブロックをオブジェクトに変換
-	static constructBlock (blockXml: Element): ValueBlock | null {
-		const definition = valueBlockDefinitions.find ((valueBlockDefinition) => {
-			return valueBlockDefinition.type === blockXml.getAttribute ("type");
-		})
-		return definition ? new definition.definition (blockXml, 0.2) : null;
 	}
 }
 
@@ -183,30 +50,16 @@ export const commandBlockDefinitions = [
 	// ========== print ==========
 	{
 		type: "text_print",
-		definition: class PrintBlock extends CommandBlock {
-			text: ValueBlock | null;
-
-			constructor (blockXml: Element, wait: number) {
-				super (blockXml, wait);
-
-				const text = super.getValue ("TEXT");
-				this.text = text ? ValueBlock.constructBlock (text) : null;
-			}
+		instantiate: (blockXml: Element, wait: number): CommandBlockBehaviors.CommandBlock => {
+			return new CommandBlockBehaviors.PrintBlock (blockXml, wait);
 		}
 	},
 
 	// ========== 秒数待機 ==========
 	{
 		type: "wait_s",
-		definition: class SecondsWaitBlock extends CommandBlock {
-			second: ValueBlock | null;
-
-			constructor (blockXml: Element, wait: number) {
-				super (blockXml, wait);
-
-				const second = super.getValue ("second");
-				this.second = second ? ValueBlock.constructBlock (second) : null;
-			}
+		instantiate: (blockXml: Element, wait: number): CommandBlockBehaviors.CommandBlock => {
+			return new CommandBlockBehaviors.SecondsWaitBlock (blockXml, wait);
 		},
 		blocklyJson: {
 			"type": "wait_s",
@@ -230,92 +83,40 @@ export const commandBlockDefinitions = [
 	// ========== if ==========
 	{
 		type: "controls_if",
-		definition: class IfBlock extends CommandBlock {
-			condition: ValueBlock | null;
-			statement: CommandBlock[];
-
-			constructor (blockXml: Element, wait: number) {
-				super (blockXml, wait);
-				const condition = super.getValue ("IF0");
-				this.condition = condition ? ValueBlock.constructBlock (condition) : null;
-				const statement = super.getStatement ("DO0");
-				this.statement = statement ? CommandBlock.constructBlock (statement) : [];
-			}
+		instantiate: (blockXml: Element, wait: number): CommandBlockBehaviors.CommandBlock => {
+			return new CommandBlockBehaviors.IfBlock (blockXml, wait);
 		}
 	},
 
 	// ========== if-else ==========
 	{
 		type: "controls_ifelse",
-		definition: class IfElseBlock extends CommandBlock {
-			condition: ValueBlock | null;
-			statement1: CommandBlock[];
-			statement2: CommandBlock[];
-
-			constructor (blockXml: Element, wait: number) {
-				super (blockXml, wait);
-				const condition = super.getValue ("IF0");
-				this.condition = condition ? ValueBlock.constructBlock (condition) : null;
-				const statement1 = super.getStatement ("DO0");
-				this.statement1 = statement1 ? CommandBlock.constructBlock (statement1) : [];
-				const statement2 = super.getStatement ("ELSE");
-				this.statement2 = statement2 ? CommandBlock.constructBlock (statement2) : [];
-			}
+		instantiate: (blockXml: Element, wait: number): CommandBlockBehaviors.CommandBlock => {
+			return new CommandBlockBehaviors.IfElseBlock (blockXml, wait);
 		}
 	},
 
 	// ========== for ==========
 	{
 		type: "controls_repeat_ext",
-		definition: class ForBlock extends CommandBlock {
-			count: ValueBlock | null;
-			statement: CommandBlock [];
-
-			constructor (blockXml: Element, wait: number) {
-				super (blockXml, wait);
-				const count = super.getValue ("TIMES");
-				this.count = count ? ValueBlock.constructBlock (count) : null;
-				const statement = super.getStatement ("DO");
-				this.statement = statement ? CommandBlock.constructBlock (statement) : [];
-			}
+		instantiate: (blockXml: Element, wait: number): CommandBlockBehaviors.CommandBlock => {
+			return new CommandBlockBehaviors.ForBlock (blockXml, wait);
 		}
 	},
 
 	// ========== while ==========
 	{
 		type: "controls_whileUntil",
-		definition: class WhileBlock extends CommandBlock {
-			mode: string | null;
-			condition: ValueBlock | null;
-			statement: CommandBlock[];
-
-			constructor (blockXml: Element, wait: number) {
-				super (blockXml, wait);
-				const mode = super.getField ("MODE");
-				this.mode = mode ? mode : null;
-				const condition = super.getValue ("BOOL");
-				this.condition = condition ? ValueBlock.constructBlock (condition) : null;
-				const statement = super.getStatement ("DO");
-				this.statement = statement ? CommandBlock.constructBlock (statement) : [];
-			}
+		instantiate: (blockXml: Element, wait: number): CommandBlockBehaviors.CommandBlock => {
+			return new CommandBlockBehaviors.WhileBlock (blockXml, wait);
 		}
 	},
 
 	// ========== ローカル変数書き込み ==========
 	{
 		type: "local_variable_write",
-		definition: class LocalVariableWriteBlock extends CommandBlock {
-			name: string | null;
-			value: ValueBlock | null;
-
-			constructor (blockXml: Element, wait: number) {
-				super (blockXml, wait);
-
-				const name = super.getField ("name");
-				this.name = name ? name : null;
-				const value = super.getValue ("value");
-				this.value = value ? ValueBlock.constructBlock (value) : null;
-			}
+		instantiate: (blockXml: Element, wait: number): CommandBlockBehaviors.CommandBlock => {
+			return new CommandBlockBehaviors.LocalVariableWriteBlock (blockXml, wait);
 		},
 		blocklyJson: {
 			"type": "local_variable_write",
@@ -347,18 +148,8 @@ export const commandBlockDefinitions = [
 	// ========== グローバル変数書き込み ==========
 	{
 		type: "global_variable_write",
-		definition: class GlobalVariableWriteBlock extends CommandBlock {
-			name: string | null;
-			value: ValueBlock | null;
-
-			constructor (blockXml: Element, wait: number) {
-				super (blockXml, wait);
-
-				const name = super.getField ("name");
-				this.name = name ? name : null;
-				const value = super.getValue ("value");
-				this.value = value ? ValueBlock.constructBlock (value) : null;
-			}
+		instantiate: (blockXml: Element, wait: number): CommandBlockBehaviors.CommandBlock => {
+			return new CommandBlockBehaviors.GlobalVariableWriteBlock (blockXml, wait);
 		},
 		blocklyJson: {
 			"type": "global_variable_write",
@@ -390,31 +181,8 @@ export const commandBlockDefinitions = [
 	// ========== 関数定義 ==========
 	{
 		type: "function_definition",
-		definition: class FunctionDefinitionBlock extends CommandBlock {
-			statement: CommandBlock[];
-			functionName: string | null;
-
-			constructor (blockXml: Element, wait: number) {
-				super (blockXml, wait);
-
-				const functionName = super.getField ("name");
-				this.functionName = functionName ? functionName : null;
-				const statement = blockXml.getElementsByTagName ("statement");
-				if (statement.length > 0 && statement[0].getAttribute ("name") === "routine") {
-					this.statement = CommandBlock.constructBlock (statement[0].getElementsByTagName ("block")[0]);
-				} else {
-					this.statement = [];
-				}
-			}
-
-			executeBlock () {
-				super.executeBlock ();
-				if (this.statement) {
-					for (const block of this.statement) {
-						block.executeBlock ();
-					}
-				}
-			}
+		instantiate: (blockXml: Element, wait: number): CommandBlockBehaviors.CommandBlock => {
+			return new CommandBlockBehaviors.FunctionDefinitionBlock (blockXml, wait);
 		},
 		blocklyJson: {
 			"type": "function_definition",
@@ -443,15 +211,8 @@ export const commandBlockDefinitions = [
 	// ========== 関数実行 ==========
 	{
 		type: "function_call",
-		definition: class FunctionCallBlock extends CommandBlock {
-			name: string | null;
-
-			constructor (blockXml: Element, wait: number) {
-				super (blockXml, wait);
-
-				const name = super.getField ("name");
-				this.name = name ? name : null;
-			}
+		instantiate: (blockXml: Element, wait: number): CommandBlockBehaviors.CommandBlock => {
+			return new CommandBlockBehaviors.FunctionCallBlock (blockXml, wait);
 		},
 		blocklyJson: {
 			"type": "function_call",
@@ -475,28 +236,8 @@ export const commandBlockDefinitions = [
 	// ========== スタート関数 ==========
 	{
 		type: "entry_point",
-		definition: class EntryPointBlock extends CommandBlock {
-			statement: CommandBlock[];
-
-			constructor (blockXml: Element, wait: number) {
-				super (blockXml, wait);
-
-				const statement = blockXml.getElementsByTagName ("statement");
-				if (statement.length > 0 && statement[0].getAttribute ("name") === "routine") {
-					this.statement = CommandBlock.constructBlock (statement[0].getElementsByTagName ("block")[0]);
-				} else {
-					this.statement = [];
-				}
-			}
-
-			executeBlock () {
-				super.executeBlock ();
-				if (this.statement) {
-					for (const block of this.statement) {
-						block.executeBlock ();
-					}
-				}
-			}
+		instantiate: (blockXml: Element, wait: number): CommandBlockBehaviors.CommandBlock => {
+			return new CommandBlockBehaviors.EntryPointBlock (blockXml, wait);
 		},
 		blocklyJson: {
 			"type": "entry_point",
@@ -520,15 +261,8 @@ export const commandBlockDefinitions = [
 	// ========== ストップウォッチ開始 ==========
 	{
 		type: "stopwatch_start",
-		definition: class StopwatchStartBlock extends CommandBlock {
-			swNumber: ValueBlock | null;
-
-			constructor (blockXml: Element, wait: number) {
-				super (blockXml, wait);
-
-				const swNumber = super.getValue ("number");
-				this.swNumber = swNumber ? ValueBlock.constructBlock (swNumber) : null;
-			}
+		instantiate: (blockXml: Element, wait: number): CommandBlockBehaviors.CommandBlock => {
+			return new CommandBlockBehaviors.StopwatchStartBlock (blockXml, wait);
 		},
 		blocklyJson: {
 			"type": "stopwatch_start",
@@ -552,15 +286,8 @@ export const commandBlockDefinitions = [
 	// ========== ストップウォッチ停止 ==========
 	{
 		type: "stopwatch_stop",
-		definition: class StopwatchStopBlock extends CommandBlock {
-			swNumber: ValueBlock | null;
-
-			constructor (blockXml: Element, wait: number) {
-				super (blockXml, wait);
-
-				const swNumber = super.getValue ("number");
-				this.swNumber = swNumber ? ValueBlock.constructBlock (swNumber) : null;
-			}
+		instantiate: (blockXml: Element, wait: number): CommandBlockBehaviors.CommandBlock => {
+			return new CommandBlockBehaviors.StopwatchStopBlock (blockXml, wait);
 		},
 		blocklyJson: {
 			"type": "stopwatch_stop",
@@ -584,15 +311,8 @@ export const commandBlockDefinitions = [
 	// ========== ストップウォッチリセット ==========
 	{
 		type: "stopwatch_reset",
-		definition: class StopwatchResetBlock extends CommandBlock {
-			swNumber: ValueBlock | null;
-
-			constructor (blockXml: Element, wait: number) {
-				super (blockXml, wait);
-
-				const swNumber = super.getValue ("number");
-				this.swNumber = swNumber ? ValueBlock.constructBlock (swNumber) : null;
-			}
+		instantiate: (blockXml: Element, wait: number): CommandBlockBehaviors.CommandBlock => {
+			return new CommandBlockBehaviors.StopwatchResetBlock (blockXml, wait);
 		},
 		blocklyJson: {
 			"type": "stopwatch_reset",
@@ -616,18 +336,8 @@ export const commandBlockDefinitions = [
 	// ========== スレッド作成 ==========
 	{
 		type: "thread_create",
-		definition: class ThreadCreateBlock extends CommandBlock {
-			threadName: ValueBlock | null;
-			functionName: ValueBlock | null;
-
-			constructor (blockXml: Element, wait: number) {
-				super (blockXml, wait);
-
-				const threadName = super.getValue ("thread_name");
-				this.threadName = threadName ? ValueBlock.constructBlock (threadName) : null;
-				const functionName = super.getValue ("thread_function_name");
-				this.functionName = functionName ? ValueBlock.constructBlock (functionName) : null;
-			}
+		instantiate: (blockXml: Element, wait: number): CommandBlockBehaviors.CommandBlock => {
+			return new CommandBlockBehaviors.ThreadCreateBlock (blockXml, wait);
 		},
 		blocklyJson: {
 			"type": "thread_create",
@@ -656,15 +366,8 @@ export const commandBlockDefinitions = [
 	// ========== スレッド終了待ち ==========
 	{
 		type: "thread_join",
-		definition: class ThreadJoinBlock extends CommandBlock {
-			threadName: ValueBlock | null;
-
-			constructor (blockXml: Element, wait: number) {
-				super (blockXml, wait);
-
-				const threadName = super.getValue ("thread_name");
-				this.threadName = threadName ? ValueBlock.constructBlock (threadName) : null;
-			}
+		instantiate: (blockXml: Element, wait: number): CommandBlockBehaviors.CommandBlock => {
+			return new CommandBlockBehaviors.ThreadJoinBlock (blockXml, wait);
 		},
 		blocklyJson: {
 			"type": "thread_join",
@@ -690,116 +393,56 @@ export const valueBlockDefinitions = [
 	// ========== 比較 ==========
 	{
 		type: "logic_compare",
-		definition: class CompareBlock extends ValueBlock {
-			operand1: ValueBlock | null;
-			operand2: ValueBlock | null;
-			operator: string | null;
-
-			constructor (blockXml: Element, wait: number) {
-				super (blockXml, wait);
-				const operand1 = super.getValue ("A");
-				this.operand1 = operand1 ? ValueBlock.constructBlock (operand1) : null;
-				const operand2 = super.getValue ("B");
-				this.operand2 = operand2 ? ValueBlock.constructBlock (operand2) : null;
-				const operator = super.getField ("OP");
-				this.operator = operator ? operator : null;
-			}
+		instantiate: (blockXml: Element, wait: number): ValueBlockBehaviors.ValueBlock => {
+			return new ValueBlockBehaviors.CompareBlock (blockXml, wait);
 		}
 	},
 
 	// ========== 論理演算 ==========
 	{
 		type: "logic_operation",
-		definition: class LogicOperationBlock extends ValueBlock {
-			operand1: ValueBlock | null;
-			operand2: ValueBlock | null;
-			operator: string | null;
-
-			constructor (blockXml: Element, wait: number) {
-				super (blockXml, wait);
-				const operand1 = super.getValue ("A");
-				this.operand1 = operand1 ? ValueBlock.constructBlock (operand1) : null;
-				const operand2 = super.getValue ("B");
-				this.operand2 = operand2 ? ValueBlock.constructBlock (operand2) : null;
-				const operator = super.getField ("OP");
-				this.operator = operator ? operator : null;
-			}
+		instantiate: (blockXml: Element, wait: number): ValueBlockBehaviors.ValueBlock => {
+			return new ValueBlockBehaviors.LogicOperationBlock (blockXml, wait);
 		}
 	},
 
 	// ========== 否定 ==========
 	{
 		type: "logic_negate",
-		definition: class NotBlock extends ValueBlock {
-			value: ValueBlock | null;
-
-			constructor (blockXml: Element, wait: number) {
-				super (blockXml, wait);
-				const value = super.getValue ("BOOL");
-				this.value = value ? ValueBlock.constructBlock (value) : null;
-			}
+		instantiate: (blockXml: Element, wait: number): ValueBlockBehaviors.ValueBlock => {
+			return new ValueBlockBehaviors.NotBlock (blockXml, wait);
 		}
 	},
 
 	// ========== 数字 ==========
 	{
 		type: "math_number",
-		definition: class NumberBlock extends ValueBlock {
-			num: number | null;
-
-			constructor (blockXml: Element, wait: number) {
-				super (blockXml, wait);
-				const num = super.getField ("NUM");
-				this.num = num ? Number (num) : null;
-			}
+		instantiate: (blockXml: Element, wait: number): ValueBlockBehaviors.ValueBlock => {
+			return new ValueBlockBehaviors.NumberBlock (blockXml, wait);
 		}
 	},
 
 	// ========== 四則演算 ==========
 	{
 		type: "math_arithmetic",
-		definition: class CalculateBlock extends ValueBlock {
-			operand1: ValueBlock | null;
-			operand2: ValueBlock | null;
-			operator: string | null;
-
-			constructor (blockXml: Element, wait: number) {
-				super (blockXml, wait);
-				const operand1 = super.getValue ("A");
-				this.operand1 = operand1 ? ValueBlock.constructBlock (operand1) : null;
-				const operand2 = super.getValue ("B");
-				this.operand2 = operand2 ? ValueBlock.constructBlock (operand2) : null;
-				const operator = super.getField ("OP");
-				this.operator = operator ? operator : null;
-			}
+		instantiate: (blockXml: Element, wait: number): ValueBlockBehaviors.ValueBlock => {
+			return new ValueBlockBehaviors.CalculateBlock (blockXml, wait);
 		}
 	},
 
 	// ========== テキスト ==========
 	{
 		type: "text",
-		definition: class TextBlock extends ValueBlock {
-			text: string | null;
-
-			constructor (blockXml: Element, wait: number) {
-				super (blockXml, wait);
-				const text = super.getField ("TEXT");
-				this.text = text != null ? text : null;
-			}
+		instantiate: (blockXml: Element, wait: number): ValueBlockBehaviors.ValueBlock => {
+			return new ValueBlockBehaviors.TextBlock (blockXml, wait);
 		}
 	},
 
 	// ========== ローカル変数読み込み ==========
 	{
 		type: "local_variable_read",
-		definition: class LocalVariableReadBlock extends ValueBlock {
-			name: string | null;
-
-			constructor (blockXml: Element, wait: number) {
-				super (blockXml, wait);
-				const name = super.getField ("name");
-				this.name = name ? name : null;
-			}
+		instantiate: (blockXml: Element, wait: number): ValueBlockBehaviors.ValueBlock => {
+			return new ValueBlockBehaviors.LocalVariableReadBlock (blockXml, wait);
 		},
 		blocklyJson: {
 			"type": "local_variable_read",
@@ -819,17 +462,11 @@ export const valueBlockDefinitions = [
 		}
 	},
 
-	// ========== グローバル変数書き込み ==========
+	// ========== グローバル変数読み込み ==========
 	{
 		type: "global_variable_read",
-		definition: class GlobalVariableWriteBlock extends ValueBlock {
-			name: string | null;
-
-			constructor (blockXml: Element, wait: number) {
-				super (blockXml, wait);
-				const name = super.getField ("name");
-				this.name = name ? name : null;
-			}
+		instantiate: (blockXml: Element, wait: number): ValueBlockBehaviors.ValueBlock => {
+			return new ValueBlockBehaviors.GlobalVariableReadBlock (blockXml, wait);
 		},
 		blocklyJson: {
 			"type": "global_variable_read",
@@ -852,14 +489,8 @@ export const valueBlockDefinitions = [
 	// ========== ストップウォッチ読み取り ==========
 	{
 		type: "stopwatch_read",
-		definition: class StopwatchReadBlock extends ValueBlock {
-			swNumber: ValueBlock | null;
-
-			constructor (blockXml: Element, wait: number) {
-				super (blockXml, wait);
-				const threadNumber = super.getValue ("number");
-				this.swNumber = threadNumber ? ValueBlock.constructBlock (threadNumber) : null;
-			}
+		instantiate: (blockXml: Element, wait: number): ValueBlockBehaviors.ValueBlock => {
+			return new ValueBlockBehaviors.StopwatchReadBlock (blockXml, wait);
 		},
 		blocklyJson: {
 			"type": "stopwatch_read",
