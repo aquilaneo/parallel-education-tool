@@ -6,6 +6,7 @@ import * as ValueBlockBehaviors from "./valueBlockBehaviors";
 export class UserProgram {
 	entryFunction: CommandBlockBehaviors.EntryPointBlock | null = null; // エントリポイント
 	functions: CommandBlockBehaviors.FunctionDefinitionBlock[] = []; // 関数一覧
+	stopwatches: { key: number, sw: Stopwatch } [] = []; // ストップウォッチ一覧
 
 	constructor (xml: Element) {
 		console.log (xml);
@@ -51,6 +52,67 @@ export class UserProgram {
 		} else {
 			console.error ("functionsがnullです！")
 		}
+	}
+
+	addStopwatch (swNumber: number) {
+		// 番号が重複していたら上書き、そうでなければ追加
+		const searchedIndex = this.stopwatches.findIndex ((sw) => {
+			return sw.key === swNumber;
+		});
+
+		if (searchedIndex === -1) {
+			this.stopwatches.push ({key: swNumber, sw: new Stopwatch ()});
+		} else {
+			this.stopwatches[searchedIndex] = {key: swNumber, sw: new Stopwatch ()};
+		}
+	}
+
+	getStopwatch (swNumber: number) {
+		const searched = this.stopwatches.find ((sw) => {
+			return sw.key === swNumber;
+		});
+
+		if (searched) {
+			return searched.sw;
+		} else {
+			return null;
+		}
+	}
+}
+
+export class Stopwatch {
+	startTime: number | null = null;
+	count = 0;
+
+	start () {
+		// 開始時間を記録
+		this.startTime = Date.now ();
+	}
+
+	stop () {
+		// 経過時間を加算し、開始時間をリセット
+		if (this.startTime) {
+			this.count += Date.now () - this.startTime;
+		}
+		this.startTime = null;
+	}
+
+	read () {
+		// SWカウント中だったら停止→読み取り→再開
+		if (this.startTime) {
+			this.stop ();
+			const count = this.count;
+			this.start ();
+			return count;
+		} else {
+			return this.count;
+		}
+	}
+
+	reset () {
+		// 停止しリセット
+		this.stop ();
+		this.count = 0;
 	}
 }
 

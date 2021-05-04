@@ -4,7 +4,7 @@ import * as Ja from "blockly/msg/ja"
 
 import Thread from "./Thread";
 import * as BlockSettings from "./blockSettings"
-import {UserProgram} from "./blockDefinitions"
+import {UserProgram, Stopwatch} from "./blockDefinitions"
 import "./App.scss";
 
 function App () {
@@ -16,6 +16,8 @@ function App () {
 	]);
 	const [threadCount, setThreadCount] = useState (threads.length);
 	const editorRef = useRef<Editor> (null);
+
+	const [stopwatch, setStopwatch] = useState (new Stopwatch ());
 
 	return (
 		<div style={{width: "100vw", height: "100vh"}}>
@@ -32,33 +34,54 @@ function App () {
 				<div id={"center-panel"}>
 					<div id={"variables-panel"}>
 						<div>変数</div>
-						<button onClick={() => {
-							setThreads ([...threads, {index: threadCount}]);
-							setThreadCount (threadCount + 1);
-						}}>
-							スレッドを追加
-						</button>
-						<button onClick={() => {
-							if (editorRef.current) {
-								editorRef.current.parseBlocks ();
-							}
-						}}>
-							ブロックをパース
-						</button>
-						<button onClick={() => {
-							if (editorRef.current) {
-								editorRef.current.executeEntryFunction ();
-							}
-						}}>
-							ブロックを実行
-						</button>
-						<button onClick={() => {
-							if (editorRef.current) {
-								console.log (editorRef.current.getXml ());
-							}
-						}}>
-							XML出力
-						</button>
+						<div>
+							<button onClick={() => {
+								setThreads ([...threads, {index: threadCount}]);
+								setThreadCount (threadCount + 1);
+							}}>
+								スレッドを追加
+							</button>
+							<button onClick={() => {
+								if (editorRef.current) {
+									editorRef.current.parseBlocks ();
+								}
+							}}>
+								ブロックをパース
+							</button>
+							<button onClick={() => {
+								if (editorRef.current) {
+									editorRef.current.executeEntryFunction ();
+								}
+							}}>
+								ブロックを実行
+							</button>
+							<button onClick={() => {
+								if (editorRef.current) {
+									console.log (editorRef.current.getXml ());
+								}
+							}}>
+								XML出力
+							</button>
+						</div>
+						<div>
+							<button onClick={() => {
+								stopwatch.start ();
+							}}>SW開始
+							</button>
+							<button onClick={() => {
+								stopwatch.stop ();
+							}}>
+								SW停止
+							</button>
+							<button onClick={() => {
+								stopwatch.reset ();
+							}}>SWリセット
+							</button>
+							<button onClick={() => {
+								console.log (stopwatch.read ());
+							}}>SW読み取り
+							</button>
+						</div>
 					</div>
 					<div id={"threads-panel"}>
 						<div>スレッド</div>
