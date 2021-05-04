@@ -338,6 +338,15 @@ export class StopwatchStartBlock extends CommandBlock {
 		const swNumber = super.getValue ("number");
 		this.swNumber = swNumber ? ValueBlockBehaviors.ValueBlock.constructBlock (swNumber) : null;
 	}
+
+	executeBlock () {
+		if (this.swNumber) {
+			const swNumber = this.swNumber.executeBlock ();
+			if (typeof (swNumber) === "number") {
+				this.userProgram.getStopwatch (swNumber).start ();
+			}
+		}
+	}
 }
 
 export class StopwatchStopBlock extends CommandBlock {
@@ -349,6 +358,15 @@ export class StopwatchStopBlock extends CommandBlock {
 		const swNumber = super.getValue ("number");
 		this.swNumber = swNumber ? ValueBlockBehaviors.ValueBlock.constructBlock (swNumber) : null;
 	}
+
+	executeBlock () {
+		if (this.swNumber) {
+			const swNumber = this.swNumber.executeBlock ();
+			if (typeof (swNumber) === "number") {
+				this.userProgram.getStopwatch (swNumber).stop ();
+			}
+		}
+	}
 }
 
 export class StopwatchResetBlock extends CommandBlock {
@@ -359,6 +377,15 @@ export class StopwatchResetBlock extends CommandBlock {
 
 		const swNumber = super.getValue ("number");
 		this.swNumber = swNumber ? ValueBlockBehaviors.ValueBlock.constructBlock (swNumber) : null;
+	}
+
+	executeBlock () {
+		if (this.swNumber) {
+			const swNumber = this.swNumber.executeBlock ();
+			if (typeof (swNumber) === "number") {
+				this.userProgram.getStopwatch (swNumber).reset ();
+			}
+		}
 	}
 }
 

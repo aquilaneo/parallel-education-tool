@@ -67,7 +67,7 @@ export class UserProgram {
 		}
 	}
 
-	getStopwatch (swNumber: number) {
+	getStopwatch (swNumber: number): Stopwatch {
 		const searched = this.stopwatches.find ((sw) => {
 			return sw.key === swNumber;
 		});
@@ -75,7 +75,8 @@ export class UserProgram {
 		if (searched) {
 			return searched.sw;
 		} else {
-			return null;
+			this.addStopwatch (swNumber);
+			return this.getStopwatch (swNumber);
 		}
 	}
 }
