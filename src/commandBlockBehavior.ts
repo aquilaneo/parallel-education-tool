@@ -91,6 +91,10 @@ export class PrintBlock extends CommandBlock {
 		const text = super.getValue ("TEXT");
 		this.text = text ? ValueBlockBehaviors.ValueBlock.constructBlock (text) : null;
 	}
+
+	executeBlock () {
+		console.log (this.text?.executeBlock ());
+	}
 }
 
 export class SecondsWaitBlock extends CommandBlock {
@@ -251,7 +255,6 @@ export class EntryPointBlock extends CommandBlock {
 	}
 
 	executeBlock () {
-		super.executeBlock ();
 		if (this.statement) {
 			for (const block of this.statement) {
 				block.executeBlock ();

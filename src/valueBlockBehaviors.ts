@@ -19,8 +19,9 @@ export class ValueBlock {
 		this.wait = wait;
 	}
 
-	executeBlock () {
-
+	executeBlock (): number | string | boolean {
+		console.log (this.blockType);
+		return 0;
 	}
 
 	// 指定した名前のパラメータ(block or shadow)を取得
@@ -59,7 +60,7 @@ export class ValueBlock {
 export class CompareBlock extends ValueBlock {
 	operand1: ValueBlock | null;
 	operand2: ValueBlock | null;
-	operator: string | null;
+	operator: string;
 
 	constructor (blockXml: Element, wait: number) {
 		super (blockXml, wait);
@@ -68,14 +69,34 @@ export class CompareBlock extends ValueBlock {
 		const operand2 = super.getValue ("B");
 		this.operand2 = operand2 ? ValueBlock.constructBlock (operand2) : null;
 		const operator = super.getField ("OP");
-		this.operator = operator ? operator : null;
+		this.operator = operator ? operator : "";
+	}
+
+	executeBlock () {
+		if (this.operand1 && this.operand2) {
+			switch (this.operator) {
+				case "EQ":
+					return this.operand1.executeBlock () === this.operand2.executeBlock ();
+				case "NEQ":
+					return this.operand1.executeBlock () !== this.operand2.executeBlock ();
+				case "LT":
+					return this.operand1.executeBlock () < this.operand2.executeBlock ();
+				case "LTE":
+					return this.operand1.executeBlock () <= this.operand2.executeBlock ();
+				case "GT":
+					return this.operand1.executeBlock () > this.operand2.executeBlock ();
+				case "GTE":
+					return this.operand1.executeBlock () >= this.operand2.executeBlock ();
+			}
+		}
+		return false;
 	}
 }
 
 export class LogicOperationBlock extends ValueBlock {
 	operand1: ValueBlock | null;
 	operand2: ValueBlock | null;
-	operator: string | null;
+	operator: string;
 
 	constructor (blockXml: Element, wait: number) {
 		super (blockXml, wait);
@@ -84,7 +105,19 @@ export class LogicOperationBlock extends ValueBlock {
 		const operand2 = super.getValue ("B");
 		this.operand2 = operand2 ? ValueBlock.constructBlock (operand2) : null;
 		const operator = super.getField ("OP");
-		this.operator = operator ? operator : null;
+		this.operator = operator ? operator : "";
+	}
+
+	executeBlock () {
+		if (this.operand1 && this.operand2) {
+			switch (this.operator) {
+				case "AND":
+					return this.operand1.executeBlock () && this.operand2.executeBlock ();
+				case "OR":
+					return this.operand1.executeBlock () || this.operand2.executeBlock ();
+			}
+		}
+		return false;
 	}
 }
 
@@ -96,22 +129,34 @@ export class NotBlock extends ValueBlock {
 		const value = super.getValue ("BOOL");
 		this.value = value ? ValueBlock.constructBlock (value) : null;
 	}
+
+	executeBlock () {
+		if (this.value) {
+			return !this.value.executeBlock ();
+		} else {
+			return false;
+		}
+	}
 }
 
 export class NumberBlock extends ValueBlock {
-	num: number | null;
+	num: number;
 
 	constructor (blockXml: Element, wait: number) {
 		super (blockXml, wait);
 		const num = super.getField ("NUM");
-		this.num = num ? Number (num) : null;
+		this.num = num ? Number (num) : 0;
+	}
+
+	executeBlock () {
+		return this.num;
 	}
 }
 
 export class CalculateBlock extends ValueBlock {
 	operand1: ValueBlock | null;
 	operand2: ValueBlock | null;
-	operator: string | null;
+	operator: string;
 
 	constructor (blockXml: Element, wait: number) {
 		super (blockXml, wait);
@@ -120,17 +165,43 @@ export class CalculateBlock extends ValueBlock {
 		const operand2 = super.getValue ("B");
 		this.operand2 = operand2 ? ValueBlock.constructBlock (operand2) : null;
 		const operator = super.getField ("OP");
-		this.operator = operator ? operator : null;
+		this.operator = operator ? operator : "";
+	}
+
+	executeBlock () {
+		if (this.operand1 && this.operand2) {
+			const operand1 = this.operand1.executeBlock ();
+			const operand2 = this.operand2.executeBlock ();
+			if (typeof (operand1) === "number" && typeof (operand2) === "number") {
+				switch (this.operator) {
+					case "ADD":
+						return operand1 + operand2;
+					case "MINUS":
+						return operand1 - operand2;
+					case "MULTIPLY":
+						return operand1 * operand2;
+					case "DIVIDE":
+						return operand1 / operand2;
+					case "POWER":
+						return Math.pow (operand1, operand2);
+				}
+			}
+		}
+		return 0;
 	}
 }
 
 export class TextBlock extends ValueBlock {
-	text: string | null;
+	text: string;
 
 	constructor (blockXml: Element, wait: number) {
 		super (blockXml, wait);
 		const text = super.getField ("TEXT");
-		this.text = text != null ? text : null;
+		this.text = text != null ? text : "";
+	}
+
+	executeBlock () {
+		return this.text ? this.text : "";
 	}
 }
 
