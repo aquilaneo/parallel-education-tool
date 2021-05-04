@@ -41,7 +41,15 @@ export class UserProgram {
 
 	executeFunction (functionName: string) {
 		if (this.functions) {
-			
+			// 関数名が一致する関数を全て探索し実行
+			const searchedFunctions = this.functions.filter ((func) => {
+				return func.functionName === functionName;
+			})
+			for (const searchedFunction of searchedFunctions) {
+				searchedFunction.executeBlock ();
+			}
+		} else {
+			console.error ("functionsがnullです！")
 		}
 	}
 }

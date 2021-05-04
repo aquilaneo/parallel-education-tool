@@ -119,6 +119,16 @@ export class IfBlock extends CommandBlock {
 		const statement = super.getStatement ("DO0");
 		this.statement = statement ? CommandBlock.constructBlock (statement) : [];
 	}
+
+	executeBlock () {
+		if (this.condition) {
+			if (this.condition.executeBlock ()) {
+				for (const block of this.statement) {
+					block.executeBlock ();
+				}
+			}
+		}
+	}
 }
 
 export class IfElseBlock extends CommandBlock {
@@ -135,6 +145,20 @@ export class IfElseBlock extends CommandBlock {
 		const statement2 = super.getStatement ("ELSE");
 		this.statement2 = statement2 ? CommandBlock.constructBlock (statement2) : [];
 	}
+
+	executeBlock () {
+		if (this.condition) {
+			if (this.condition.executeBlock ()) {
+				for (const block of this.statement1) {
+					block.executeBlock ();
+				}
+			} else {
+				for (const block of this.statement2) {
+					block.executeBlock ();
+				}
+			}
+		}
+	}
 }
 
 export class ForBlock extends CommandBlock {
@@ -147,6 +171,17 @@ export class ForBlock extends CommandBlock {
 		this.count = count ? ValueBlockBehaviors.ValueBlock.constructBlock (count) : null;
 		const statement = super.getStatement ("DO");
 		this.statement = statement ? CommandBlock.constructBlock (statement) : [];
+	}
+
+	executeBlock () {
+		if (this.count) {
+			const count = this.count.executeBlock ();
+			for (let i = 0; i < count; i++) {
+				for (const block of this.statement) {
+					block.executeBlock ();
+				}
+			}
+		}
 	}
 }
 
@@ -163,6 +198,27 @@ export class WhileBlock extends CommandBlock {
 		this.condition = condition ? ValueBlockBehaviors.ValueBlock.constructBlock (condition) : null;
 		const statement = super.getStatement ("DO");
 		this.statement = statement ? CommandBlock.constructBlock (statement) : [];
+	}
+
+	executeBlock () {
+		if (this.mode && this.condition) {
+			switch (this.mode) {
+				case "WHILE":
+					while (this.condition.executeBlock()) {
+						for (const block of this.statement) {
+							block.executeBlock();
+						}
+					}
+					break;
+				case "UNTIL":
+					while (!this.condition.executeBlock()) {
+						for (const block of this.statement) {
+							block.executeBlock();
+						}
+					}
+					break;
+			}
+		}
 	}
 }
 
@@ -212,7 +268,6 @@ export class FunctionDefinitionBlock extends CommandBlock {
 	}
 
 	executeBlock () {
-		super.executeBlock ();
 		if (this.statement) {
 			for (const block of this.statement) {
 				block.executeBlock ();
