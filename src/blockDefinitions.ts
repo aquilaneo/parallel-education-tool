@@ -15,17 +15,17 @@ export class UserProgram {
 		const blocks = xml.getElementsByTagName ("block");
 		const entryFunctionXml = Array.from (blocks).find ((block) => {
 			return block.getAttribute ("type") === "entry_point";
-		})
+		});
 		const functionsXml = Array.from (blocks).filter ((block) => {
 			return block.getAttribute ("type") === "function_definition";
 		});
 
 		// エントリポイントと関数ブロックのXMLをパース
 		if (entryFunctionXml) {
-			this.entryFunction = CommandBlockBehaviors.EntryPointBlock.constructBlock (entryFunctionXml)[0];
+			this.entryFunction = CommandBlockBehaviors.EntryPointBlock.constructBlock (entryFunctionXml, this)[0];
 		}
 		this.functions = functionsXml.map ((functionXml) => {
-			return CommandBlockBehaviors.FunctionDefinitionBlock.constructBlock (functionXml)[0];
+			return CommandBlockBehaviors.FunctionDefinitionBlock.constructBlock (functionXml, this)[0];
 		});
 
 		console.log ("エントリポイント", this.entryFunction);
@@ -120,16 +120,16 @@ export const commandBlockDefinitions = [
 	// ========== print ==========
 	{
 		type: "text_print",
-		instantiate: (blockXml: Element, wait: number): CommandBlockBehaviors.CommandBlock => {
-			return new CommandBlockBehaviors.PrintBlock (blockXml, wait);
+		instantiate: (blockXml: Element, userProgram: UserProgram, wait: number): CommandBlockBehaviors.CommandBlock => {
+			return new CommandBlockBehaviors.PrintBlock (blockXml, userProgram, wait);
 		}
 	},
 
 	// ========== 秒数待機 ==========
 	{
 		type: "wait_s",
-		instantiate: (blockXml: Element, wait: number): CommandBlockBehaviors.CommandBlock => {
-			return new CommandBlockBehaviors.SecondsWaitBlock (blockXml, wait);
+		instantiate: (blockXml: Element, userProgram: UserProgram, wait: number): CommandBlockBehaviors.CommandBlock => {
+			return new CommandBlockBehaviors.SecondsWaitBlock (blockXml, userProgram, wait);
 		},
 		blocklyJson: {
 			"type": "wait_s",
@@ -153,40 +153,40 @@ export const commandBlockDefinitions = [
 	// ========== if ==========
 	{
 		type: "controls_if",
-		instantiate: (blockXml: Element, wait: number): CommandBlockBehaviors.CommandBlock => {
-			return new CommandBlockBehaviors.IfBlock (blockXml, wait);
+		instantiate: (blockXml: Element, userProgram: UserProgram, wait: number): CommandBlockBehaviors.CommandBlock => {
+			return new CommandBlockBehaviors.IfBlock (blockXml, userProgram, wait);
 		}
 	},
 
 	// ========== if-else ==========
 	{
 		type: "controls_ifelse",
-		instantiate: (blockXml: Element, wait: number): CommandBlockBehaviors.CommandBlock => {
-			return new CommandBlockBehaviors.IfElseBlock (blockXml, wait);
+		instantiate: (blockXml: Element, userProgram: UserProgram, wait: number): CommandBlockBehaviors.CommandBlock => {
+			return new CommandBlockBehaviors.IfElseBlock (blockXml, userProgram, wait);
 		}
 	},
 
 	// ========== for ==========
 	{
 		type: "controls_repeat_ext",
-		instantiate: (blockXml: Element, wait: number): CommandBlockBehaviors.CommandBlock => {
-			return new CommandBlockBehaviors.ForBlock (blockXml, wait);
+		instantiate: (blockXml: Element, userProgram: UserProgram, wait: number): CommandBlockBehaviors.CommandBlock => {
+			return new CommandBlockBehaviors.ForBlock (blockXml, userProgram, wait);
 		}
 	},
 
 	// ========== while ==========
 	{
 		type: "controls_whileUntil",
-		instantiate: (blockXml: Element, wait: number): CommandBlockBehaviors.CommandBlock => {
-			return new CommandBlockBehaviors.WhileBlock (blockXml, wait);
+		instantiate: (blockXml: Element, userProgram: UserProgram, wait: number): CommandBlockBehaviors.CommandBlock => {
+			return new CommandBlockBehaviors.WhileBlock (blockXml, userProgram, wait);
 		}
 	},
 
 	// ========== ローカル変数書き込み ==========
 	{
 		type: "local_variable_write",
-		instantiate: (blockXml: Element, wait: number): CommandBlockBehaviors.CommandBlock => {
-			return new CommandBlockBehaviors.LocalVariableWriteBlock (blockXml, wait);
+		instantiate: (blockXml: Element, userProgram: UserProgram, wait: number): CommandBlockBehaviors.CommandBlock => {
+			return new CommandBlockBehaviors.LocalVariableWriteBlock (blockXml, userProgram, wait);
 		},
 		blocklyJson: {
 			"type": "local_variable_write",
@@ -218,8 +218,8 @@ export const commandBlockDefinitions = [
 	// ========== グローバル変数書き込み ==========
 	{
 		type: "global_variable_write",
-		instantiate: (blockXml: Element, wait: number): CommandBlockBehaviors.CommandBlock => {
-			return new CommandBlockBehaviors.GlobalVariableWriteBlock (blockXml, wait);
+		instantiate: (blockXml: Element, userProgram: UserProgram, wait: number): CommandBlockBehaviors.CommandBlock => {
+			return new CommandBlockBehaviors.GlobalVariableWriteBlock (blockXml, userProgram, wait);
 		},
 		blocklyJson: {
 			"type": "global_variable_write",
@@ -251,8 +251,8 @@ export const commandBlockDefinitions = [
 	// ========== 関数定義 ==========
 	{
 		type: "function_definition",
-		instantiate: (blockXml: Element, wait: number): CommandBlockBehaviors.CommandBlock => {
-			return new CommandBlockBehaviors.FunctionDefinitionBlock (blockXml, wait);
+		instantiate: (blockXml: Element, userProgram: UserProgram, wait: number): CommandBlockBehaviors.CommandBlock => {
+			return new CommandBlockBehaviors.FunctionDefinitionBlock (blockXml, userProgram, wait);
 		},
 		blocklyJson: {
 			"type": "function_definition",
@@ -281,8 +281,8 @@ export const commandBlockDefinitions = [
 	// ========== 関数実行 ==========
 	{
 		type: "function_call",
-		instantiate: (blockXml: Element, wait: number): CommandBlockBehaviors.CommandBlock => {
-			return new CommandBlockBehaviors.FunctionCallBlock (blockXml, wait);
+		instantiate: (blockXml: Element, userProgram: UserProgram, wait: number): CommandBlockBehaviors.CommandBlock => {
+			return new CommandBlockBehaviors.FunctionCallBlock (blockXml, userProgram, wait);
 		},
 		blocklyJson: {
 			"type": "function_call",
@@ -306,8 +306,8 @@ export const commandBlockDefinitions = [
 	// ========== スタート関数 ==========
 	{
 		type: "entry_point",
-		instantiate: (blockXml: Element, wait: number): CommandBlockBehaviors.CommandBlock => {
-			return new CommandBlockBehaviors.EntryPointBlock (blockXml, wait);
+		instantiate: (blockXml: Element, userProgram: UserProgram, wait: number): CommandBlockBehaviors.CommandBlock => {
+			return new CommandBlockBehaviors.EntryPointBlock (blockXml, userProgram, wait);
 		},
 		blocklyJson: {
 			"type": "entry_point",
@@ -331,8 +331,8 @@ export const commandBlockDefinitions = [
 	// ========== ストップウォッチ開始 ==========
 	{
 		type: "stopwatch_start",
-		instantiate: (blockXml: Element, wait: number): CommandBlockBehaviors.CommandBlock => {
-			return new CommandBlockBehaviors.StopwatchStartBlock (blockXml, wait);
+		instantiate: (blockXml: Element, userProgram: UserProgram, wait: number): CommandBlockBehaviors.CommandBlock => {
+			return new CommandBlockBehaviors.StopwatchStartBlock (blockXml, userProgram, wait);
 		},
 		blocklyJson: {
 			"type": "stopwatch_start",
@@ -356,8 +356,8 @@ export const commandBlockDefinitions = [
 	// ========== ストップウォッチ停止 ==========
 	{
 		type: "stopwatch_stop",
-		instantiate: (blockXml: Element, wait: number): CommandBlockBehaviors.CommandBlock => {
-			return new CommandBlockBehaviors.StopwatchStopBlock (blockXml, wait);
+		instantiate: (blockXml: Element, userProgram: UserProgram, wait: number): CommandBlockBehaviors.CommandBlock => {
+			return new CommandBlockBehaviors.StopwatchStopBlock (blockXml, userProgram, wait);
 		},
 		blocklyJson: {
 			"type": "stopwatch_stop",
@@ -381,8 +381,8 @@ export const commandBlockDefinitions = [
 	// ========== ストップウォッチリセット ==========
 	{
 		type: "stopwatch_reset",
-		instantiate: (blockXml: Element, wait: number): CommandBlockBehaviors.CommandBlock => {
-			return new CommandBlockBehaviors.StopwatchResetBlock (blockXml, wait);
+		instantiate: (blockXml: Element, userProgram: UserProgram, wait: number): CommandBlockBehaviors.CommandBlock => {
+			return new CommandBlockBehaviors.StopwatchResetBlock (blockXml, userProgram, wait);
 		},
 		blocklyJson: {
 			"type": "stopwatch_reset",
@@ -406,8 +406,8 @@ export const commandBlockDefinitions = [
 	// ========== スレッド作成 ==========
 	{
 		type: "thread_create",
-		instantiate: (blockXml: Element, wait: number): CommandBlockBehaviors.CommandBlock => {
-			return new CommandBlockBehaviors.ThreadCreateBlock (blockXml, wait);
+		instantiate: (blockXml: Element, userProgram: UserProgram, wait: number): CommandBlockBehaviors.CommandBlock => {
+			return new CommandBlockBehaviors.ThreadCreateBlock (blockXml, userProgram, wait);
 		},
 		blocklyJson: {
 			"type": "thread_create",
@@ -436,8 +436,8 @@ export const commandBlockDefinitions = [
 	// ========== スレッド終了待ち ==========
 	{
 		type: "thread_join",
-		instantiate: (blockXml: Element, wait: number): CommandBlockBehaviors.CommandBlock => {
-			return new CommandBlockBehaviors.ThreadJoinBlock (blockXml, wait);
+		instantiate: (blockXml: Element, userProgram: UserProgram, wait: number): CommandBlockBehaviors.CommandBlock => {
+			return new CommandBlockBehaviors.ThreadJoinBlock (blockXml, userProgram, wait);
 		},
 		blocklyJson: {
 			"type": "thread_join",
