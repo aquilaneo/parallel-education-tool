@@ -66,7 +66,8 @@ export class CommandBlock {
 			// 該当するブロック定義を探し、そのクラスをインスタンス化
 			for (const commandBlockDefinition of commandBlockDefinitions) {
 				if (commandBlockDefinition.type === block.getAttribute ("type")) {
-					constructedBlocks.push (commandBlockDefinition.instantiate (block, userProgram, 0.2));
+					const wait = commandBlockDefinition.wait;
+					constructedBlocks.push (commandBlockDefinition.instantiate (block, userProgram, wait));
 					break;
 				}
 			}
@@ -109,6 +110,39 @@ export class SecondsWaitBlock extends CommandBlock {
 		const second = super.getValue ("second");
 		this.second = second ? ValueBlockBehaviors.ValueBlock.constructBlock (second) : null;
 	}
+
+	executeBlock () {
+		if (this.second) {
+			const wait = this.second.executeBlock ();
+			if (typeof (wait) === "number") {
+				this.wait = wait * 1000;
+			} else {
+				this.wait = 0;
+			}
+		}
+	}
+}
+
+export class MilliSecondsWaitBlock extends CommandBlock {
+	millisecond: ValueBlockBehaviors.ValueBlock | null;
+
+	constructor (blockXml: Element, userProgram: UserProgram, wait: number) {
+		super (blockXml, userProgram, wait);
+
+		const second = super.getValue ("millisecond");
+		this.millisecond = second ? ValueBlockBehaviors.ValueBlock.constructBlock (second) : null;
+	}
+
+	executeBlock () {
+		if (this.millisecond) {
+			const wait = this.millisecond.executeBlock ();
+			if (typeof (wait) === "number") {
+				this.wait = wait;
+			} else {
+				this.wait = 0;
+			}
+		}
+	}
 }
 
 export class IfBlock extends CommandBlock {
@@ -123,12 +157,10 @@ export class IfBlock extends CommandBlock {
 		this.statement = statement ? CommandBlock.constructBlock (statement, userProgram) : [];
 	}
 
-	executeBlock () {
+	async executeBlock () {
 		if (this.condition) {
 			if (this.condition.executeBlock ()) {
-				for (const block of this.statement) {
-					block.executeBlock ();
-				}
+				await this.userProgram.executeBlockList (this.statement);
 			}
 		}
 	}
@@ -149,16 +181,12 @@ export class IfElseBlock extends CommandBlock {
 		this.statement2 = statement2 ? CommandBlock.constructBlock (statement2, userProgram) : [];
 	}
 
-	executeBlock () {
+	async executeBlock () {
 		if (this.condition) {
 			if (this.condition.executeBlock ()) {
-				for (const block of this.statement1) {
-					block.executeBlock ();
-				}
+				await this.userProgram.executeBlockList (this.statement1);
 			} else {
-				for (const block of this.statement2) {
-					block.executeBlock ();
-				}
+				await this.userProgram.executeBlockList (this.statement2);
 			}
 		}
 	}
@@ -176,13 +204,11 @@ export class ForBlock extends CommandBlock {
 		this.statement = statement ? CommandBlock.constructBlock (statement, userProgram) : [];
 	}
 
-	executeBlock () {
+	async executeBlock () {
 		if (this.count) {
 			const count = this.count.executeBlock ();
 			for (let i = 0; i < count; i++) {
-				for (const block of this.statement) {
-					block.executeBlock ();
-				}
+				await this.userProgram.executeBlockList (this.statement);
 			}
 		}
 	}
@@ -203,21 +229,17 @@ export class WhileBlock extends CommandBlock {
 		this.statement = statement ? CommandBlock.constructBlock (statement, userProgram) : [];
 	}
 
-	executeBlock () {
+	async executeBlock () {
 		if (this.mode && this.condition) {
 			switch (this.mode) {
 				case "WHILE":
 					while (this.condition.executeBlock ()) {
-						for (const block of this.statement) {
-							block.executeBlock ();
-						}
+						await this.userProgram.executeBlockList (this.statement);
 					}
 					break;
 				case "UNTIL":
 					while (!this.condition.executeBlock ()) {
-						for (const block of this.statement) {
-							block.executeBlock ();
-						}
+						await this.userProgram.executeBlockList (this.statement);
 					}
 					break;
 			}
@@ -270,20 +292,24 @@ export class FunctionDefinitionBlock extends CommandBlock {
 		}
 	}
 
-	executeBlock () {
+	async executeBlock () {
 		if (this.statement) {
-			for (const block of this.statement) {
-				block.executeBlock ();
-			}
+			await this.userProgram.executeBlockList (this.statement);
 		}
 	}
 
 	static constructBlock (blockXml: Element, userProgram: UserProgram) {
-		if (blockXml.getAttribute ("type") === "function_definition") {
-			return [new FunctionDefinitionBlock (blockXml, userProgram, 0.2)];
-		} else {
-			return [];
+		const blockType = "function_definition";
+		if (blockXml.getAttribute ("type") === blockType) {
+			const functionBlockDefinition = commandBlockDefinitions.find ((definition) => {
+				return definition.type === blockType
+			});
+
+			if (functionBlockDefinition) {
+				return [new FunctionDefinitionBlock (blockXml, userProgram, functionBlockDefinition.wait)];
+			}
 		}
+		return [];
 	}
 }
 
@@ -318,20 +344,24 @@ export class EntryPointBlock extends CommandBlock {
 		}
 	}
 
-	executeBlock () {
+	async executeBlock () {
 		if (this.statement) {
-			for (const block of this.statement) {
-				block.executeBlock ();
-			}
+			await this.userProgram.executeBlockList (this.statement);
 		}
 	}
 
 	static constructBlock (blockXml: Element, userProgram: UserProgram) {
-		if (blockXml.getAttribute ("type") === "entry_point") {
-			return [new EntryPointBlock (blockXml, userProgram, 0.2)];
-		} else {
-			return [];
+		const blockType = "entry_point";
+		if (blockXml.getAttribute ("type") === blockType) {
+			const functionBlockDefinition = commandBlockDefinitions.find ((definition) => {
+				return definition.type === blockType
+			});
+
+			if (functionBlockDefinition) {
+				return [new EntryPointBlock (blockXml, userProgram, functionBlockDefinition.wait)];
+			}
 		}
+		return [];
 	}
 }
 

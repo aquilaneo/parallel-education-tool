@@ -52,8 +52,8 @@ export class ValueBlock {
 	static constructBlock (blockXml: Element): ValueBlock | null {
 		const definition = valueBlockDefinitions.find ((valueBlockDefinition) => {
 			return valueBlockDefinition.type === blockXml.getAttribute ("type");
-		})
-		return definition ? definition.instantiate (blockXml, 0.2) : null;
+		});
+		return definition ? definition.instantiate (blockXml, definition.wait) : null;
 	}
 }
 

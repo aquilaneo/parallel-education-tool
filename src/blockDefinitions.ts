@@ -32,22 +32,33 @@ export class UserProgram {
 		console.log ("関数", this.functions);
 	}
 
-	executeEntryFunction () {
+	async executeBlockList (blockList: CommandBlockBehaviors.CommandBlock[]) {
+		for (const block of blockList) {
+			block.executeBlock ();
+			await sleep (block.wait);
+		}
+
+		function sleep(ms: number) {
+			return new Promise(resolve => setTimeout(resolve, ms));
+		}
+	}
+
+	async executeEntryFunction () {
 		if (this.entryFunction) {
-			this.entryFunction.executeBlock ();
+			await this.entryFunction.executeBlock ();
 		} else {
 			console.error ("entryFunctionがnullです！");
 		}
 	}
 
-	executeFunction (functionName: string) {
+	async executeFunction (functionName: string) {
 		if (this.functions) {
 			// 関数名が一致する関数を全て探索し実行
 			const searchedFunctions = this.functions.filter ((func) => {
 				return func.functionName === functionName;
-			})
+			});
 			for (const searchedFunction of searchedFunctions) {
-				searchedFunction.executeBlock ();
+				await searchedFunction.executeBlock ();
 			}
 		} else {
 			console.error ("functionsがnullです！");
@@ -121,14 +132,42 @@ export const commandBlockDefinitions = [
 	// ========== print ==========
 	{
 		type: "text_print",
+		wait: 100,
 		instantiate: (blockXml: Element, userProgram: UserProgram, wait: number): CommandBlockBehaviors.CommandBlock => {
 			return new CommandBlockBehaviors.PrintBlock (blockXml, userProgram, wait);
+		}
+	},
+
+	// ========== ミリ秒待機 ==========
+	{
+		type: "wait_ms",
+		wait: 0,
+		instantiate: (blockXml: Element, userProgram: UserProgram, wait: number): CommandBlockBehaviors.CommandBlock => {
+			return new CommandBlockBehaviors.MilliSecondsWaitBlock (blockXml, userProgram, wait);
+		},
+		blocklyJson: {
+			"type": "wait_ms",
+			"message0": "%1 ミリ秒待機",
+			"args0": [
+				{
+					"type": "input_value",
+					"name": "millisecond",
+					"check": "Number",
+				}
+			],
+			"inputsInline": true,
+			"previousStatement": null,
+			"nextStatement": null,
+			"colour": 230,
+			"tooltip": "指定したミリ秒数だけ処理を停止します。",
+			"helpUrl": ""
 		}
 	},
 
 	// ========== 秒数待機 ==========
 	{
 		type: "wait_s",
+		wait: 0,
 		instantiate: (blockXml: Element, userProgram: UserProgram, wait: number): CommandBlockBehaviors.CommandBlock => {
 			return new CommandBlockBehaviors.SecondsWaitBlock (blockXml, userProgram, wait);
 		},
@@ -154,6 +193,7 @@ export const commandBlockDefinitions = [
 	// ========== if ==========
 	{
 		type: "controls_if",
+		wait: 100,
 		instantiate: (blockXml: Element, userProgram: UserProgram, wait: number): CommandBlockBehaviors.CommandBlock => {
 			return new CommandBlockBehaviors.IfBlock (blockXml, userProgram, wait);
 		}
@@ -162,6 +202,7 @@ export const commandBlockDefinitions = [
 	// ========== if-else ==========
 	{
 		type: "controls_ifelse",
+		wait: 100,
 		instantiate: (blockXml: Element, userProgram: UserProgram, wait: number): CommandBlockBehaviors.CommandBlock => {
 			return new CommandBlockBehaviors.IfElseBlock (blockXml, userProgram, wait);
 		}
@@ -170,6 +211,7 @@ export const commandBlockDefinitions = [
 	// ========== for ==========
 	{
 		type: "controls_repeat_ext",
+		wait: 100,
 		instantiate: (blockXml: Element, userProgram: UserProgram, wait: number): CommandBlockBehaviors.CommandBlock => {
 			return new CommandBlockBehaviors.ForBlock (blockXml, userProgram, wait);
 		}
@@ -178,6 +220,7 @@ export const commandBlockDefinitions = [
 	// ========== while ==========
 	{
 		type: "controls_whileUntil",
+		wait: 100,
 		instantiate: (blockXml: Element, userProgram: UserProgram, wait: number): CommandBlockBehaviors.CommandBlock => {
 			return new CommandBlockBehaviors.WhileBlock (blockXml, userProgram, wait);
 		}
@@ -186,6 +229,7 @@ export const commandBlockDefinitions = [
 	// ========== ローカル変数書き込み ==========
 	{
 		type: "local_variable_write",
+		wait: 100,
 		instantiate: (blockXml: Element, userProgram: UserProgram, wait: number): CommandBlockBehaviors.CommandBlock => {
 			return new CommandBlockBehaviors.LocalVariableWriteBlock (blockXml, userProgram, wait);
 		},
@@ -219,6 +263,7 @@ export const commandBlockDefinitions = [
 	// ========== グローバル変数書き込み ==========
 	{
 		type: "global_variable_write",
+		wait: 100,
 		instantiate: (blockXml: Element, userProgram: UserProgram, wait: number): CommandBlockBehaviors.CommandBlock => {
 			return new CommandBlockBehaviors.GlobalVariableWriteBlock (blockXml, userProgram, wait);
 		},
@@ -252,6 +297,7 @@ export const commandBlockDefinitions = [
 	// ========== 関数定義 ==========
 	{
 		type: "function_definition",
+		wait: 100,
 		instantiate: (blockXml: Element, userProgram: UserProgram, wait: number): CommandBlockBehaviors.CommandBlock => {
 			return new CommandBlockBehaviors.FunctionDefinitionBlock (blockXml, userProgram, wait);
 		},
@@ -282,6 +328,7 @@ export const commandBlockDefinitions = [
 	// ========== 関数実行 ==========
 	{
 		type: "function_call",
+		wait: 100,
 		instantiate: (blockXml: Element, userProgram: UserProgram, wait: number): CommandBlockBehaviors.CommandBlock => {
 			return new CommandBlockBehaviors.FunctionCallBlock (blockXml, userProgram, wait);
 		},
@@ -307,6 +354,7 @@ export const commandBlockDefinitions = [
 	// ========== スタート関数 ==========
 	{
 		type: "entry_point",
+		wait: 100,
 		instantiate: (blockXml: Element, userProgram: UserProgram, wait: number): CommandBlockBehaviors.CommandBlock => {
 			return new CommandBlockBehaviors.EntryPointBlock (blockXml, userProgram, wait);
 		},
@@ -332,6 +380,7 @@ export const commandBlockDefinitions = [
 	// ========== ストップウォッチ開始 ==========
 	{
 		type: "stopwatch_start",
+		wait: 100,
 		instantiate: (blockXml: Element, userProgram: UserProgram, wait: number): CommandBlockBehaviors.CommandBlock => {
 			return new CommandBlockBehaviors.StopwatchStartBlock (blockXml, userProgram, wait);
 		},
@@ -357,6 +406,7 @@ export const commandBlockDefinitions = [
 	// ========== ストップウォッチ停止 ==========
 	{
 		type: "stopwatch_stop",
+		wait: 100,
 		instantiate: (blockXml: Element, userProgram: UserProgram, wait: number): CommandBlockBehaviors.CommandBlock => {
 			return new CommandBlockBehaviors.StopwatchStopBlock (blockXml, userProgram, wait);
 		},
@@ -382,6 +432,7 @@ export const commandBlockDefinitions = [
 	// ========== ストップウォッチリセット ==========
 	{
 		type: "stopwatch_reset",
+		wait: 100,
 		instantiate: (blockXml: Element, userProgram: UserProgram, wait: number): CommandBlockBehaviors.CommandBlock => {
 			return new CommandBlockBehaviors.StopwatchResetBlock (blockXml, userProgram, wait);
 		},
@@ -407,6 +458,7 @@ export const commandBlockDefinitions = [
 	// ========== スレッド作成 ==========
 	{
 		type: "thread_create",
+		wait: 100,
 		instantiate: (blockXml: Element, userProgram: UserProgram, wait: number): CommandBlockBehaviors.CommandBlock => {
 			return new CommandBlockBehaviors.ThreadCreateBlock (blockXml, userProgram, wait);
 		},
@@ -437,6 +489,7 @@ export const commandBlockDefinitions = [
 	// ========== スレッド終了待ち ==========
 	{
 		type: "thread_join",
+		wait: 100,
 		instantiate: (blockXml: Element, userProgram: UserProgram, wait: number): CommandBlockBehaviors.CommandBlock => {
 			return new CommandBlockBehaviors.ThreadJoinBlock (blockXml, userProgram, wait);
 		},
@@ -464,6 +517,7 @@ export const valueBlockDefinitions = [
 	// ========== 比較 ==========
 	{
 		type: "logic_compare",
+		wait: 100,
 		instantiate: (blockXml: Element, wait: number): ValueBlockBehaviors.ValueBlock => {
 			return new ValueBlockBehaviors.CompareBlock (blockXml, wait);
 		}
@@ -472,6 +526,7 @@ export const valueBlockDefinitions = [
 	// ========== 論理演算 ==========
 	{
 		type: "logic_operation",
+		wait: 100,
 		instantiate: (blockXml: Element, wait: number): ValueBlockBehaviors.ValueBlock => {
 			return new ValueBlockBehaviors.LogicOperationBlock (blockXml, wait);
 		}
@@ -480,6 +535,7 @@ export const valueBlockDefinitions = [
 	// ========== 否定 ==========
 	{
 		type: "logic_negate",
+		wait: 100,
 		instantiate: (blockXml: Element, wait: number): ValueBlockBehaviors.ValueBlock => {
 			return new ValueBlockBehaviors.NotBlock (blockXml, wait);
 		}
@@ -488,6 +544,7 @@ export const valueBlockDefinitions = [
 	// ========== 数字 ==========
 	{
 		type: "math_number",
+		wait: 100,
 		instantiate: (blockXml: Element, wait: number): ValueBlockBehaviors.ValueBlock => {
 			return new ValueBlockBehaviors.NumberBlock (blockXml, wait);
 		}
@@ -496,6 +553,7 @@ export const valueBlockDefinitions = [
 	// ========== 四則演算 ==========
 	{
 		type: "math_arithmetic",
+		wait: 100,
 		instantiate: (blockXml: Element, wait: number): ValueBlockBehaviors.ValueBlock => {
 			return new ValueBlockBehaviors.CalculateBlock (blockXml, wait);
 		}
@@ -504,6 +562,7 @@ export const valueBlockDefinitions = [
 	// ========== テキスト ==========
 	{
 		type: "text",
+		wait: 100,
 		instantiate: (blockXml: Element, wait: number): ValueBlockBehaviors.ValueBlock => {
 			return new ValueBlockBehaviors.TextBlock (blockXml, wait);
 		}
@@ -512,6 +571,7 @@ export const valueBlockDefinitions = [
 	// ========== ローカル変数読み込み ==========
 	{
 		type: "local_variable_read",
+		wait: 100,
 		instantiate: (blockXml: Element, wait: number): ValueBlockBehaviors.ValueBlock => {
 			return new ValueBlockBehaviors.LocalVariableReadBlock (blockXml, wait);
 		},
@@ -536,6 +596,7 @@ export const valueBlockDefinitions = [
 	// ========== グローバル変数読み込み ==========
 	{
 		type: "global_variable_read",
+		wait: 100,
 		instantiate: (blockXml: Element, wait: number): ValueBlockBehaviors.ValueBlock => {
 			return new ValueBlockBehaviors.GlobalVariableReadBlock (blockXml, wait);
 		},
@@ -560,6 +621,7 @@ export const valueBlockDefinitions = [
 	// ========== ストップウォッチ読み取り ==========
 	{
 		type: "stopwatch_read",
+		wait: 100,
 		instantiate: (blockXml: Element, wait: number): ValueBlockBehaviors.ValueBlock => {
 			return new ValueBlockBehaviors.StopwatchReadBlock (blockXml, wait);
 		},

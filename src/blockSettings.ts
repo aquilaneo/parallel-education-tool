@@ -35,6 +35,14 @@ export const getBlockListXml = () => {
 				</value>
 			</block>
 			
+			<block type="wait_ms">
+				<value name="millisecond">
+					<shadow type="math_number">
+						<field name="NUM">1000</field>
+					</shadow>
+				</value>
+			</block>
+			
 			<block type="wait_s">
 				<value name="second">
 					<shadow type="math_number">

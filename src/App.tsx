@@ -142,9 +142,9 @@ class Editor extends React.Component {
 		}
 	}
 
-	executeEntryFunction () {
+	async executeEntryFunction () {
 		const parsedBlocks = this.parseBlocks ();
-		parsedBlocks?.executeEntryFunction ();
+		await parsedBlocks?.executeEntryFunction ();
 	}
 
 	render () {
