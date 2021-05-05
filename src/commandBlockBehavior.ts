@@ -296,6 +296,12 @@ export class FunctionCallBlock extends CommandBlock {
 		const name = super.getField ("name");
 		this.name = name ? name : null;
 	}
+
+	executeBlock () {
+		if (this.name) {
+			this.userProgram.executeFunction (this.name);
+		}
+	}
 }
 
 export class EntryPointBlock extends CommandBlock {

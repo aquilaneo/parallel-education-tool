@@ -50,7 +50,7 @@ export class UserProgram {
 				searchedFunction.executeBlock ();
 			}
 		} else {
-			console.error ("functionsがnullです！")
+			console.error ("functionsがnullです！");
 		}
 	}
 
