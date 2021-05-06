@@ -1,4 +1,4 @@
-import {commandBlockDefinitions, UserProgram} from "./blockDefinitions";
+import {commandBlockDefinitions, UserProgram, NumberVariable} from "./blockDefinitions";
 import * as ValueBlockBehaviors from "./valueBlockBehaviors";
 
 export class CommandBlock {
@@ -21,7 +21,6 @@ export class CommandBlock {
 
 		this.userProgram = userProgram;
 		this.functionName = functionName;
-
 		this.wait = wait;
 	}
 
@@ -95,7 +94,7 @@ export class PrintBlock extends CommandBlock {
 		super (blockXml, userProgram, functionName, wait);
 
 		const text = super.getValue ("TEXT");
-		this.text = text ? ValueBlockBehaviors.ValueBlock.constructBlock (text, functionName) : null;
+		this.text = text ? ValueBlockBehaviors.ValueBlock.constructBlock (text, userProgram, functionName) : null;
 	}
 
 	executeBlock () {
@@ -110,7 +109,7 @@ export class SecondsWaitBlock extends CommandBlock {
 		super (blockXml, userProgram, functionName, wait);
 
 		const second = super.getValue ("second");
-		this.second = second ? ValueBlockBehaviors.ValueBlock.constructBlock (second, functionName) : null;
+		this.second = second ? ValueBlockBehaviors.ValueBlock.constructBlock (second, userProgram, functionName) : null;
 	}
 
 	executeBlock () {
@@ -132,7 +131,7 @@ export class MilliSecondsWaitBlock extends CommandBlock {
 		super (blockXml, userProgram, functionName, wait);
 
 		const second = super.getValue ("millisecond");
-		this.millisecond = second ? ValueBlockBehaviors.ValueBlock.constructBlock (second, functionName) : null;
+		this.millisecond = second ? ValueBlockBehaviors.ValueBlock.constructBlock (second, userProgram, functionName) : null;
 	}
 
 	executeBlock () {
@@ -154,7 +153,7 @@ export class IfBlock extends CommandBlock {
 	constructor (blockXml: Element, userProgram: UserProgram, functionName: string, wait: number) {
 		super (blockXml, userProgram, functionName, wait);
 		const condition = super.getValue ("IF0");
-		this.condition = condition ? ValueBlockBehaviors.ValueBlock.constructBlock (condition, functionName) : null;
+		this.condition = condition ? ValueBlockBehaviors.ValueBlock.constructBlock (condition, userProgram, functionName) : null;
 		const statement = super.getStatement ("DO0");
 		this.statement = statement ? CommandBlock.constructBlock (statement, userProgram, functionName) : [];
 	}
@@ -176,7 +175,7 @@ export class IfElseBlock extends CommandBlock {
 	constructor (blockXml: Element, userProgram: UserProgram, functionName: string, wait: number) {
 		super (blockXml, userProgram, functionName, wait);
 		const condition = super.getValue ("IF0");
-		this.condition = condition ? ValueBlockBehaviors.ValueBlock.constructBlock (condition, functionName) : null;
+		this.condition = condition ? ValueBlockBehaviors.ValueBlock.constructBlock (condition, userProgram, functionName) : null;
 		const statement1 = super.getStatement ("DO0");
 		this.statement1 = statement1 ? CommandBlock.constructBlock (statement1, userProgram, functionName) : [];
 		const statement2 = super.getStatement ("ELSE");
@@ -201,7 +200,7 @@ export class ForBlock extends CommandBlock {
 	constructor (blockXml: Element, userProgram: UserProgram, functionName: string, wait: number) {
 		super (blockXml, userProgram, functionName, wait);
 		const count = super.getValue ("TIMES");
-		this.count = count ? ValueBlockBehaviors.ValueBlock.constructBlock (count, functionName) : null;
+		this.count = count ? ValueBlockBehaviors.ValueBlock.constructBlock (count, userProgram, functionName) : null;
 		const statement = super.getStatement ("DO");
 		this.statement = statement ? CommandBlock.constructBlock (statement, userProgram, functionName) : [];
 	}
@@ -226,7 +225,7 @@ export class WhileBlock extends CommandBlock {
 		const mode = super.getField ("MODE");
 		this.mode = mode ? mode : null;
 		const condition = super.getValue ("BOOL");
-		this.condition = condition ? ValueBlockBehaviors.ValueBlock.constructBlock (condition, functionName) : null;
+		this.condition = condition ? ValueBlockBehaviors.ValueBlock.constructBlock (condition, userProgram, functionName) : null;
 		const statement = super.getStatement ("DO");
 		this.statement = statement ? CommandBlock.constructBlock (statement, userProgram, functionName) : [];
 	}
@@ -259,7 +258,16 @@ export class LocalVariableWriteBlock extends CommandBlock {
 		const name = super.getField ("name");
 		this.name = name ? name : null;
 		const value = super.getValue ("value");
-		this.value = value ? ValueBlockBehaviors.ValueBlock.constructBlock (value, functionName) : null;
+		this.value = value ? ValueBlockBehaviors.ValueBlock.constructBlock (value, userProgram, functionName) : null;
+	}
+
+	executeBlock () {
+		if (this.name && this.value) {
+			const value = this.value.executeBlock ();
+			if (typeof (value) === "number") {
+				this.userProgram.writeLocalVariable (this.functionName, this.name, value);
+			}
+		}
 	}
 }
 
@@ -273,12 +281,22 @@ export class GlobalVariableWriteBlock extends CommandBlock {
 		const name = super.getField ("name");
 		this.name = name ? name : null;
 		const value = super.getValue ("value");
-		this.value = value ? ValueBlockBehaviors.ValueBlock.constructBlock (value, functionName) : null;
+		this.value = value ? ValueBlockBehaviors.ValueBlock.constructBlock (value, userProgram, functionName) : null;
+	}
+
+	executeBlock () {
+		if (this.name && this.value) {
+			const value = this.value.executeBlock ();
+			if (typeof (value) === "number") {
+				this.userProgram.writeGlobalVariable (this.name, value);
+			}
+		}
 	}
 }
 
 export class FunctionDefinitionBlock extends CommandBlock {
 	statement: CommandBlock[];
+	localVariables: NumberVariable[] = [];
 
 	constructor (blockXml: Element, userProgram: UserProgram, wait: number) {
 		super (blockXml, userProgram, "", wait);
@@ -297,6 +315,38 @@ export class FunctionDefinitionBlock extends CommandBlock {
 		if (this.statement) {
 			await this.userProgram.executeBlockList (this.statement);
 		}
+	}
+
+	readLocalVariable (variableName: string) {
+		const searchedVariables = this.localVariables.filter ((localVariable) => {
+			return localVariable.variableName === variableName;
+		});
+		if (searchedVariables.length === 1) {
+			return searchedVariables[0].readValue ();
+		} else if (searchedVariables.length === 0) {
+			console.error ("ローカル変数が見つかりません！");
+			return 0;
+		} else {
+			console.error ("同名のローカル変数が複数あります！");
+			return 0;
+		}
+	}
+
+	writeLocalVariable (variableName: string, value: number) {
+		const searchedVariables = this.localVariables.filter ((localVariable) => {
+			return localVariable.variableName === variableName;
+		});
+		if (searchedVariables.length === 1) {
+			searchedVariables[0].writeValue (value);
+		} else if (searchedVariables.length === 0) {
+			this.addLocalVariable (variableName, value);
+		} else {
+			console.error ("同名のローカル変数が複数あります！");
+		}
+	}
+
+	addLocalVariable (variableName: string, initValue: number) {
+		this.localVariables.push (new NumberVariable (variableName, initValue));
 	}
 
 	static constructBlock (blockXml: Element, userProgram: UserProgram) {
@@ -333,23 +383,57 @@ export class FunctionCallBlock extends CommandBlock {
 
 export class EntryPointBlock extends CommandBlock {
 	statement: CommandBlock[];
+	localVariables: NumberVariable[] = [];
 
 	constructor (blockXml: Element, userProgram: UserProgram, wait: number) {
-		const functionName = "スタート";
-		super (blockXml, userProgram, functionName, wait);
+		super (blockXml, userProgram, "スタート", wait);
 
 		const statement = blockXml.getElementsByTagName ("statement");
 		if (statement.length > 0 && statement[0].getAttribute ("name") === "routine") {
-			this.statement = CommandBlock.constructBlock (statement[0].getElementsByTagName ("block")[0], userProgram, functionName);
+			this.statement = CommandBlock.constructBlock (statement[0].getElementsByTagName ("block")[0], userProgram, "スタート");
 		} else {
 			this.statement = [];
 		}
+
+		this.localVariables = [];
 	}
 
 	async executeBlock () {
 		if (this.statement) {
 			await this.userProgram.executeBlockList (this.statement);
 		}
+	}
+
+	readLocalVariable (variableName: string) {
+		const searchedVariables = this.localVariables.filter ((localVariable) => {
+			return localVariable.variableName === variableName;
+		});
+		if (searchedVariables.length === 1) {
+			return searchedVariables[0].readValue ();
+		} else if (searchedVariables.length === 0) {
+			console.error ("ローカル変数が見つかりません！");
+			return 0;
+		} else {
+			console.error ("同名のローカル変数が複数あります！");
+			return 0;
+		}
+	}
+
+	writeLocalVariable (variableName: string, value: number) {
+		const searchedVariables = this.localVariables.filter ((localVariable) => {
+			return localVariable.variableName === variableName;
+		});
+		if (searchedVariables.length === 1) {
+			searchedVariables[0].writeValue (value);
+		} else if (searchedVariables.length === 0) {
+			this.addLocalVariable (variableName, value);
+		} else {
+			console.error ("同名のローカル変数が複数あります！");
+		}
+	}
+
+	addLocalVariable (variableName: string, initValue: number) {
+		this.localVariables.push (new NumberVariable (variableName, initValue));
 	}
 
 	static constructBlock (blockXml: Element, userProgram: UserProgram) {
@@ -374,7 +458,7 @@ export class StopwatchStartBlock extends CommandBlock {
 		super (blockXml, userProgram, functionName, wait);
 
 		const swNumber = super.getValue ("number");
-		this.swNumber = swNumber ? ValueBlockBehaviors.ValueBlock.constructBlock (swNumber, functionName) : null;
+		this.swNumber = swNumber ? ValueBlockBehaviors.ValueBlock.constructBlock (swNumber, userProgram, functionName) : null;
 	}
 
 	executeBlock () {
@@ -394,7 +478,7 @@ export class StopwatchStopBlock extends CommandBlock {
 		super (blockXml, userProgram, functionName, wait);
 
 		const swNumber = super.getValue ("number");
-		this.swNumber = swNumber ? ValueBlockBehaviors.ValueBlock.constructBlock (swNumber, functionName) : null;
+		this.swNumber = swNumber ? ValueBlockBehaviors.ValueBlock.constructBlock (swNumber, userProgram, functionName) : null;
 	}
 
 	executeBlock () {
@@ -414,7 +498,7 @@ export class StopwatchResetBlock extends CommandBlock {
 		super (blockXml, userProgram, functionName, wait);
 
 		const swNumber = super.getValue ("number");
-		this.swNumber = swNumber ? ValueBlockBehaviors.ValueBlock.constructBlock (swNumber, functionName) : null;
+		this.swNumber = swNumber ? ValueBlockBehaviors.ValueBlock.constructBlock (swNumber, userProgram, functionName) : null;
 	}
 
 	executeBlock () {
@@ -435,9 +519,9 @@ export class ThreadCreateBlock extends CommandBlock {
 		super (blockXml, userProgram, functionName, wait);
 
 		const threadName = super.getValue ("thread_name");
-		this.threadName = threadName ? ValueBlockBehaviors.ValueBlock.constructBlock (threadName, functionName) : null;
+		this.threadName = threadName ? ValueBlockBehaviors.ValueBlock.constructBlock (threadName, userProgram, functionName) : null;
 		const threadFunctionName = super.getValue ("thread_function_name");
-		this.threadFunctionName = threadFunctionName ? ValueBlockBehaviors.ValueBlock.constructBlock (threadFunctionName, functionName) : null;
+		this.threadFunctionName = threadFunctionName ? ValueBlockBehaviors.ValueBlock.constructBlock (threadFunctionName, userProgram, functionName) : null;
 	}
 }
 
@@ -448,6 +532,6 @@ export class ThreadJoinBlock extends CommandBlock {
 		super (blockXml, userProgram, functionName, wait);
 
 		const threadName = super.getValue ("thread_name");
-		this.threadName = threadName ? ValueBlockBehaviors.ValueBlock.constructBlock (threadName, functionName) : null;
+		this.threadName = threadName ? ValueBlockBehaviors.ValueBlock.constructBlock (threadName, userProgram, functionName) : null;
 	}
 }

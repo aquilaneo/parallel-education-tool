@@ -1,13 +1,14 @@
-import {valueBlockDefinitions} from "./blockDefinitions";
+import {valueBlockDefinitions, UserProgram} from "./blockDefinitions";
 
 export class ValueBlock {
 	blockType: string;
 	id: string;
 	blockXml: Element;
+	userProgram: UserProgram;
 	functionName: string;
 	wait: number;
 
-	constructor (blockXml: Element, functionName: string, wait: number) {
+	constructor (blockXml: Element, userProgram: UserProgram, functionName: string, wait: number) {
 		// ブロックのxmlからブロックタイプを取得
 		const blockType = blockXml.getAttribute ("type");
 		this.blockType = blockType ? blockType : "";
@@ -17,6 +18,7 @@ export class ValueBlock {
 		// ブロックのxmlを取得
 		this.blockXml = blockXml;
 
+		this.userProgram = userProgram;
 		this.functionName = functionName;
 		this.wait = wait;
 	}
@@ -51,11 +53,11 @@ export class ValueBlock {
 	}
 
 	// 与えられた値ブロックをオブジェクトに変換
-	static constructBlock (blockXml: Element, functionName: string): ValueBlock | null {
+	static constructBlock (blockXml: Element, userProgram: UserProgram, functionName: string): ValueBlock | null {
 		const definition = valueBlockDefinitions.find ((valueBlockDefinition) => {
 			return valueBlockDefinition.type === blockXml.getAttribute ("type");
 		});
-		return definition ? definition.instantiate (blockXml, functionName, definition.wait) : null;
+		return definition ? definition.instantiate (blockXml, userProgram, functionName, definition.wait) : null;
 	}
 }
 
@@ -64,12 +66,12 @@ export class CompareBlock extends ValueBlock {
 	operand2: ValueBlock | null;
 	operator: string;
 
-	constructor (blockXml: Element, functionName: string, wait: number) {
-		super (blockXml, functionName, wait);
+	constructor (blockXml: Element, userProgram: UserProgram, functionName: string, wait: number) {
+		super (blockXml, userProgram, functionName, wait);
 		const operand1 = super.getValue ("A");
-		this.operand1 = operand1 ? ValueBlock.constructBlock (operand1, functionName) : null;
+		this.operand1 = operand1 ? ValueBlock.constructBlock (operand1, userProgram, functionName) : null;
 		const operand2 = super.getValue ("B");
-		this.operand2 = operand2 ? ValueBlock.constructBlock (operand2, functionName) : null;
+		this.operand2 = operand2 ? ValueBlock.constructBlock (operand2, userProgram, functionName) : null;
 		const operator = super.getField ("OP");
 		this.operator = operator ? operator : "";
 	}
@@ -100,12 +102,12 @@ export class LogicOperationBlock extends ValueBlock {
 	operand2: ValueBlock | null;
 	operator: string;
 
-	constructor (blockXml: Element, functionName: string, wait: number) {
-		super (blockXml, functionName, wait);
+	constructor (blockXml: Element, userProgram: UserProgram, functionName: string, wait: number) {
+		super (blockXml, userProgram, functionName, wait);
 		const operand1 = super.getValue ("A");
-		this.operand1 = operand1 ? ValueBlock.constructBlock (operand1, functionName) : null;
+		this.operand1 = operand1 ? ValueBlock.constructBlock (operand1, userProgram, functionName) : null;
 		const operand2 = super.getValue ("B");
-		this.operand2 = operand2 ? ValueBlock.constructBlock (operand2, functionName) : null;
+		this.operand2 = operand2 ? ValueBlock.constructBlock (operand2, userProgram, functionName) : null;
 		const operator = super.getField ("OP");
 		this.operator = operator ? operator : "";
 	}
@@ -126,10 +128,10 @@ export class LogicOperationBlock extends ValueBlock {
 export class NotBlock extends ValueBlock {
 	value: ValueBlock | null;
 
-	constructor (blockXml: Element, functionName: string, wait: number) {
-		super (blockXml, functionName, wait);
+	constructor (blockXml: Element, userProgram: UserProgram, functionName: string, wait: number) {
+		super (blockXml, userProgram, functionName, wait);
 		const value = super.getValue ("BOOL");
-		this.value = value ? ValueBlock.constructBlock (value, functionName) : null;
+		this.value = value ? ValueBlock.constructBlock (value, userProgram, functionName) : null;
 	}
 
 	executeBlock () {
@@ -144,8 +146,8 @@ export class NotBlock extends ValueBlock {
 export class NumberBlock extends ValueBlock {
 	num: number;
 
-	constructor (blockXml: Element, functionName: string, wait: number) {
-		super (blockXml, functionName, wait);
+	constructor (blockXml: Element, userProgram: UserProgram, functionName: string, wait: number) {
+		super (blockXml, userProgram, functionName, wait);
 		const num = super.getField ("NUM");
 		this.num = num ? Number (num) : 0;
 	}
@@ -160,12 +162,12 @@ export class CalculateBlock extends ValueBlock {
 	operand2: ValueBlock | null;
 	operator: string;
 
-	constructor (blockXml: Element, functionName: string, wait: number) {
-		super (blockXml, functionName, wait);
+	constructor (blockXml: Element, userProgram: UserProgram, functionName: string, wait: number) {
+		super (blockXml, userProgram, functionName, wait);
 		const operand1 = super.getValue ("A");
-		this.operand1 = operand1 ? ValueBlock.constructBlock (operand1, functionName) : null;
+		this.operand1 = operand1 ? ValueBlock.constructBlock (operand1, userProgram, functionName) : null;
 		const operand2 = super.getValue ("B");
-		this.operand2 = operand2 ? ValueBlock.constructBlock (operand2, functionName) : null;
+		this.operand2 = operand2 ? ValueBlock.constructBlock (operand2, userProgram, functionName) : null;
 		const operator = super.getField ("OP");
 		this.operator = operator ? operator : "";
 	}
@@ -196,8 +198,8 @@ export class CalculateBlock extends ValueBlock {
 export class TextBlock extends ValueBlock {
 	text: string;
 
-	constructor (blockXml: Element, functionName: string, wait: number) {
-		super (blockXml, functionName, wait);
+	constructor (blockXml: Element, userProgram: UserProgram, functionName: string, wait: number) {
+		super (blockXml, userProgram, functionName, wait);
 		const text = super.getField ("TEXT");
 		this.text = text != null ? text : "";
 	}
@@ -210,29 +212,45 @@ export class TextBlock extends ValueBlock {
 export class LocalVariableReadBlock extends ValueBlock {
 	name: string | null;
 
-	constructor (blockXml: Element, functionName: string, wait: number) {
-		super (blockXml, functionName, wait);
+	constructor (blockXml: Element, userProgram: UserProgram, functionName: string, wait: number) {
+		super (blockXml, userProgram, functionName, wait);
 		const name = super.getField ("name");
 		this.name = name ? name : null;
+	}
+
+	executeBlock () {
+		if (this.name) {
+			return this.userProgram.readLocalVariable (this.functionName, this.name);
+		} else {
+			return 0;
+		}
 	}
 }
 
 export class GlobalVariableReadBlock extends ValueBlock {
 	name: string | null;
 
-	constructor (blockXml: Element, functionName: string, wait: number) {
-		super (blockXml, functionName, wait);
+	constructor (blockXml: Element, userProgram: UserProgram, functionName: string, wait: number) {
+		super (blockXml, userProgram, functionName, wait);
 		const name = super.getField ("name");
 		this.name = name ? name : null;
+	}
+
+	executeBlock () {
+		if (this.name) {
+			return this.userProgram.readGlobalVariable (this.name);
+		} else {
+			return 0;
+		}
 	}
 }
 
 export class StopwatchReadBlock extends ValueBlock {
 	swNumber: ValueBlock | null;
 
-	constructor (blockXml: Element, functionName: string, wait: number) {
-		super (blockXml, functionName, wait);
+	constructor (blockXml: Element, userProgram: UserProgram, functionName: string, wait: number) {
+		super (blockXml, userProgram, functionName, wait);
 		const threadNumber = super.getValue ("number");
-		this.swNumber = threadNumber ? ValueBlock.constructBlock (threadNumber, functionName) : null;
+		this.swNumber = threadNumber ? ValueBlock.constructBlock (threadNumber, userProgram, functionName) : null;
 	}
 }

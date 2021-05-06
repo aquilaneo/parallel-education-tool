@@ -6,6 +6,7 @@ import * as ValueBlockBehaviors from "./valueBlockBehaviors";
 export class UserProgram {
 	entryFunction: CommandBlockBehaviors.EntryPointBlock | null = null; // エントリポイント
 	functions: CommandBlockBehaviors.FunctionDefinitionBlock[] = []; // 関数一覧
+	globalVariables: NumberVariable[] = [];
 	stopwatches: { key: number, sw: Stopwatch } [] = []; // ストップウォッチ一覧
 
 	constructor (xml: Element) {
@@ -57,8 +58,96 @@ export class UserProgram {
 			const searchedFunctions = this.functions.filter ((func) => {
 				return func.functionName === functionName;
 			});
-			for (const searchedFunction of searchedFunctions) {
-				await searchedFunction.executeBlock ();
+			if (searchedFunctions.length === 1) {
+				await searchedFunctions[0].executeBlock ();
+			} else if (searchedFunctions.length === 0) {
+				console.error ("関数が見つかりません！");
+			} else {
+				console.error ("同名の関数が複数あります！");
+			}
+		} else {
+			console.error ("functionsがnullです！");
+		}
+	}
+
+	readGlobalVariable (variableName: string) {
+		const searchedVariables = this.globalVariables.filter ((globalVariable) => {
+			return globalVariable.variableName === variableName;
+		});
+		if (searchedVariables.length === 1) {
+			return searchedVariables[0].readValue ();
+		} else if (searchedVariables.length === 0) {
+			console.error ("グローバル変数が見つかりません！");
+			return 0;
+		} else {
+			console.error ("同名のグローバル変数が複数あります！");
+			return 0;
+		}
+	}
+
+	writeGlobalVariable (variableName: string, value: number) {
+		const searchedVariables = this.globalVariables.filter ((globalVariable) => {
+			return globalVariable.variableName === variableName;
+		});
+		if (searchedVariables.length === 1) {
+			searchedVariables[0].writeValue (value);
+		} else if (searchedVariables.length === 0) {
+			this.addGlobalVariable (variableName, value);
+		} else {
+			console.error ("同名のグローバル変数が複数あります！");
+		}
+	}
+
+	addGlobalVariable (variableName: string, initValue: number) {
+		this.globalVariables.push (new NumberVariable (variableName, initValue));
+	}
+
+	readLocalVariable (functionName: string, variableName: string) {
+		if (this.functions) {
+			// まずはエントリポイントの関数を調べる
+			if (functionName === "スタート") {
+				if (this.entryFunction) {
+					return this.entryFunction.readLocalVariable (variableName);
+				}
+			}
+
+			// 関数名が一致する関数を全て探索し実行
+			const searchedFunctions = this.functions.filter ((func) => {
+				return func.functionName === functionName;
+			});
+			if (searchedFunctions.length === 1) {
+				return searchedFunctions[0].readLocalVariable (variableName);
+			} else if (searchedFunctions.length === 0) {
+				console.error ("関数が見つかりません！");
+			} else {
+				console.error ("同名の関数が複数あります！");
+			}
+		} else {
+			console.error ("functionsがnullです！");
+		}
+		return 0;
+	}
+
+	writeLocalVariable (functionName: string, variableName: string, value: number) {
+		if (this.functions) {
+			// まずはエントリポイントの関数を調べる
+			if (functionName === "スタート") {
+				if (this.entryFunction) {
+					this.entryFunction.writeLocalVariable (variableName, value);
+					return;
+				}
+			}
+
+			// 関数名が一致する関数を全て探索し実行
+			const searchedFunctions = this.functions.filter ((func) => {
+				return func.functionName === functionName;
+			});
+			if (searchedFunctions.length === 1) {
+				searchedFunctions[0].writeLocalVariable (variableName, value);
+			} else if (searchedFunctions.length === 0) {
+				console.error ("関数が見つかりません！");
+			} else {
+				console.error ("同名の関数が複数あります！");
 			}
 		} else {
 			console.error ("functionsがnullです！");
@@ -89,6 +178,24 @@ export class UserProgram {
 			this.addStopwatch (swNumber);
 			return this.getStopwatch (swNumber);
 		}
+	}
+}
+
+export class NumberVariable {
+	variableName: string;
+	value: number;
+
+	constructor (variableName: string, initValue: number) {
+		this.variableName = variableName;
+		this.value = initValue;
+	}
+
+	readValue () {
+		return this.value;
+	}
+
+	writeValue (value: number) {
+		this.value = value;
 	}
 }
 
@@ -518,8 +625,8 @@ export const valueBlockDefinitions = [
 	{
 		type: "logic_compare",
 		wait: 100,
-		instantiate: (blockXml: Element, functionName: string, wait: number): ValueBlockBehaviors.ValueBlock => {
-			return new ValueBlockBehaviors.CompareBlock (blockXml, functionName, wait);
+		instantiate: (blockXml: Element, userProgram: UserProgram, functionName: string, wait: number): ValueBlockBehaviors.ValueBlock => {
+			return new ValueBlockBehaviors.CompareBlock (blockXml, userProgram, functionName, wait);
 		}
 	},
 
@@ -527,8 +634,8 @@ export const valueBlockDefinitions = [
 	{
 		type: "logic_operation",
 		wait: 100,
-		instantiate: (blockXml: Element, functionName: string, wait: number): ValueBlockBehaviors.ValueBlock => {
-			return new ValueBlockBehaviors.LogicOperationBlock (blockXml, functionName, wait);
+		instantiate: (blockXml: Element, userProgram: UserProgram, functionName: string, wait: number): ValueBlockBehaviors.ValueBlock => {
+			return new ValueBlockBehaviors.LogicOperationBlock (blockXml, userProgram, functionName, wait);
 		}
 	},
 
@@ -536,8 +643,8 @@ export const valueBlockDefinitions = [
 	{
 		type: "logic_negate",
 		wait: 100,
-		instantiate: (blockXml: Element, functionName: string, wait: number): ValueBlockBehaviors.ValueBlock => {
-			return new ValueBlockBehaviors.NotBlock (blockXml, functionName, wait);
+		instantiate: (blockXml: Element, userProgram: UserProgram, functionName: string, wait: number): ValueBlockBehaviors.ValueBlock => {
+			return new ValueBlockBehaviors.NotBlock (blockXml, userProgram, functionName, wait);
 		}
 	},
 
@@ -545,8 +652,8 @@ export const valueBlockDefinitions = [
 	{
 		type: "math_number",
 		wait: 100,
-		instantiate: (blockXml: Element, functionName: string, wait: number): ValueBlockBehaviors.ValueBlock => {
-			return new ValueBlockBehaviors.NumberBlock (blockXml, functionName, wait);
+		instantiate: (blockXml: Element, userProgram: UserProgram, functionName: string, wait: number): ValueBlockBehaviors.ValueBlock => {
+			return new ValueBlockBehaviors.NumberBlock (blockXml, userProgram, functionName, wait);
 		}
 	},
 
@@ -554,8 +661,8 @@ export const valueBlockDefinitions = [
 	{
 		type: "math_arithmetic",
 		wait: 100,
-		instantiate: (blockXml: Element, functionName: string, wait: number): ValueBlockBehaviors.ValueBlock => {
-			return new ValueBlockBehaviors.CalculateBlock (blockXml, functionName, wait);
+		instantiate: (blockXml: Element, userProgram: UserProgram, functionName: string, wait: number): ValueBlockBehaviors.ValueBlock => {
+			return new ValueBlockBehaviors.CalculateBlock (blockXml, userProgram, functionName, wait);
 		}
 	},
 
@@ -563,8 +670,8 @@ export const valueBlockDefinitions = [
 	{
 		type: "text",
 		wait: 100,
-		instantiate: (blockXml: Element, functionName: string, wait: number): ValueBlockBehaviors.ValueBlock => {
-			return new ValueBlockBehaviors.TextBlock (blockXml, functionName, wait);
+		instantiate: (blockXml: Element, userProgram: UserProgram, functionName: string, wait: number): ValueBlockBehaviors.ValueBlock => {
+			return new ValueBlockBehaviors.TextBlock (blockXml, userProgram, functionName, wait);
 		}
 	},
 
@@ -572,8 +679,8 @@ export const valueBlockDefinitions = [
 	{
 		type: "local_variable_read",
 		wait: 100,
-		instantiate: (blockXml: Element, functionName: string, wait: number): ValueBlockBehaviors.ValueBlock => {
-			return new ValueBlockBehaviors.LocalVariableReadBlock (blockXml, functionName, wait);
+		instantiate: (blockXml: Element, userProgram: UserProgram, functionName: string, wait: number): ValueBlockBehaviors.ValueBlock => {
+			return new ValueBlockBehaviors.LocalVariableReadBlock (blockXml, userProgram, functionName, wait);
 		},
 		blocklyJson: {
 			"type": "local_variable_read",
@@ -597,8 +704,8 @@ export const valueBlockDefinitions = [
 	{
 		type: "global_variable_read",
 		wait: 100,
-		instantiate: (blockXml: Element, functionName: string, wait: number): ValueBlockBehaviors.ValueBlock => {
-			return new ValueBlockBehaviors.GlobalVariableReadBlock (blockXml, functionName, wait);
+		instantiate: (blockXml: Element, userProgram: UserProgram, functionName: string, wait: number): ValueBlockBehaviors.ValueBlock => {
+			return new ValueBlockBehaviors.GlobalVariableReadBlock (blockXml, userProgram, functionName, wait);
 		},
 		blocklyJson: {
 			"type": "global_variable_read",
@@ -622,8 +729,8 @@ export const valueBlockDefinitions = [
 	{
 		type: "stopwatch_read",
 		wait: 100,
-		instantiate: (blockXml: Element, functionName: string, wait: number): ValueBlockBehaviors.ValueBlock => {
-			return new ValueBlockBehaviors.StopwatchReadBlock (blockXml, functionName, wait);
+		instantiate: (blockXml: Element, userProgram: UserProgram, functionName: string, wait: number): ValueBlockBehaviors.ValueBlock => {
+			return new ValueBlockBehaviors.StopwatchReadBlock (blockXml, userProgram, functionName, wait);
 		},
 		blocklyJson: {
 			"type": "stopwatch_read",
