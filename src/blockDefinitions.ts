@@ -2,6 +2,7 @@
 
 import * as CommandBlockBehaviors from "./commandBlockBehavior";
 import * as ValueBlockBehaviors from "./valueBlockBehaviors";
+import {assertIsDefined} from "./common";
 
 export class UserProgram {
 	entryFunction: CommandBlockBehaviors.EntryPointBlock | null = null; // エントリポイント
@@ -45,28 +46,22 @@ export class UserProgram {
 	}
 
 	async executeEntryFunction () {
-		if (this.entryFunction) {
-			await this.entryFunction.executeBlock ();
-		} else {
-			console.error ("entryFunctionがnullです！");
-		}
+		assertIsDefined (this.entryFunction);
+
+		await this.entryFunction.executeBlock ();
 	}
 
 	async executeFunction (functionName: string) {
-		if (this.functions) {
-			// 関数名が一致する関数を全て探索し実行
-			const searchedFunctions = this.functions.filter ((func) => {
-				return func.functionName === functionName;
-			});
-			if (searchedFunctions.length === 1) {
-				await searchedFunctions[0].executeBlock ();
-			} else if (searchedFunctions.length === 0) {
-				console.error ("関数が見つかりません！");
-			} else {
-				console.error ("同名の関数が複数あります！");
-			}
+		// 関数名が一致する関数を全て探索し実行
+		const searchedFunctions = this.functions.filter ((func) => {
+			return func.functionName === functionName;
+		});
+		if (searchedFunctions.length === 1) {
+			await searchedFunctions[0].executeBlock ();
+		} else if (searchedFunctions.length === 0) {
+			console.error ("関数が見つかりません！");
 		} else {
-			console.error ("functionsがnullです！");
+			console.error ("同名の関数が複数あります！");
 		}
 	}
 
@@ -103,54 +98,46 @@ export class UserProgram {
 	}
 
 	readLocalVariable (functionName: string, variableName: string) {
-		if (this.functions) {
-			// まずはエントリポイントの関数を調べる
-			if (functionName === "スタート") {
-				if (this.entryFunction) {
-					return this.entryFunction.readLocalVariable (variableName);
-				}
+		// まずはエントリポイントの関数を調べる
+		if (functionName === "スタート") {
+			if (this.entryFunction) {
+				return this.entryFunction.readLocalVariable (variableName);
 			}
+		}
 
-			// 関数名が一致する関数を全て探索し実行
-			const searchedFunctions = this.functions.filter ((func) => {
-				return func.functionName === functionName;
-			});
-			if (searchedFunctions.length === 1) {
-				return searchedFunctions[0].readLocalVariable (variableName);
-			} else if (searchedFunctions.length === 0) {
-				console.error ("関数が見つかりません！");
-			} else {
-				console.error ("同名の関数が複数あります！");
-			}
+		// 関数名が一致する関数を全て探索し実行
+		const searchedFunctions = this.functions.filter ((func) => {
+			return func.functionName === functionName;
+		});
+		if (searchedFunctions.length === 1) {
+			return searchedFunctions[0].readLocalVariable (variableName);
+		} else if (searchedFunctions.length === 0) {
+			console.error ("関数が見つかりません！");
 		} else {
-			console.error ("functionsがnullです！");
+			console.error ("同名の関数が複数あります！");
 		}
 		return 0;
 	}
 
 	writeLocalVariable (functionName: string, variableName: string, value: number) {
-		if (this.functions) {
-			// まずはエントリポイントの関数を調べる
-			if (functionName === "スタート") {
-				if (this.entryFunction) {
-					this.entryFunction.writeLocalVariable (variableName, value);
-					return;
-				}
+		// まずはエントリポイントの関数を調べる
+		if (functionName === "スタート") {
+			if (this.entryFunction) {
+				this.entryFunction.writeLocalVariable (variableName, value);
+				return;
 			}
+		}
 
-			// 関数名が一致する関数を全て探索し実行
-			const searchedFunctions = this.functions.filter ((func) => {
-				return func.functionName === functionName;
-			});
-			if (searchedFunctions.length === 1) {
-				searchedFunctions[0].writeLocalVariable (variableName, value);
-			} else if (searchedFunctions.length === 0) {
-				console.error ("関数が見つかりません！");
-			} else {
-				console.error ("同名の関数が複数あります！");
-			}
+		// 関数名が一致する関数を全て探索し実行
+		const searchedFunctions = this.functions.filter ((func) => {
+			return func.functionName === functionName;
+		});
+		if (searchedFunctions.length === 1) {
+			searchedFunctions[0].writeLocalVariable (variableName, value);
+		} else if (searchedFunctions.length === 0) {
+			console.error ("関数が見つかりません！");
 		} else {
-			console.error ("functionsがnullです！");
+			console.error ("同名の関数が複数あります！");
 		}
 	}
 

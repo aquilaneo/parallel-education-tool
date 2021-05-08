@@ -1,5 +1,6 @@
 import {commandBlockDefinitions, UserProgram, NumberVariable} from "./blockDefinitions";
 import * as ValueBlockBehaviors from "./valueBlockBehaviors";
+import {assertIsDefined, assertIsNumber} from "./common";
 
 export class CommandBlock {
 	blockType: string;
@@ -98,7 +99,9 @@ export class PrintBlock extends CommandBlock {
 	}
 
 	executeBlock () {
-		console.log (this.text?.executeBlock ());
+		assertIsDefined (this.text);
+
+		console.log (this.text.executeBlock ());
 	}
 }
 
@@ -113,14 +116,11 @@ export class SecondsWaitBlock extends CommandBlock {
 	}
 
 	executeBlock () {
-		if (this.second) {
-			const wait = this.second.executeBlock ();
-			if (typeof (wait) === "number") {
-				this.wait = wait * 1000;
-			} else {
-				this.wait = 0;
-			}
-		}
+		assertIsDefined (this.second);
+
+		const wait = this.second.executeBlock ();
+		assertIsNumber (wait);
+		this.wait = wait * 1000;
 	}
 }
 
@@ -135,14 +135,11 @@ export class MilliSecondsWaitBlock extends CommandBlock {
 	}
 
 	executeBlock () {
-		if (this.millisecond) {
-			const wait = this.millisecond.executeBlock ();
-			if (typeof (wait) === "number") {
-				this.wait = wait;
-			} else {
-				this.wait = 0;
-			}
-		}
+		assertIsDefined (this.millisecond);
+
+		const wait = this.millisecond.executeBlock ();
+		assertIsNumber (wait);
+		this.wait = wait;
 	}
 }
 
@@ -159,10 +156,10 @@ export class IfBlock extends CommandBlock {
 	}
 
 	async executeBlock () {
-		if (this.condition) {
-			if (this.condition.executeBlock ()) {
-				await this.userProgram.executeBlockList (this.statement);
-			}
+		assertIsDefined (this.condition);
+
+		if (this.condition.executeBlock ()) {
+			await this.userProgram.executeBlockList (this.statement);
 		}
 	}
 }
@@ -183,12 +180,12 @@ export class IfElseBlock extends CommandBlock {
 	}
 
 	async executeBlock () {
-		if (this.condition) {
-			if (this.condition.executeBlock ()) {
-				await this.userProgram.executeBlockList (this.statement1);
-			} else {
-				await this.userProgram.executeBlockList (this.statement2);
-			}
+		assertIsDefined (this.condition);
+
+		if (this.condition.executeBlock ()) {
+			await this.userProgram.executeBlockList (this.statement1);
+		} else {
+			await this.userProgram.executeBlockList (this.statement2);
 		}
 	}
 }
@@ -206,11 +203,11 @@ export class ForBlock extends CommandBlock {
 	}
 
 	async executeBlock () {
-		if (this.count) {
-			const count = this.count.executeBlock ();
-			for (let i = 0; i < count; i++) {
-				await this.userProgram.executeBlockList (this.statement);
-			}
+		assertIsDefined (this.count);
+
+		const count = this.count.executeBlock ();
+		for (let i = 0; i < count; i++) {
+			await this.userProgram.executeBlockList (this.statement);
 		}
 	}
 }
@@ -231,19 +228,20 @@ export class WhileBlock extends CommandBlock {
 	}
 
 	async executeBlock () {
-		if (this.mode && this.condition) {
-			switch (this.mode) {
-				case "WHILE":
-					while (this.condition.executeBlock ()) {
-						await this.userProgram.executeBlockList (this.statement);
-					}
-					break;
-				case "UNTIL":
-					while (!this.condition.executeBlock ()) {
-						await this.userProgram.executeBlockList (this.statement);
-					}
-					break;
-			}
+		assertIsDefined (this.mode);
+		assertIsDefined (this.condition);
+
+		switch (this.mode) {
+			case "WHILE":
+				while (this.condition.executeBlock ()) {
+					await this.userProgram.executeBlockList (this.statement);
+				}
+				break;
+			case "UNTIL":
+				while (!this.condition.executeBlock ()) {
+					await this.userProgram.executeBlockList (this.statement);
+				}
+				break;
 		}
 	}
 }
@@ -262,12 +260,12 @@ export class LocalVariableWriteBlock extends CommandBlock {
 	}
 
 	executeBlock () {
-		if (this.name && this.value) {
-			const value = this.value.executeBlock ();
-			if (typeof (value) === "number") {
-				this.userProgram.writeLocalVariable (this.functionName, this.name, value);
-			}
-		}
+		assertIsDefined (this.name);
+		assertIsDefined (this.value);
+
+		const value = this.value.executeBlock ();
+		assertIsNumber (value);
+		this.userProgram.writeLocalVariable (this.functionName, this.name, value);
 	}
 }
 
@@ -285,12 +283,12 @@ export class GlobalVariableWriteBlock extends CommandBlock {
 	}
 
 	executeBlock () {
-		if (this.name && this.value) {
-			const value = this.value.executeBlock ();
-			if (typeof (value) === "number") {
-				this.userProgram.writeGlobalVariable (this.name, value);
-			}
-		}
+		assertIsDefined (this.name);
+		assertIsDefined (this.value);
+
+		const value = this.value.executeBlock ();
+		assertIsNumber (value);
+		this.userProgram.writeGlobalVariable (this.name, value);
 	}
 }
 
@@ -312,9 +310,9 @@ export class FunctionDefinitionBlock extends CommandBlock {
 	}
 
 	async executeBlock () {
-		if (this.statement) {
-			await this.userProgram.executeBlockList (this.statement);
-		}
+		assertIsDefined (this.statement);
+
+		await this.userProgram.executeBlockList (this.statement);
 	}
 
 	readLocalVariable (variableName: string) {
@@ -375,9 +373,9 @@ export class FunctionCallBlock extends CommandBlock {
 	}
 
 	executeBlock () {
-		if (this.name) {
-			this.userProgram.executeFunction (this.name);
-		}
+		assertIsDefined (this.name);
+
+		this.userProgram.executeFunction (this.name);
 	}
 }
 
@@ -399,9 +397,9 @@ export class EntryPointBlock extends CommandBlock {
 	}
 
 	async executeBlock () {
-		if (this.statement) {
-			await this.userProgram.executeBlockList (this.statement);
-		}
+		assertIsDefined (this.statement);
+
+		await this.userProgram.executeBlockList (this.statement);
 	}
 
 	readLocalVariable (variableName: string) {
@@ -462,12 +460,11 @@ export class StopwatchStartBlock extends CommandBlock {
 	}
 
 	executeBlock () {
-		if (this.swNumber) {
-			const swNumber = this.swNumber.executeBlock ();
-			if (typeof (swNumber) === "number") {
-				this.userProgram.getStopwatch (swNumber).start ();
-			}
-		}
+		assertIsDefined (this.swNumber);
+
+		const swNumber = this.swNumber.executeBlock ();
+		assertIsNumber (swNumber);
+		this.userProgram.getStopwatch (swNumber).start ();
 	}
 }
 
@@ -482,12 +479,11 @@ export class StopwatchStopBlock extends CommandBlock {
 	}
 
 	executeBlock () {
-		if (this.swNumber) {
-			const swNumber = this.swNumber.executeBlock ();
-			if (typeof (swNumber) === "number") {
-				this.userProgram.getStopwatch (swNumber).stop ();
-			}
-		}
+		assertIsDefined (this.swNumber);
+
+		const swNumber = this.swNumber.executeBlock ();
+		assertIsNumber (swNumber);
+		this.userProgram.getStopwatch (swNumber).stop ();
 	}
 }
 
@@ -502,12 +498,11 @@ export class StopwatchResetBlock extends CommandBlock {
 	}
 
 	executeBlock () {
-		if (this.swNumber) {
-			const swNumber = this.swNumber.executeBlock ();
-			if (typeof (swNumber) === "number") {
-				this.userProgram.getStopwatch (swNumber).reset ();
-			}
-		}
+		assertIsDefined (this.swNumber);
+
+		const swNumber = this.swNumber.executeBlock ();
+		assertIsNumber (swNumber);
+		this.userProgram.getStopwatch (swNumber).reset ();
 	}
 }
 

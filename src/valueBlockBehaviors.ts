@@ -1,4 +1,5 @@
 import {valueBlockDefinitions, UserProgram} from "./blockDefinitions";
+import {assertIsBoolean, assertIsDefined, assertIsNumber} from "./common";
 
 export class ValueBlock {
 	blockType: string;
@@ -24,7 +25,6 @@ export class ValueBlock {
 	}
 
 	executeBlock (): number | string | boolean {
-		console.log (this.blockType);
 		return 0;
 	}
 
@@ -77,23 +77,29 @@ export class CompareBlock extends ValueBlock {
 	}
 
 	executeBlock () {
-		if (this.operand1 && this.operand2) {
-			switch (this.operator) {
-				case "EQ":
-					return this.operand1.executeBlock () === this.operand2.executeBlock ();
-				case "NEQ":
-					return this.operand1.executeBlock () !== this.operand2.executeBlock ();
-				case "LT":
-					return this.operand1.executeBlock () < this.operand2.executeBlock ();
-				case "LTE":
-					return this.operand1.executeBlock () <= this.operand2.executeBlock ();
-				case "GT":
-					return this.operand1.executeBlock () > this.operand2.executeBlock ();
-				case "GTE":
-					return this.operand1.executeBlock () >= this.operand2.executeBlock ();
-			}
+		assertIsDefined (this.operand1);
+		assertIsDefined (this.operand2);
+
+		const operand1 = this.operand1.executeBlock ();
+		const operand2 = this.operand2.executeBlock ();
+		assertIsNumber (operand1);
+		assertIsNumber (operand2);
+		switch (this.operator) {
+			case "EQ":
+				return operand1 === operand2;
+			case "NEQ":
+				return operand1 !== operand2;
+			case "LT":
+				return operand1 < operand2;
+			case "LTE":
+				return operand1 <= operand2;
+			case "GT":
+				return operand1 > operand2;
+			case "GTE":
+				return operand1 >= operand2;
+			default:
+				return false;
 		}
-		return false;
 	}
 }
 
@@ -113,15 +119,21 @@ export class LogicOperationBlock extends ValueBlock {
 	}
 
 	executeBlock () {
-		if (this.operand1 && this.operand2) {
-			switch (this.operator) {
-				case "AND":
-					return this.operand1.executeBlock () && this.operand2.executeBlock ();
-				case "OR":
-					return this.operand1.executeBlock () || this.operand2.executeBlock ();
-			}
+		assertIsDefined (this.operand1);
+		assertIsDefined (this.operand2);
+
+		const operand1 = this.operand1.executeBlock ();
+		const operand2 = this.operand2.executeBlock ();
+		assertIsBoolean (operand1);
+		assertIsBoolean (operand2);
+		switch (this.operator) {
+			case "AND":
+				return operand1 && operand2;
+			case "OR":
+				return operand1 || operand2;
+			default:
+				return false;
 		}
-		return false;
 	}
 }
 
@@ -135,11 +147,11 @@ export class NotBlock extends ValueBlock {
 	}
 
 	executeBlock () {
-		if (this.value) {
-			return !this.value.executeBlock ();
-		} else {
-			return false;
-		}
+		assertIsDefined (this.value);
+
+		const value = this.value.executeBlock ();
+		assertIsBoolean (value);
+		return value;
 	}
 }
 
@@ -173,25 +185,27 @@ export class CalculateBlock extends ValueBlock {
 	}
 
 	executeBlock () {
-		if (this.operand1 && this.operand2) {
-			const operand1 = this.operand1.executeBlock ();
-			const operand2 = this.operand2.executeBlock ();
-			if (typeof (operand1) === "number" && typeof (operand2) === "number") {
-				switch (this.operator) {
-					case "ADD":
-						return operand1 + operand2;
-					case "MINUS":
-						return operand1 - operand2;
-					case "MULTIPLY":
-						return operand1 * operand2;
-					case "DIVIDE":
-						return operand1 / operand2;
-					case "POWER":
-						return Math.pow (operand1, operand2);
-				}
-			}
+		assertIsDefined (this.operand1);
+		assertIsDefined (this.operand2);
+
+		const operand1 = this.operand1.executeBlock ();
+		const operand2 = this.operand2.executeBlock ();
+		assertIsNumber (operand1);
+		assertIsNumber (operand2);
+		switch (this.operator) {
+			case "ADD":
+				return operand1 + operand2;
+			case "MINUS":
+				return operand1 - operand2;
+			case "MULTIPLY":
+				return operand1 * operand2;
+			case "DIVIDE":
+				return operand1 / operand2;
+			case "POWER":
+				return Math.pow (operand1, operand2);
+			default:
+				return 0;
 		}
-		return 0;
 	}
 }
 
@@ -205,7 +219,7 @@ export class TextBlock extends ValueBlock {
 	}
 
 	executeBlock () {
-		return this.text ? this.text : "";
+		return this.text;
 	}
 }
 
@@ -219,11 +233,7 @@ export class LocalVariableReadBlock extends ValueBlock {
 	}
 
 	executeBlock () {
-		if (this.name) {
-			return this.userProgram.readLocalVariable (this.functionName, this.name);
-		} else {
-			return 0;
-		}
+		return this.name ? this.userProgram.readLocalVariable (this.functionName, this.name) : 0;
 	}
 }
 
@@ -237,11 +247,7 @@ export class GlobalVariableReadBlock extends ValueBlock {
 	}
 
 	executeBlock () {
-		if (this.name) {
-			return this.userProgram.readGlobalVariable (this.name);
-		} else {
-			return 0;
-		}
+		return this.name ? this.userProgram.readGlobalVariable (this.name) : 0;
 	}
 }
 
