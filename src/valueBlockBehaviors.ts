@@ -262,4 +262,12 @@ export class StopwatchReadBlock extends ValueBlock {
 		const threadNumber = super.getValue ("number");
 		this.swNumber = threadNumber ? ValueBlock.constructBlock (threadNumber, userProgram, functionName) : null;
 	}
+
+	executeBlock () {
+		assertIsDefined(this.swNumber);
+
+		const swNumber = this.swNumber.executeBlock();
+		assertIsNumber(swNumber);
+		return this.userProgram.getStopwatch (swNumber).read ();
+	}
 }
