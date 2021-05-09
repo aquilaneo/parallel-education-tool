@@ -52,49 +52,45 @@ export class UserProgram {
 	}
 
 	async executeFunction (functionName: string) {
-		// 関数名が一致する関数を全て探索し実行
-		const searchedFunctions = this.functions.filter ((func) => {
+		// 関数名が一致する関数を実行
+		const searchedFunction = this.getFunction (functionName);
+		if (searchedFunction) {
+			await searchedFunction.executeBlock ();
+		} else {
+			console.error ("関数が見つかりません！");
+		}
+	}
+
+	getFunction (functionName: string) {
+		return this.functions.find ((func) => {
 			return func.functionName === functionName;
 		});
-		if (searchedFunctions.length === 1) {
-			await searchedFunctions[0].executeBlock ();
-		} else if (searchedFunctions.length === 0) {
-			console.error ("関数が見つかりません！");
-		} else {
-			console.error ("同名の関数が複数あります！");
-		}
 	}
 
 	readGlobalVariable (variableName: string) {
-		const searchedVariables = this.globalVariables.filter ((globalVariable) => {
-			return globalVariable.variableName === variableName;
-		});
-		if (searchedVariables.length === 1) {
-			return searchedVariables[0].readValue ();
-		} else if (searchedVariables.length === 0) {
-			console.error ("グローバル変数が見つかりません！");
-			return 0;
-		} else {
-			console.error ("同名のグローバル変数が複数あります！");
-			return 0;
-		}
+		return this.getGlobalVariable (variableName).readValue ();
 	}
 
 	writeGlobalVariable (variableName: string, value: number) {
-		const searchedVariables = this.globalVariables.filter ((globalVariable) => {
+		this.getGlobalVariable (variableName).writeValue (value);
+	}
+
+	getGlobalVariable (variableName: string) {
+		const searchedVariable = this.globalVariables.find ((globalVariable) => {
 			return globalVariable.variableName === variableName;
 		});
-		if (searchedVariables.length === 1) {
-			searchedVariables[0].writeValue (value);
-		} else if (searchedVariables.length === 0) {
-			this.addGlobalVariable (variableName, value);
+		// なかったら新しい変数を作る
+		if (searchedVariable) {
+			return searchedVariable;
 		} else {
-			console.error ("同名のグローバル変数が複数あります！");
+			return this.addGlobalVariable (variableName, 0);
 		}
 	}
 
 	addGlobalVariable (variableName: string, initValue: number) {
-		this.globalVariables.push (new NumberVariable (variableName, initValue));
+		const newVariable = new NumberVariable (variableName, initValue)
+		this.globalVariables.push (newVariable);
+		return newVariable;
 	}
 
 	readLocalVariable (functionName: string, variableName: string) {
@@ -105,18 +101,14 @@ export class UserProgram {
 			}
 		}
 
-		// 関数名が一致する関数を全て探索し実行
-		const searchedFunctions = this.functions.filter ((func) => {
-			return func.functionName === functionName;
-		});
-		if (searchedFunctions.length === 1) {
-			return searchedFunctions[0].readLocalVariable (variableName);
-		} else if (searchedFunctions.length === 0) {
-			console.error ("関数が見つかりません！");
+		// 関数名が一致する関数を探索し変数を読み込み
+		const searchedFunction = this.getFunction (functionName);
+		if (searchedFunction) {
+			return searchedFunction.readLocalVariable (variableName);
 		} else {
-			console.error ("同名の関数が複数あります！");
+			console.error ("関数が見つかりません！");
+			return 0;
 		}
-		return 0;
 	}
 
 	writeLocalVariable (functionName: string, variableName: string, value: number) {
@@ -128,16 +120,12 @@ export class UserProgram {
 			}
 		}
 
-		// 関数名が一致する関数を全て探索し実行
-		const searchedFunctions = this.functions.filter ((func) => {
-			return func.functionName === functionName;
-		});
-		if (searchedFunctions.length === 1) {
-			searchedFunctions[0].writeLocalVariable (variableName, value);
-		} else if (searchedFunctions.length === 0) {
-			console.error ("関数が見つかりません！");
+		// 関数名が一致する関数を探索し変数を読み込み
+		const searchedFunction = this.getFunction (functionName);
+		if (searchedFunction) {
+			searchedFunction.writeLocalVariable (variableName, value);
 		} else {
-			console.error ("同名の関数が複数あります！");
+			console.error ("関数が見つかりません！");
 		}
 	}
 

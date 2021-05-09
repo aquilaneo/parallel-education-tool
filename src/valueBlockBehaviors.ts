@@ -84,6 +84,7 @@ export class CompareBlock extends ValueBlock {
 		const operand2 = this.operand2.executeBlock ();
 		assertIsNumber (operand1);
 		assertIsNumber (operand2);
+		// 演算子ごとに適した演算結果を返す
 		switch (this.operator) {
 			case "EQ":
 				return operand1 === operand2;
@@ -126,6 +127,7 @@ export class LogicOperationBlock extends ValueBlock {
 		const operand2 = this.operand2.executeBlock ();
 		assertIsBoolean (operand1);
 		assertIsBoolean (operand2);
+		// 演算子ごとに適した演算結果を返す。
 		switch (this.operator) {
 			case "AND":
 				return operand1 && operand2;
@@ -192,6 +194,7 @@ export class CalculateBlock extends ValueBlock {
 		const operand2 = this.operand2.executeBlock ();
 		assertIsNumber (operand1);
 		assertIsNumber (operand2);
+		// 演算子ごとに適した演算結果を返す。
 		switch (this.operator) {
 			case "ADD":
 				return operand1 + operand2;
@@ -224,30 +227,30 @@ export class TextBlock extends ValueBlock {
 }
 
 export class LocalVariableReadBlock extends ValueBlock {
-	name: string | null;
+	name: string;
 
 	constructor (blockXml: Element, userProgram: UserProgram, functionName: string, wait: number) {
 		super (blockXml, userProgram, functionName, wait);
 		const name = super.getField ("name");
-		this.name = name ? name : null;
+		this.name = name ? name : "";
 	}
 
 	executeBlock () {
-		return this.name ? this.userProgram.readLocalVariable (this.functionName, this.name) : 0;
+		return this.userProgram.readLocalVariable (this.functionName, this.name);
 	}
 }
 
 export class GlobalVariableReadBlock extends ValueBlock {
-	name: string | null;
+	name: string;
 
 	constructor (blockXml: Element, userProgram: UserProgram, functionName: string, wait: number) {
 		super (blockXml, userProgram, functionName, wait);
 		const name = super.getField ("name");
-		this.name = name ? name : null;
+		this.name = name ? name : "";
 	}
 
 	executeBlock () {
-		return this.name ? this.userProgram.readGlobalVariable (this.name) : 0;
+		return this.userProgram.readGlobalVariable (this.name);
 	}
 }
 
