@@ -62,6 +62,16 @@ function App () {
 							}}>
 								XML出力
 							</button>
+							<button onClick={() => {
+								if (editorRef.current) {
+									const xml = window.prompt ("XMLを入力");
+									if (xml) {
+										editorRef.current.xmlToWorkspace (xml);
+									}
+								}
+							}}>
+								XML入力
+							</button>
 						</div>
 						<div>
 							<button onClick={() => {
@@ -129,6 +139,14 @@ class Editor extends React.Component {
 			return Blockly.Xml.domToText (dom);
 		} else {
 			return "";
+		}
+	}
+
+	xmlToWorkspace (xml: string) {
+		if (this.workspace) {
+			this.workspace.clear ();
+			const dom = Blockly.Xml.textToDom (xml);
+			Blockly.Xml.domToWorkspace (dom, this.workspace);
 		}
 	}
 
