@@ -36,7 +36,7 @@ export class UserProgram {
 
 	async executeBlockList (blockList: CommandBlockBehaviors.CommandBlock[]) {
 		for (const block of blockList) {
-			block.executeBlock ();
+			await block.executeBlock ();
 			await sleep (block.wait);
 		}
 

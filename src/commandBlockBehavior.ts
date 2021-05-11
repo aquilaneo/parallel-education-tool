@@ -25,7 +25,7 @@ export class CommandBlock {
 		this.wait = wait;
 	}
 
-	executeBlock () {
+	async executeBlock () {
 		console.log (this.blockType);
 	}
 
@@ -75,10 +75,11 @@ export class CommandBlock {
 			}
 
 			// 次のブロックが存在するか調べる
-			if (Array.from (block.childNodes).find ((child) => {
+			const next = Array.from (block.children).find ((child) => {
 				return child.nodeName === "next";
-			})) {
-				block = block.getElementsByTagName ("next")[0].getElementsByTagName ("block")[0];
+			});
+			if (next) {
+				block = next.getElementsByTagName ("block")[0];
 			} else {
 				break;
 			}
@@ -98,7 +99,7 @@ export class PrintBlock extends CommandBlock {
 		this.text = text ? ValueBlockBehaviors.ValueBlock.constructBlock (text, userProgram, functionName) : null;
 	}
 
-	executeBlock () {
+	async executeBlock () {
 		assertIsDefined (this.text);
 
 		console.log (this.text.executeBlock ());
@@ -115,7 +116,7 @@ export class SecondsWaitBlock extends CommandBlock {
 		this.second = second ? ValueBlockBehaviors.ValueBlock.constructBlock (second, userProgram, functionName) : null;
 	}
 
-	executeBlock () {
+	async executeBlock () {
 		assertIsDefined (this.second);
 
 		const wait = this.second.executeBlock ();
@@ -134,7 +135,7 @@ export class MilliSecondsWaitBlock extends CommandBlock {
 		this.millisecond = second ? ValueBlockBehaviors.ValueBlock.constructBlock (second, userProgram, functionName) : null;
 	}
 
-	executeBlock () {
+	async executeBlock () {
 		assertIsDefined (this.millisecond);
 
 		const wait = this.millisecond.executeBlock ();
@@ -258,7 +259,7 @@ export class LocalVariableWriteBlock extends CommandBlock {
 		this.value = value ? ValueBlockBehaviors.ValueBlock.constructBlock (value, userProgram, functionName) : null;
 	}
 
-	executeBlock () {
+	async executeBlock () {
 		assertIsDefined (this.value);
 
 		const value = this.value.executeBlock ();
@@ -280,7 +281,7 @@ export class GlobalVariableWriteBlock extends CommandBlock {
 		this.value = value ? ValueBlockBehaviors.ValueBlock.constructBlock (value, userProgram, functionName) : null;
 	}
 
-	executeBlock () {
+	async executeBlock () {
 		assertIsDefined (this.value);
 
 		const value = this.value.executeBlock ();
@@ -442,7 +443,7 @@ export class StopwatchStartBlock extends CommandBlock {
 		this.swNumber = swNumber ? ValueBlockBehaviors.ValueBlock.constructBlock (swNumber, userProgram, functionName) : null;
 	}
 
-	executeBlock () {
+	async executeBlock () {
 		assertIsDefined (this.swNumber);
 
 		const swNumber = this.swNumber.executeBlock ();
@@ -461,7 +462,7 @@ export class StopwatchStopBlock extends CommandBlock {
 		this.swNumber = swNumber ? ValueBlockBehaviors.ValueBlock.constructBlock (swNumber, userProgram, functionName) : null;
 	}
 
-	executeBlock () {
+	async executeBlock () {
 		assertIsDefined (this.swNumber);
 
 		const swNumber = this.swNumber.executeBlock ();
@@ -480,7 +481,7 @@ export class StopwatchResetBlock extends CommandBlock {
 		this.swNumber = swNumber ? ValueBlockBehaviors.ValueBlock.constructBlock (swNumber, userProgram, functionName) : null;
 	}
 
-	executeBlock () {
+	async executeBlock () {
 		assertIsDefined (this.swNumber);
 
 		const swNumber = this.swNumber.executeBlock ();
