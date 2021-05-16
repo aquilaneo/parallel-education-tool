@@ -4,7 +4,7 @@ import * as Ja from "blockly/msg/ja"
 
 import Thread from "./Thread";
 import * as BlockSettings from "./blockSettings"
-import {UserProgram, Stopwatch} from "./blockDefinitions"
+import * as BlockDefinitions from "./blockDefinitions"
 import "./App.scss";
 
 function App () {
@@ -17,7 +17,7 @@ function App () {
 	const [threadCount, setThreadCount] = useState (threads.length);
 	const editorRef = useRef<Editor> (null);
 
-	const [stopwatch, setStopwatch] = useState (new Stopwatch ());
+	const [stopwatch, setStopwatch] = useState (new BlockDefinitions.Stopwatch ());
 
 	return (
 		<div style={{width: "100vw", height: "100vh"}}>
@@ -154,15 +154,19 @@ class Editor extends React.Component {
 		// ワークスペース上のブロックをプログラム化
 		if (this.workspace) {
 			const xml = Blockly.Xml.workspaceToDom (this.workspace);
-			return new UserProgram (xml);
+			return new BlockDefinitions.UserProgram (xml);
 		} else {
 			return null;
 		}
 	}
 
 	async executeEntryFunction () {
-		const parsedBlocks = this.parseBlocks ();
-		await parsedBlocks?.executeEntryFunction ();
+		const userProgram = this.parseBlocks ();
+		if (userProgram) {
+			const thread = new BlockDefinitions.Thread ("スレッド", "スレッド", userProgram);
+			thread.execute ();
+			await userProgram.executeEntryFunction ();
+		}
 	}
 
 	render () {

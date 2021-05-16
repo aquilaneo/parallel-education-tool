@@ -9,6 +9,7 @@ export class UserProgram {
 	functions: CommandBlockBehaviors.FunctionDefinitionBlock[] = []; // 関数一覧
 	globalVariables: NumberVariable[] = [];
 	stopwatches: { key: number, sw: Stopwatch } [] = []; // ストップウォッチ一覧
+	threads: Thread[] = [];
 
 	constructor (xml: Element) {
 		console.log (xml);
@@ -207,6 +208,22 @@ export class Stopwatch {
 		// 停止しリセット
 		this.stop ();
 		this.count = 0;
+	}
+}
+
+export class Thread {
+	threadName: string;
+	functionName: string;
+	userProgram: UserProgram;
+
+	constructor (threadName: string, functionName: string, userProgram: UserProgram) {
+		this.threadName = threadName;
+		this.functionName = functionName;
+		this.userProgram = userProgram;
+	}
+
+	execute () {
+		this.userProgram.executeFunction (this.functionName);
 	}
 }
 
