@@ -58,7 +58,7 @@ export class UserProgram {
 		if (searchedFunction) {
 			await searchedFunction.executeBlock ();
 		} else {
-			console.error ("関数が見つかりません！");
+			console.error (`関数 ${functionName} が見つかりません！`);
 		}
 	}
 
@@ -107,7 +107,7 @@ export class UserProgram {
 		if (searchedFunction) {
 			return searchedFunction.readLocalVariable (variableName);
 		} else {
-			console.error ("関数が見つかりません！");
+			console.error (`関数 ${functionName} が見つかりません！`);
 			return 0;
 		}
 	}
@@ -126,7 +126,7 @@ export class UserProgram {
 		if (searchedFunction) {
 			searchedFunction.writeLocalVariable (variableName, value);
 		} else {
-			console.error ("関数が見つかりません！");
+			console.error (`関数 ${functionName} が見つかりません！`);
 		}
 	}
 
@@ -563,16 +563,16 @@ export const commandBlockDefinitions = [
 		},
 		blocklyJson: {
 			"type": "thread_create",
-			"message0": "スレッド名 %1 関数名 %2 を実行",
+			"message0": "%1 をスレッド名 %2 として並列実行",
 			"args0": [
 				{
-					"type": "input_value",
-					"name": "thread_name",
-					"check": "String"
+					"type": "field_input",
+					"name": "thread_function_name",
+					"text": "関数名"
 				},
 				{
 					"type": "input_value",
-					"name": "thread_function_name",
+					"name": "thread_name",
 					"check": "String"
 				}
 			],

@@ -277,9 +277,6 @@ export const getBlockListXml = () => {
 				<value name="thread_name">
 					<shadow type="text"></shadow>
 				</value>
-				<value name="thread_function_name">
-					<shadow type="text"></shadow>
-				</value>
 			</block>
 			<block type="thread_join">
 				<value name="thread_name">

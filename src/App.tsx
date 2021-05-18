@@ -163,8 +163,8 @@ class Editor extends React.Component {
 	async executeEntryFunction () {
 		const userProgram = this.parseBlocks ();
 		if (userProgram) {
-			const thread = new BlockDefinitions.Thread ("スレッド", "スレッド", userProgram);
-			thread.execute ();
+			// const thread = new BlockDefinitions.Thread ("スレッド", "スレッド", userProgram);
+			// thread.execute ();
 			await userProgram.executeEntryFunction ();
 		}
 	}
