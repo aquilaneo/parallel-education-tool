@@ -39,6 +39,11 @@ export class UserProgram {
 		for (const block of blockList) {
 			await block.executeBlock ();
 			await sleep (block.wait);
+
+			// 動的時間待機を考慮
+			while (block.isWaiting ()) {
+				await sleep (1);
+			}
 		}
 
 		function sleep (ms: number) {
@@ -155,6 +160,26 @@ export class UserProgram {
 			return this.getStopwatch (swNumber);
 		}
 	}
+
+	addThread (threadName: string, threadFunctionName: string) {
+		const threadFunction = this.getFunction (threadFunctionName);
+		if (threadFunction) {
+			this.threads.push (new Thread (threadName, threadFunctionName, this));
+		}
+	}
+
+	executeThread (threadName: string) {
+		const thread = this.getThread (threadName);
+		if (thread) {
+			thread.execute ();
+		}
+	}
+
+	getThread (threadName: string) {
+		return this.threads.find ((thread) => {
+			return thread.threadName === threadName;
+		});
+	}
 }
 
 export class NumberVariable {
@@ -215,15 +240,19 @@ export class Thread {
 	threadName: string;
 	functionName: string;
 	userProgram: UserProgram;
+	isExecuting: boolean;
 
 	constructor (threadName: string, functionName: string, userProgram: UserProgram) {
 		this.threadName = threadName;
 		this.functionName = functionName;
 		this.userProgram = userProgram;
+		this.isExecuting = false;
 	}
 
-	execute () {
-		this.userProgram.executeFunction (this.functionName);
+	async execute () {
+		this.isExecuting = true;
+		await this.userProgram.executeFunction (this.functionName);
+		this.isExecuting = false;
 	}
 }
 

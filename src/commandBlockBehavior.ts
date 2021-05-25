@@ -29,6 +29,11 @@ export class CommandBlock {
 		console.log (this.blockType);
 	}
 
+	// 動的時間待機するかどうかのフラグを返す
+	isWaiting () {
+		return false;
+	}
+
 	// 指定した名前のパラメータ(value or shadow)を取得
 	getValue (type: string) {
 		// typeに合致するタグを探す
@@ -508,18 +513,38 @@ export class ThreadCreateBlock extends CommandBlock {
 
 		const threadName = this.threadName.executeBlock ();
 		assertIsString (threadName);
-		const thread = new BlockDefinitions.Thread (threadName, this.threadFunctionName, this.userProgram);
-		thread.execute ();
+
+		this.userProgram.addThread (threadName, this.threadFunctionName);
+		this.userProgram.executeThread (threadName);
 	}
 }
 
 export class ThreadJoinBlock extends CommandBlock {
 	threadName: ValueBlockBehaviors.ValueBlock | null;
+	threadNameStr: string;
 
 	constructor (blockXml: Element, userProgram: BlockDefinitions.UserProgram, functionName: string, wait: number) {
 		super (blockXml, userProgram, functionName, wait);
 
 		const threadName = super.getValue ("thread_name");
 		this.threadName = threadName ? ValueBlockBehaviors.ValueBlock.constructBlock (threadName, userProgram, functionName) : null;
+		this.threadNameStr = "";
+	}
+
+	async executeBlock () {
+		assertIsDefined (this.threadName);
+
+		const threadName = this.threadName.executeBlock ();
+		assertIsString (threadName);
+		this.threadNameStr = threadName;
+	}
+
+	isWaiting (): boolean {
+		const thread = this.userProgram.getThread (this.threadNameStr);
+		if (thread) {
+			return thread.isExecuting;
+		} else {
+			return false;
+		}
 	}
 }
