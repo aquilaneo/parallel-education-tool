@@ -202,6 +202,14 @@ export const getBlockListXml = () => {
         
         <category name="テキスト" colour="%{BKY_TEXTS_HUE}">
             <block type="text"></block>
+            <block type="str_arithmetic">
+            	<value name="A">
+            		<shadow type="text"></shadow>
+				</value>
+            	<value name="B">
+            		<shadow type="text"></shadow>
+				</value>				
+			</block>
         </category>
         
         

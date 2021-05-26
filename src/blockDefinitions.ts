@@ -696,6 +696,44 @@ export const valueBlockDefinitions = [
 		}
 	},
 
+	// ========== 文字列計算
+	{
+		type: "str_arithmetic",
+		wait: 100,
+		instantiate: (blockXml: Element, userProgram: UserProgram, functionName: string, wait: number): ValueBlockBehaviors.ValueBlock => {
+			return new ValueBlockBehaviors.TextCalculateBlock (blockXml, userProgram, functionName, wait);
+		},
+		blocklyJson: {
+			"type": "str_arithmetic",
+			"message0": "%1 %2 %3",
+			"args0": [
+				{
+					"type": "input_value",
+					"name": "A"
+				},
+				{
+					"type": "field_dropdown",
+					"name": "OP",
+					"options": [
+						[
+							"+",
+							"ADD"
+						]
+					]
+				},
+				{
+					"type": "input_value",
+					"name": "B"
+				}
+			],
+			"inputsInline": true,
+			"output": "String",
+			"colour": 165,
+			"tooltip": "",
+			"helpUrl": ""
+		}
+	},
+
 	// ========== ローカル変数読み込み ==========
 	{
 		type: "local_variable_read",

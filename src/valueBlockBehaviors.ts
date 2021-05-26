@@ -1,5 +1,5 @@
 import {valueBlockDefinitions, UserProgram} from "./blockDefinitions";
-import {assertIsBoolean, assertIsDefined, assertIsNumber} from "./common";
+import {assertIsBoolean, assertIsDefined, assertIsNumber, assertIsString} from "./common";
 
 export class ValueBlock {
 	blockType: string;
@@ -226,6 +226,48 @@ export class TextBlock extends ValueBlock {
 	}
 }
 
+export class TextCalculateBlock extends ValueBlock {
+	operand1: ValueBlock | null;
+	operand2: ValueBlock | null;
+	operator: string;
+
+	constructor (blockXml: Element, userProgram: UserProgram, functionName: string, wait: number) {
+		super (blockXml, userProgram, functionName, wait);
+		const operand1 = super.getValue ("A");
+		this.operand1 = operand1 ? ValueBlock.constructBlock (operand1, userProgram, functionName) : null;
+		const operand2 = super.getValue ("B");
+		this.operand2 = operand2 ? ValueBlock.constructBlock (operand2, userProgram, functionName) : null;
+		const operator = super.getField ("OP");
+		this.operator = operator ? operator : "";
+	}
+
+	executeBlock () {
+		assertIsDefined (this.operand1);
+		assertIsDefined (this.operand2);
+
+		let operand1 = this.operand1.executeBlock ();
+		let operand2 = this.operand2.executeBlock ();
+
+		if (typeof (operand1) === "number") {
+			operand1 = operand1.toString ();
+		}
+		if (typeof (operand2) === "number") {
+			operand2 = operand2.toString ();
+		}
+
+		assertIsString (operand1);
+		assertIsString (operand2);
+
+		// 演算子ごとに適した演算結果を返す。
+		switch (this.operator) {
+			case "ADD":
+				return operand1 + operand2;
+			default:
+				return "";
+		}
+	}
+}
+
 export class LocalVariableReadBlock extends ValueBlock {
 	name: string;
 
@@ -264,10 +306,10 @@ export class StopwatchReadBlock extends ValueBlock {
 	}
 
 	executeBlock () {
-		assertIsDefined(this.swNumber);
+		assertIsDefined (this.swNumber);
 
-		const swNumber = this.swNumber.executeBlock();
-		assertIsNumber(swNumber);
+		const swNumber = this.swNumber.executeBlock ();
+		assertIsNumber (swNumber);
 		return this.userProgram.getStopwatch (swNumber).read ();
 	}
 }
