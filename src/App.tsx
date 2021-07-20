@@ -1,13 +1,15 @@
-import React, {useState, useRef} from 'react';
+import React, {useState, useRef, useEffect} from 'react';
 import Blockly from "blockly";
-import * as Ja from "blockly/msg/ja"
+import * as Ja from "blockly/msg/ja";
 
 import Thread from "./Thread";
-import * as BlockSettings from "./blockSettings"
-import * as BlockDefinitions from "./blockDefinitions"
+import * as BlockSettings from "./blockSettings";
+import * as BlockDefinitions from "./blockDefinitions";
+import * as VariableCanvas from "./variableCanvas";
 import "./App.scss";
 
 function App () {
+	const [variableCanvas, setVariableCanvas] = useState (new VariableCanvas.VariableCanvas ());
 	const [threads, setThreads] = useState ([
 		{index: 0},
 		{index: 1},
@@ -18,6 +20,20 @@ function App () {
 	const editorRef = useRef<Editor> (null);
 
 	const [stopwatch, setStopwatch] = useState (new BlockDefinitions.Stopwatch ());
+
+	useEffect (() => {
+		const canvas = document.getElementById ("variable-canvas") as HTMLCanvasElement;
+		const twoDimensionalArrays: { [key: string]: number[][] } = {};
+		twoDimensionalArrays["Array1"] = [
+			[1, 2, 3, 4],
+			[5, 6, 7, 8]
+		];
+		twoDimensionalArrays["Array2"] = [
+			[9, 10],
+			[11, 12]
+		]
+		variableCanvas.initialize (canvas, {}, twoDimensionalArrays);
+	});
 
 	return (
 		<div style={{width: "100vw", height: "100vh"}}>
@@ -34,6 +50,7 @@ function App () {
 				<div id={"center-panel"}>
 					<div id={"variables-panel"}>
 						<div>変数</div>
+						<canvas id={"variable-canvas"}></canvas>
 						<div>
 							<button onClick={() => {
 								setThreads ([...threads, {index: threadCount}]);

@@ -29,6 +29,13 @@ $editor-width: 30%;
             height: calc(100% - #{$threads-height});
         }
 
+        #variable-canvas {
+            width: 100%;
+            height: 80%;
+            border: 1px solid black;
+            box-sizing: border-box;
+        }
+
         #threads-panel {
             width: 100%;
             height: $threads-height;
