@@ -29,38 +29,63 @@ export class VariableCanvas {
 
 			// 各種定数
 			const colors = ["rgb(240,240,240)", "rgb(224,224,224)"];
-			const xOffset = 100;
-			const yOffset = 60;
+			const xOffset = 60;
+			const yOffset = 80;
+			const nameWidth = 220;
 			const cellWidth = 100;
 			const cellHeight = 60;
-			const fontSize = 36;
+			const nameFontSize = 42;
+			const indexFontSize = 24;
+			const tableFontSize = 36;
 
 			// 表を描画
-			let y = 0;
+			let originX = xOffset;
+			let originY = yOffset;
 			for (const key of Object.keys (this.twoDimensionalArrays)) {
-				y += yOffset;
+				// 配列の名前を表示
+				this.context.font = `${nameFontSize}px serif`;
+				this.context.fillStyle = "black";
+				this.context.textAlign = "left";
+				this.context.fillText (key, originX, originY + (this.twoDimensionalArrays[key].length * cellHeight) / 2 + nameFontSize / 2);
+
+				// 表の左と上にインデックス番号を振る
+				this.context.font = `${indexFontSize}px serif`;
+				this.context.fillStyle = "black";
+				this.context.textAlign = "center";
+				for (let raw = 0; raw < this.twoDimensionalArrays[key].length; raw++) {
+					const indexX = originX + nameWidth;
+					const indexY = cellHeight * raw + originY;
+					this.context.fillText (raw.toString (), indexX - indexFontSize, indexY + indexFontSize / 2 + cellHeight / 2);
+				}
+				for (let col = 0; col < this.twoDimensionalArrays[key][0].length; col++) {
+					const indexX = cellWidth * col + originX + nameWidth;
+					this.context.fillText (col.toString (), indexX + cellWidth / 2, originY - indexFontSize / 2);
+				}
+
+				// 表本体を描画
+				this.context.font = `${tableFontSize}px serif`;
+				this.context.textAlign = "center";
 				for (let raw = 0; raw < this.twoDimensionalArrays[key].length; raw++) {
 					for (let col = 0; col < this.twoDimensionalArrays[key][raw].length; col++) {
-						const x = cellWidth * col + xOffset;
+						// セルの左上座標を定義
+						const cellX = cellWidth * col + originX + nameWidth;
+						const cellY = cellHeight * raw + originY;
 
 						// セルを描画
 						this.context.fillStyle = colors[(raw + col) % 2];
-						this.context.fillRect (x, y, cellWidth, cellHeight);
+						this.context.fillRect (cellX, cellY, cellWidth, cellHeight);
 
 						// 枠線描画
 						this.context.strokeStyle = "black";
-						this.context.strokeRect (x, y, cellWidth, cellHeight);
+						this.context.strokeRect (cellX, cellY, cellWidth, cellHeight);
 
 						// 値を描画
 						this.context.fillStyle = "black";
-						this.context.font = `${fontSize}px serif`;
-
-						this.context.textAlign = "center";
-
-						this.context.fillText (this.twoDimensionalArrays[key][raw][col].toString (), x + cellWidth / 2, y + fontSize / 2 + cellHeight / 2);
+						this.context.fillText (this.twoDimensionalArrays[key][raw][col].toString (), cellX + cellWidth / 2, cellY + tableFontSize / 2 + cellHeight / 2);
 					}
-					y += cellHeight;
 				}
+
+				originY += cellHeight * this.twoDimensionalArrays[key].length + yOffset; // 次の表に向けoriginYを加算
 			}
 		}
 	}
