@@ -214,7 +214,7 @@ export const getBlockListXml = () => {
         
         
         
-        <category name="変数">
+        <category name="変数/配列">
         	<block type="local_variable_write">
         		<value name="value">
         			<shadow type="math_number">
@@ -234,6 +234,37 @@ export const getBlockListXml = () => {
 			</block>
 			
 			<block type="global_variable_read"></block>
+			
+			<block type="global_one_dimensional_array_write">
+				<value name="index">
+					<shadow type="math_number">
+        				<field name="NUM">0</field>
+					</shadow>
+				</value>
+				<value name="value">
+					<shadow type="math_number">
+        				<field name="NUM">0</field>
+					</shadow>
+				</value>
+			</block>
+			
+			<block type="global_two_dimensional_array_write">
+				<value name="row">
+					<shadow type="math_number">
+        				<field name="NUM">0</field>
+					</shadow>
+				</value>
+				<value name="col">
+					<shadow type="math_number">
+        				<field name="NUM">0</field>
+					</shadow>
+				</value>
+				<value name="value">
+					<shadow type="math_number">
+        				<field name="NUM">0</field>
+					</shadow>
+				</value>
+			</block>
 		</category>
 		
 		

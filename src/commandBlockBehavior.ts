@@ -1,6 +1,7 @@
 import * as BlockDefinitions from "./blockDefinitions";
 import * as ValueBlockBehaviors from "./valueBlockBehaviors";
 import {assertIsDefined, assertIsNumber, assertIsString} from "./common";
+import {ValueBlock} from "./valueBlockBehaviors";
 
 export class CommandBlock {
 	blockType: string;
@@ -292,6 +293,61 @@ export class GlobalVariableWriteBlock extends CommandBlock {
 		const value = this.value.executeBlock ();
 		assertIsNumber (value);
 		this.userProgram.writeGlobalVariable (this.name, value);
+	}
+}
+
+export class GlobalOneDimensionalArrayWrite extends CommandBlock {
+	name: string;
+	index: ValueBlockBehaviors.ValueBlock | null;
+	value: ValueBlockBehaviors.ValueBlock | null;
+
+	constructor (blocklyXml: Element, userProgram: BlockDefinitions.UserProgram, functionName: string, wait: number) {
+		super (blocklyXml, userProgram, functionName, wait);
+
+		const name = super.getField ("name");
+		this.name = name ? name : "";
+		const index = super.getValue ("index");
+		this.index = index ? ValueBlockBehaviors.ValueBlock.constructBlock (index, userProgram, functionName) : null;
+		const value = super.getValue ("value");
+		this.value = value ? ValueBlockBehaviors.ValueBlock.constructBlock (value, userProgram, functionName) : null;
+	}
+
+	async executeBlock () {
+		assertIsDefined (this.index);
+		assertIsDefined (this.value);
+
+		const index = this.index.executeBlock ();
+		const value = this.value.executeBlock ();
+	}
+}
+
+export class GlobalTwoDimensionalArrayWrite extends CommandBlock {
+	name: string;
+	row: ValueBlockBehaviors.ValueBlock | null;
+	col: ValueBlockBehaviors.ValueBlock | null;
+	value: ValueBlockBehaviors.ValueBlock | null;
+
+	constructor (blocklyXml: Element, userProgram: BlockDefinitions.UserProgram, functionName: string, wait: number) {
+		super (blocklyXml, userProgram, functionName, wait);
+
+		const name = super.getField ("name");
+		this.name = name ? name : "";
+		const row = super.getValue ("row");
+		this.row = row ? ValueBlockBehaviors.ValueBlock.constructBlock (row, userProgram, functionName) : null;
+		const col = super.getValue ("col");
+		this.col = col ? ValueBlockBehaviors.ValueBlock.constructBlock (col, userProgram, functionName) : null;
+		const value = super.getValue ("value");
+		this.value = value ? ValueBlockBehaviors.ValueBlock.constructBlock (value, userProgram, functionName) : null;
+	}
+
+	async executeBlock () {
+		assertIsDefined (this.row);
+		assertIsDefined (this.col);
+		assertIsDefined (this.value);
+
+		const row = this.row.executeBlock ();
+		const col = this.col.executeBlock ();
+		const value = this.value.executeBlock ();
 	}
 }
 

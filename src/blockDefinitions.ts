@@ -8,6 +8,8 @@ export class UserProgram {
 	entryFunction: CommandBlockBehaviors.EntryPointBlock | null = null; // エントリポイント
 	functions: CommandBlockBehaviors.FunctionDefinitionBlock[] = []; // 関数一覧
 	globalVariables: NumberVariable[] = [];
+	globalOneDimensionalArrays: { [key: string]: number }[] = []; // グローバル1次元配列
+	globalTwoDimensionalArrays: { [key: string]: number[] }[] = []; // グローバル2次元配列
 	stopwatches: { key: number, sw: Stopwatch } [] = []; // ストップウォッチ一覧
 	threads: Thread[] = [];
 
@@ -418,6 +420,89 @@ export const commandBlockDefinitions = [
 			"nextStatement": null,
 			"colour": 230,
 			"tooltip": "グローバル変数に値を書き込みます。",
+			"helpUrl": ""
+		}
+	},
+
+	// ========== グローバル1次元配列書き込み ==========
+	{
+		type: "global_one_dimensional_array_write",
+		wait: 100,
+		instantiate: (blockXml: Element, userProgram: UserProgram, functionName: string, wait: number): CommandBlockBehaviors.CommandBlock => {
+			return new CommandBlockBehaviors.GlobalOneDimensionalArrayWrite (blockXml, userProgram, functionName, wait);
+		},
+		blocklyJson: {
+			"type": "global_one_dimensional_array_write",
+			"message0": "グローバル配列 %1 %2 %3 番目に %4 を書き込み",
+			"args0": [
+				{
+					"type": "field_input",
+					"name": "name",
+					"text": "配列名"
+				},
+				{
+					"type": "input_dummy"
+				},
+				{
+					"type": "input_value",
+					"name": "index",
+					"check": "Number"
+				},
+				{
+					"type": "input_value",
+					"name": "value",
+					"check": "Number"
+				}
+			],
+			"inputsInline": true,
+			"previousStatement": null,
+			"nextStatement": null,
+			"colour": 230,
+			"tooltip": "1次元のグローバル配列に値を書き込みます。",
+			"helpUrl": ""
+		}
+	},
+
+	// ========== グローバル2次元配列書き込み ==========
+	{
+		type: "global_two_dimensional_array_write",
+		wait: 100,
+		instantiate: (blockXml: Element, userProgram: UserProgram, functionName: string, wait: number): CommandBlockBehaviors.CommandBlock => {
+			return new CommandBlockBehaviors.GlobalTwoDimensionalArrayWrite (blockXml, userProgram, functionName, wait);
+		},
+		blocklyJson: {
+			"type": "global_two_dimensional_array_write",
+			"message0": "グローバル2次元配列 %1 %2 %3 行 %4 列目に %5 を書き込み",
+			"args0": [
+				{
+					"type": "field_input",
+					"name": "name",
+					"text": "配列名"
+				},
+				{
+					"type": "input_dummy"
+				},
+				{
+					"type": "input_value",
+					"name": "raw",
+					"check": "Number"
+				},
+				{
+					"type": "input_value",
+					"name": "col",
+					"check": "Number"
+				},
+				{
+					"type": "input_value",
+					"name": "value",
+					"check": "Number"
+				}
+			],
+			"inputsInline": true,
+			"previousStatement": null,
+			"nextStatement": null,
+			"colour": 230,
+			"tooltip": "2次元のグローバル配列に値を書き込みます。",
 			"helpUrl": ""
 		}
 	},

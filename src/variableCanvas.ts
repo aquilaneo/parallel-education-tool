@@ -23,7 +23,7 @@ export class VariableCanvas {
 		this.resize ();
 	}
 
-	drawTable () {
+	drowTable () {
 		if (this.context) {
 			this.context.clearRect (0, 0, this.screenWidth, this.screenHeight);
 
@@ -52,10 +52,10 @@ export class VariableCanvas {
 				this.context.font = `${indexFontSize}px serif`;
 				this.context.fillStyle = "black";
 				this.context.textAlign = "center";
-				for (let raw = 0; raw < this.twoDimensionalArrays[key].length; raw++) {
+				for (let row = 0; row < this.twoDimensionalArrays[key].length; row++) {
 					const indexX = originX + nameWidth;
-					const indexY = cellHeight * raw + originY;
-					this.context.fillText (raw.toString (), indexX - indexFontSize, indexY + indexFontSize / 2 + cellHeight / 2);
+					const indexY = cellHeight * row + originY;
+					this.context.fillText (row.toString (), indexX - indexFontSize, indexY + indexFontSize / 2 + cellHeight / 2);
 				}
 				for (let col = 0; col < this.twoDimensionalArrays[key][0].length; col++) {
 					const indexX = cellWidth * col + originX + nameWidth;
@@ -65,14 +65,14 @@ export class VariableCanvas {
 				// 表本体を描画
 				this.context.font = `${tableFontSize}px serif`;
 				this.context.textAlign = "center";
-				for (let raw = 0; raw < this.twoDimensionalArrays[key].length; raw++) {
-					for (let col = 0; col < this.twoDimensionalArrays[key][raw].length; col++) {
+				for (let row = 0; row < this.twoDimensionalArrays[key].length; row++) {
+					for (let col = 0; col < this.twoDimensionalArrays[key][row].length; col++) {
 						// セルの左上座標を定義
 						const cellX = cellWidth * col + originX + nameWidth;
-						const cellY = cellHeight * raw + originY;
+						const cellY = cellHeight * row + originY;
 
 						// セルを描画
-						this.context.fillStyle = colors[(raw + col) % 2];
+						this.context.fillStyle = colors[(row + col) % 2];
 						this.context.fillRect (cellX, cellY, cellWidth, cellHeight);
 
 						// 枠線描画
@@ -81,7 +81,7 @@ export class VariableCanvas {
 
 						// 値を描画
 						this.context.fillStyle = "black";
-						this.context.fillText (this.twoDimensionalArrays[key][raw][col].toString (), cellX + cellWidth / 2, cellY + tableFontSize / 2 + cellHeight / 2);
+						this.context.fillText (this.twoDimensionalArrays[key][row][col].toString (), cellX + cellWidth / 2, cellY + tableFontSize / 2 + cellHeight / 2);
 					}
 				}
 
@@ -97,7 +97,7 @@ export class VariableCanvas {
 			this.canvas.setAttribute ("width", this.screenWidth.toString ());
 			this.canvas.setAttribute ("height", this.screenHeight.toString ());
 
-			this.drawTable ();
+			this.drowTable ();
 		}
 	}
 }
