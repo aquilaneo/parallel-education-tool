@@ -4,26 +4,15 @@ export class VariableCanvas {
 	screenWidth: number = 0;
 	screenHeight: number = 0;
 
-	oneDimensionalArrays: { [key: string]: number[] } = {};
-	twoDimensionalArrays: { [key: string]: number[][] } = {};
-
-	initialize (canvas: HTMLCanvasElement, oneDimensionalArrays: { [key: string]: number[] }, twoDimensionalArrays: { [key: string]: number[][] }) {
+	initialize (canvas: HTMLCanvasElement) {
 		// Canvas関係
 		this.canvas = canvas;
 		this.context = this.canvas.getContext ("2d");
-
-		// グローバルデータ
-		this.oneDimensionalArrays = oneDimensionalArrays;
-		this.twoDimensionalArrays = twoDimensionalArrays;
-
-		// リサイズ・解像度周りの処理
-		window.onresize = () => {
-			this.resize ();
-		};
+		// 解像度設定
 		this.resize ();
 	}
 
-	drawTable () {
+	drawTable (oneDimensionalArrays: { [key: string]: number[] }, twoDimensionalArrays: { [key: string]: number[][] }) {
 		if (this.context) {
 			this.context.clearRect (0, 0, this.screenWidth, this.screenHeight);
 
@@ -41,23 +30,23 @@ export class VariableCanvas {
 			// 表を描画
 			let originX = xOffset;
 			let originY = yOffset;
-			for (const key of Object.keys (this.twoDimensionalArrays)) {
+			for (const key of Object.keys (twoDimensionalArrays)) {
 				// 配列の名前を表示
 				this.context.font = `${nameFontSize}px serif`;
 				this.context.fillStyle = "black";
 				this.context.textAlign = "left";
-				this.context.fillText (key, originX, originY + (this.twoDimensionalArrays[key].length * cellHeight) / 2 + nameFontSize / 2);
+				this.context.fillText (key, originX, originY + (twoDimensionalArrays[key].length * cellHeight) / 2 + nameFontSize / 2);
 
 				// 表の左と上にインデックス番号を振る
 				this.context.font = `${indexFontSize}px serif`;
 				this.context.fillStyle = "black";
 				this.context.textAlign = "center";
-				for (let row = 0; row < this.twoDimensionalArrays[key].length; row++) {
+				for (let row = 0; row < twoDimensionalArrays[key].length; row++) {
 					const indexX = originX + nameWidth;
 					const indexY = cellHeight * row + originY;
 					this.context.fillText (row.toString (), indexX - indexFontSize, indexY + indexFontSize / 2 + cellHeight / 2);
 				}
-				for (let col = 0; col < this.twoDimensionalArrays[key][0].length; col++) {
+				for (let col = 0; col < twoDimensionalArrays[key][0].length; col++) {
 					const indexX = cellWidth * col + originX + nameWidth;
 					this.context.fillText (col.toString (), indexX + cellWidth / 2, originY - indexFontSize / 2);
 				}
@@ -65,8 +54,8 @@ export class VariableCanvas {
 				// 表本体を描画
 				this.context.font = `${tableFontSize}px serif`;
 				this.context.textAlign = "center";
-				for (let row = 0; row < this.twoDimensionalArrays[key].length; row++) {
-					for (let col = 0; col < this.twoDimensionalArrays[key][row].length; col++) {
+				for (let row = 0; row < twoDimensionalArrays[key].length; row++) {
+					for (let col = 0; col < twoDimensionalArrays[key][row].length; col++) {
 						// セルの左上座標を定義
 						const cellX = cellWidth * col + originX + nameWidth;
 						const cellY = cellHeight * row + originY;
@@ -81,11 +70,11 @@ export class VariableCanvas {
 
 						// 値を描画
 						this.context.fillStyle = "black";
-						this.context.fillText (this.twoDimensionalArrays[key][row][col].toString (), cellX + cellWidth / 2, cellY + tableFontSize / 2 + cellHeight / 2);
+						this.context.fillText (twoDimensionalArrays[key][row][col].toString (), cellX + cellWidth / 2, cellY + tableFontSize / 2 + cellHeight / 2);
 					}
 				}
 
-				originY += cellHeight * this.twoDimensionalArrays[key].length + yOffset; // 次の表に向けoriginYを加算
+				originY += cellHeight * twoDimensionalArrays[key].length + yOffset; // 次の表に向けoriginYを加算
 			}
 		}
 	}
@@ -96,8 +85,6 @@ export class VariableCanvas {
 			this.screenHeight = this.canvas.clientHeight * window.devicePixelRatio;
 			this.canvas.setAttribute ("width", this.screenWidth.toString ());
 			this.canvas.setAttribute ("height", this.screenHeight.toString ());
-
-			this.drawTable ();
 		}
 	}
 }

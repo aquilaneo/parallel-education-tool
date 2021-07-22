@@ -3,6 +3,7 @@ import Blockly from "blockly";
 import * as Ja from "blockly/msg/ja";
 
 import Thread from "./Thread";
+import {Mission} from "./mission";
 import * as BlockSettings from "./blockSettings";
 import * as BlockDefinitions from "./blockDefinitions";
 import * as VariableCanvas from "./variableCanvas";
@@ -31,9 +32,20 @@ function App () {
 		[11, 12]
 	];
 
+	const [mission, setMission] = useState (new Mission ({}, twoDimensionalArrays,
+		() => {
+			variableCanvas.drawTable (mission.currentOneDimensionalArrays, mission.currentTwoDimensionalArrays);
+		}));
+
 	useEffect (() => {
 		const canvas = document.getElementById ("variable-canvas") as HTMLCanvasElement;
-		variableCanvas.initialize (canvas, {}, twoDimensionalArrays);
+		variableCanvas.initialize (canvas);
+		variableCanvas.drawTable (mission.currentOneDimensionalArrays, mission.currentTwoDimensionalArrays);
+		// リサイズ処理
+		window.onresize = () => {
+			variableCanvas.resize ();
+			variableCanvas.drawTable (mission.currentOneDimensionalArrays, mission.currentTwoDimensionalArrays);
+		};
 	});
 
 	return (
@@ -61,14 +73,14 @@ function App () {
 							</button>
 							<button onClick={() => {
 								if (editorRef.current) {
-									editorRef.current.parseBlocks (variableCanvas, {}, twoDimensionalArrays);
+									editorRef.current.parseBlocks (variableCanvas, mission);
 								}
 							}}>
 								ブロックをパース
 							</button>
 							<button onClick={() => {
 								if (editorRef.current) {
-									editorRef.current.executeEntryFunction (variableCanvas, {}, twoDimensionalArrays);
+									editorRef.current.executeEntryFunction (variableCanvas, mission);
 								}
 							}}>
 								ブロックを実行
@@ -168,24 +180,23 @@ class Editor extends React.Component {
 		}
 	}
 
-	parseBlocks (variableCanvas: VariableCanvas.VariableCanvas,
-				 initialOneDimensionalArrays: { [key: string]: number[] }, initialTwoDimensionalArrays: { [key: string]: number[][] }) {
+	parseBlocks (variableCanvas: VariableCanvas.VariableCanvas, mission: Mission) {
 		// ワークスペース上のブロックをプログラム化
 		if (this.workspace) {
 			const xml = Blockly.Xml.workspaceToDom (this.workspace);
-			return new BlockDefinitions.UserProgram (xml, variableCanvas, initialOneDimensionalArrays, initialTwoDimensionalArrays);
+			return new BlockDefinitions.UserProgram (xml, mission);
 		} else {
 			return null;
 		}
 	}
 
-	async executeEntryFunction (variableCanvas: VariableCanvas.VariableCanvas,
-								initialOneDimensionalArrays: { [key: string]: number[] }, initialTwoDimensionalArrays: { [key: string]: number[][] }) {
-		const userProgram = this.parseBlocks (variableCanvas, initialOneDimensionalArrays, initialTwoDimensionalArrays);
+	async executeEntryFunction (variableCanvas: VariableCanvas.VariableCanvas, mission: Mission) {
+		const userProgram = this.parseBlocks (variableCanvas, mission);
 		if (userProgram) {
 			// const thread = new BlockDefinitions.Thread ("スレッド", "スレッド", userProgram);
 			// thread.execute ();
-			variableCanvas.drawTable (); // グローバル配列Canvasを初期化
+			mission.resetGlobalArray ();
+			variableCanvas.drawTable (mission.currentOneDimensionalArrays, mission.currentTwoDimensionalArrays); // グローバル配列Canvasを初期化
 			await userProgram.executeEntryFunction ();
 		}
 	}
