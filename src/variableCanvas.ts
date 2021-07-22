@@ -23,7 +23,7 @@ export class VariableCanvas {
 		this.resize ();
 	}
 
-	drowTable () {
+	drawTable () {
 		if (this.context) {
 			this.context.clearRect (0, 0, this.screenWidth, this.screenHeight);
 
@@ -97,7 +97,7 @@ export class VariableCanvas {
 			this.canvas.setAttribute ("width", this.screenWidth.toString ());
 			this.canvas.setAttribute ("height", this.screenHeight.toString ());
 
-			this.drowTable ();
+			this.drawTable ();
 		}
 	}
 }

@@ -21,17 +21,18 @@ function App () {
 
 	const [stopwatch, setStopwatch] = useState (new BlockDefinitions.Stopwatch ());
 
+	const twoDimensionalArrays: { [key: string]: number[][] } = {};
+	twoDimensionalArrays["Array1"] = [
+		[1, 2, 3, 4],
+		[5, 6, 7, 8]
+	];
+	twoDimensionalArrays["Array2"] = [
+		[9, 10],
+		[11, 12]
+	];
+
 	useEffect (() => {
 		const canvas = document.getElementById ("variable-canvas") as HTMLCanvasElement;
-		const twoDimensionalArrays: { [key: string]: number[][] } = {};
-		twoDimensionalArrays["Array1"] = [
-			[1, 2, 3, 4],
-			[5, 6, 7, 8]
-		];
-		twoDimensionalArrays["Array2"] = [
-			[9, 10],
-			[11, 12]
-		]
 		variableCanvas.initialize (canvas, {}, twoDimensionalArrays);
 	});
 
@@ -60,14 +61,14 @@ function App () {
 							</button>
 							<button onClick={() => {
 								if (editorRef.current) {
-									editorRef.current.parseBlocks ();
+									editorRef.current.parseBlocks (variableCanvas, {}, twoDimensionalArrays);
 								}
 							}}>
 								ブロックをパース
 							</button>
 							<button onClick={() => {
 								if (editorRef.current) {
-									editorRef.current.executeEntryFunction ();
+									editorRef.current.executeEntryFunction (variableCanvas, {}, twoDimensionalArrays);
 								}
 							}}>
 								ブロックを実行
@@ -167,21 +168,24 @@ class Editor extends React.Component {
 		}
 	}
 
-	parseBlocks () {
+	parseBlocks (variableCanvas: VariableCanvas.VariableCanvas,
+				 initialOneDimensionalArrays: { [key: string]: number[] }, initialTwoDimensionalArrays: { [key: string]: number[][] }) {
 		// ワークスペース上のブロックをプログラム化
 		if (this.workspace) {
 			const xml = Blockly.Xml.workspaceToDom (this.workspace);
-			return new BlockDefinitions.UserProgram (xml);
+			return new BlockDefinitions.UserProgram (xml, variableCanvas, initialOneDimensionalArrays, initialTwoDimensionalArrays);
 		} else {
 			return null;
 		}
 	}
 
-	async executeEntryFunction () {
-		const userProgram = this.parseBlocks ();
+	async executeEntryFunction (variableCanvas: VariableCanvas.VariableCanvas,
+								initialOneDimensionalArrays: { [key: string]: number[] }, initialTwoDimensionalArrays: { [key: string]: number[][] }) {
+		const userProgram = this.parseBlocks (variableCanvas, initialOneDimensionalArrays, initialTwoDimensionalArrays);
 		if (userProgram) {
 			// const thread = new BlockDefinitions.Thread ("スレッド", "スレッド", userProgram);
 			// thread.execute ();
+			variableCanvas.drawTable (); // グローバル配列Canvasを初期化
 			await userProgram.executeEntryFunction ();
 		}
 	}

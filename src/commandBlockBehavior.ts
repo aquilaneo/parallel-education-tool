@@ -348,6 +348,11 @@ export class GlobalTwoDimensionalArrayWrite extends CommandBlock {
 		const row = this.row.executeBlock ();
 		const col = this.col.executeBlock ();
 		const value = this.value.executeBlock ();
+		assertIsNumber (row);
+		assertIsNumber (col);
+		assertIsNumber (value);
+
+		this.userProgram.writeGlobalTwoDimensionalArrays (this.name, row, col, value);
 	}
 }
 

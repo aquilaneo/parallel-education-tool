@@ -3,17 +3,20 @@
 import * as CommandBlockBehaviors from "./commandBlockBehavior";
 import * as ValueBlockBehaviors from "./valueBlockBehaviors";
 import {assertIsDefined} from "./common";
+import {VariableCanvas} from "./variableCanvas";
 
 export class UserProgram {
 	entryFunction: CommandBlockBehaviors.EntryPointBlock | null = null; // エントリポイント
 	functions: CommandBlockBehaviors.FunctionDefinitionBlock[] = []; // 関数一覧
 	globalVariables: NumberVariable[] = [];
-	globalOneDimensionalArrays: { [key: string]: number }[] = []; // グローバル1次元配列
-	globalTwoDimensionalArrays: { [key: string]: number[] }[] = []; // グローバル2次元配列
+	globalOneDimensionalArrays: { [key: string]: number[] } = {}; // グローバル1次元配列
+	globalTwoDimensionalArrays: { [key: string]: number[][] } = {}; // グローバル2次元配列
 	stopwatches: { key: number, sw: Stopwatch } [] = []; // ストップウォッチ一覧
 	threads: Thread[] = [];
+	variableCanvas: VariableCanvas;
 
-	constructor (xml: Element) {
+	constructor (xml: Element, variableCanvas: VariableCanvas,
+				 initialOneDimensionalArrays: { [key: string]: number[] }, initialTwoDimensionalArrays: { [key: string]: number[][] }) {
 		console.log (xml);
 
 		// ワークスペース内にあるエントリポイントと全ての関数定義ブロックをリストアップ
@@ -32,6 +35,12 @@ export class UserProgram {
 		this.functions = functionsXml.map ((functionXml) => {
 			return CommandBlockBehaviors.FunctionDefinitionBlock.constructBlock (functionXml, this)[0];
 		});
+
+		// グローバル配列の初期値をコピー
+		this.globalOneDimensionalArrays = initialOneDimensionalArrays;
+		this.globalTwoDimensionalArrays = initialTwoDimensionalArrays;
+
+		this.variableCanvas = variableCanvas;
 
 		console.log ("エントリポイント", this.entryFunction);
 		console.log ("関数", this.functions);
@@ -99,6 +108,20 @@ export class UserProgram {
 		const newVariable = new NumberVariable (variableName, initValue)
 		this.globalVariables.push (newVariable);
 		return newVariable;
+	}
+
+	writeGlobalTwoDimensionalArrays (arrayName: string, row: number, col: number, value: number) {
+		const array = this.globalTwoDimensionalArrays[arrayName];
+		if (array) {
+			if (row < array.length && col < array[0].length) {
+				array[row][col] = value;
+				this.variableCanvas.drawTable ();
+			} else {
+				console.error (`行:${row}, 列${col} は2次元配列 ${arrayName} の範囲外です！`);
+			}
+		} else {
+			console.error (`2次元配列 ${arrayName} が見つかりません！`);
+		}
 	}
 
 	readLocalVariable (functionName: string, variableName: string) {
@@ -484,7 +507,7 @@ export const commandBlockDefinitions = [
 				},
 				{
 					"type": "input_value",
-					"name": "raw",
+					"name": "row",
 					"check": "Number"
 				},
 				{
