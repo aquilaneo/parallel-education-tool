@@ -1,4 +1,4 @@
-import React, {useState, useRef, useEffect} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import Blockly from "blockly";
 import * as Ja from "blockly/msg/ja";
 
@@ -140,7 +140,7 @@ function App () {
 }
 
 class Editor extends React.Component {
-	workspace: Blockly.Workspace | null = null;
+	workspace: Blockly.WorkspaceSvg | null = null;
 	initialWorkspace = "<xml xmlns=\"https://developers.google.com/blockly/xml\"><block type=\"entry_point\" id=\"5e{JeNdzKRK}Nyg(x2Ul\" x=\"58\" y=\"59\"></block></xml>";
 
 	componentDidMount () {
@@ -157,6 +157,40 @@ class Editor extends React.Component {
 			toolbox: document,
 			disable: true
 		});
+
+		// ========== 変数関連設定 ==========
+		// 数値型変数カテゴリの定義
+		this.workspace.registerToolboxCategoryCallback ("NUMBER_VARIABLE", (workspace) => {
+			const xmlStringList = ["<button text=\"数値型変数の作成...\" callbackKey=\"createNumberVariableButtonPressed\"></button>"];
+
+			// 数値型変数をリストアップ
+			const numberVariables = workspace.getVariablesOfType ("Number");
+			// 数値型変数あったら代入ブロックとそれぞれの取得ブロックを追加
+			if (numberVariables.length > 0) {
+				const value = `<value name="value"><shadow type="math_number"><field name="NUM">0</field></shadow></value>`;
+				let field = `<field name="variable" id="${numberVariables[0].getId ()}" variabletype="Number"></field>`;
+				xmlStringList.push (`<block type="variables_set_number">${field}${value}</block>`);
+				for (const numberVariable of numberVariables) {
+					field = `<field name="variable" id="${numberVariable.getId ()}" variabletype="Number"></field>`;
+					xmlStringList.push (`<block type="variables_get_number">${field}</block>`);
+				}
+			}
+
+			// xmlStringListをElement型にして返す
+			return xmlStringList.map ((item) => {
+				return Blockly.Xml.textToDom (item);
+			});
+		});
+		// 数値型変数カテゴリのボタン挙動定義
+		this.workspace.registerButtonCallback ("createNumberVariableButtonPressed", () => {
+			if (this.workspace) {
+				const name = window.prompt ("変数名を入力");
+				if (name && name !== "") {
+					this.workspace.createVariable (name, "Number");
+				}
+			}
+		});
+		// ================================
 
 		// 最初のワークスペースを読み込み
 		const initialWorkspaceDom = Blockly.Xml.textToDom (this.initialWorkspace);

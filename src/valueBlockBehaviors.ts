@@ -268,6 +268,20 @@ export class TextCalculateBlock extends ValueBlock {
 	}
 }
 
+export class VariablesGetNumber extends ValueBlock {
+	variable: string;
+
+	constructor (blockXml: Element, userProgram: UserProgram, functionName: string, wait: number) {
+		super (blockXml, userProgram, functionName, wait);
+		const variable = super.getField ("variable");
+		this.variable = variable ? variable : "";
+	}
+
+	executeBlock () {
+		return this.userProgram.readLocalVariable (this.functionName, this.variable);
+	}
+}
+
 export class LocalVariableReadBlock extends ValueBlock {
 	name: string;
 

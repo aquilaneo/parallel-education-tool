@@ -364,6 +364,39 @@ export const commandBlockDefinitions = [
 		}
 	},
 
+	// ========== 数値型変数書き込み ==========
+	{
+		type: "variables_set_number",
+		wait: 100,
+		instantiate: (blockXml: Element, userProgram: UserProgram, functionName: string, wait: number): CommandBlockBehaviors.CommandBlock => {
+			return new CommandBlockBehaviors.VariablesSetNumber (blockXml, userProgram, functionName, wait);
+		},
+		blocklyJson: {
+			"type": "variables_set_number",
+			"message0": "%{BKY_VARIABLES_SET}",
+			"args0": [
+				{
+					"type": "field_variable",
+					"name": "variable",
+					"variable": "%{BKY_VARIABLES_DEFAULT_NAME}",
+					"variableTypes": ["Number"],
+					"defaultType": "Number"
+				},
+				{
+					"type": "input_value",
+					"name": "value",
+					"check": "Number"
+				}
+			],
+			"previousStatement": null,
+			"nextStatement": null,
+			"style": "variable_blocks",
+			"tooltip": "%{BKY_VARIABLES_SET_TOOLTIP}",
+			"helpUrl": "%{BKY_VARIABLES_SET_HELPURL}",
+			"extensions": ["contextMenu_variableSetterGetter"]
+		}
+	},
+
 	// ========== ローカル変数書き込み ==========
 	{
 		type: "local_variable_write",
@@ -789,7 +822,7 @@ export const valueBlockDefinitions = [
 		}
 	},
 
-	// ========== 文字列計算
+	// ========== 文字列計算 ==========
 	{
 		type: "str_arithmetic",
 		wait: 100,
@@ -825,6 +858,33 @@ export const valueBlockDefinitions = [
 			"tooltip": "",
 			"helpUrl": ""
 		}
+	},
+
+	// ========== 数値型変数読み込み ==========
+	{
+		type: "variables_get_number",
+		wait: 100,
+		instantiate: (blockXml: Element, userProgram: UserProgram, functionName: string, wait: number): ValueBlockBehaviors.ValueBlock => {
+			return new ValueBlockBehaviors.VariablesGetNumber (blockXml, userProgram, functionName, wait);
+		},
+		blocklyJson: {
+			"type": "variables_get_number",
+			"message0": "%1",
+			"args0": [
+				{
+					"type": "field_variable",
+					"name": "variable",
+					"variable": "%{BKY_VARIABLES_DEFAULT_NAME}",
+					"variableTypes": ["Number"],
+					"defaultType": "Number"
+				}
+			],
+			"output": "Number",
+			"style": "variable_blocks",
+			"helpUrl": "%{BKY_VARIABLES_GET_HELPURL}",
+			"tooltip": "%{BKY_VARIABLES_GET_TOOLTIP}",
+			"extensions": ["contextMenu_variableSetterGetter"]
+		},
 	},
 
 	// ========== ローカル変数読み込み ==========
