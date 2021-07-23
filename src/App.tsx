@@ -188,9 +188,14 @@ class Editor extends React.Component {
 			const numberVariables = workspace.getVariablesOfType ("Number");
 			// 数値型変数あったら代入ブロックとそれぞれの取得ブロックを追加
 			if (numberVariables.length > 0) {
-				const value = `<value name="value"><shadow type="math_number"><field name="NUM">0</field></shadow></value>`;
+				// 数値型変数書き込み
 				let field = `<field name="variable" id="${numberVariables[0].getId ()}" variabletype="Number"></field>`;
+				let value = `<value name="value"><shadow type="math_number"><field name="NUM">0</field></shadow></value>`;
 				xmlStringList.push (`<block type="variables_set_number">${field}${value}</block>`);
+				// 数値型変数加算
+				value = `<value name="value"><shadow type="math_number"><field name="NUM">1</field></shadow></value>`;
+				xmlStringList.push (`<block type="variables_add_number">${field}${value}</block>`);
+				// 数値型変数読み込み
 				for (const numberVariable of numberVariables) {
 					field = `<field name="variable" id="${numberVariable.getId ()}" variabletype="Number"></field>`;
 					xmlStringList.push (`<block type="variables_get_number">${field}</block>`);
@@ -203,9 +208,11 @@ class Editor extends React.Component {
 			const stringVariables = workspace.getVariablesOfType ("String");
 			// 文字列型変数あったら代入ブロックとそれぞれの取得ブロックを追加
 			if (stringVariables.length > 0) {
-				const value = `<value name="value"><shadow type="text"></shadow></value>`;
+				// 文字列型変数書き込み
 				let field = `<field name="variable" id="${stringVariables[0].getId ()}" variabletype="String"></field>`;
+				const value = `<value name="value"><shadow type="text"></shadow></value>`;
 				xmlStringList.push (`<block type="variables_set_string">${field}${value}</block>`);
+				// 文字列型変数読み込み
 				for (const numberVariable of stringVariables) {
 					field = `<field name="variable" id="${numberVariable.getId ()}" variabletype="String"></field>`;
 					xmlStringList.push (`<block type="variables_get_string">${field}</block>`);

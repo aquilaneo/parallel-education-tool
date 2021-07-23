@@ -274,6 +274,29 @@ export class VariablesSetNumber extends CommandBlock {
 	}
 }
 
+export class VariablesAddNumber extends CommandBlock {
+	variable: string;
+	value: ValueBlockBehaviors.ValueBlock | null;
+
+	constructor (blockXml: Element, userProgram: BlockDefinitions.UserProgram, functionName: string, wait: number) {
+		super (blockXml, userProgram, functionName, wait);
+
+		const variable = super.getField ("variable");
+		this.variable = variable ? variable : "";
+		const value = super.getValue ("value");
+		this.value = value ? ValueBlockBehaviors.ValueBlock.constructBlock (value, userProgram, functionName) : null;
+	}
+
+	async executeBlock () {
+		assertIsDefined (this.value);
+
+		const value = this.value.executeBlock ();
+		assertIsNumber (value);
+		const result = this.userProgram.readLocalNumberVariable (this.functionName, this.variable) + value;
+		this.userProgram.writeLocalNumberVariable (this.functionName, this.variable, result);
+	}
+}
+
 export class VariablesSetString extends CommandBlock {
 	variable: string;
 	value: ValueBlockBehaviors.ValueBlock | null;

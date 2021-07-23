@@ -451,6 +451,39 @@ export const commandBlockDefinitions = [
 		}
 	},
 
+	// ========== 数値型変数加算 ==========
+	{
+		type: "variables_add_number",
+		wait: 100,
+		instantiate: (blockXml: Element, userProgram: UserProgram, functionName: string, wait: number): CommandBlockBehaviors.CommandBlock => {
+			return new CommandBlockBehaviors.VariablesAddNumber (blockXml, userProgram, functionName, wait);
+		},
+		blocklyJson: {
+			"type": "variables_add_number",
+			"message0": "%1 に %2 を加算",
+			"args0": [
+				{
+					"type": "field_variable",
+					"name": "variable",
+					"variable": "%{BKY_VARIABLES_DEFAULT_NAME}",
+					"variableTypes": ["Number"],
+					"defaultType": "Number"
+				},
+				{
+					"type": "input_value",
+					"name": "value",
+					"check": "Number"
+				}
+			],
+			"previousStatement": null,
+			"nextStatement": null,
+			"style": "variable_blocks",
+			// "colour": 330,
+			"tooltip": "数値型変数に値を足します。",
+			"helpUrl": ""
+		}
+	},
+
 	// ========== 文字列型変数書き込み ==========
 	{
 		type: "variables_set_string",
