@@ -211,24 +211,14 @@ export const getBlockListXml = () => {
 				</value>				
 			</block>
         </category>
-        		
+        
 		
 		
-		<category name="数値型変数" colour="330" custom="NUMBER_VARIABLE"></category>
-		<category name="文字列型変数" colour="330" custom="STRING_VARIABLE"></category>
+		<category name="ローカル変数" colour="330" custom="TYPED_VARIABLE"></category>
         
         
-        <category name="変数/配列">
-        	<block type="local_variable_write">
-        		<value name="value">
-        			<shadow type="math_number">
-        				<field name="NUM">0</field>
-					</shadow>
-				</value>
-			</block>
-			
-			<block type="local_variable_read"></block>
-			
+        
+        <category name="グローバル配列">
 			<block type="global_variable_write">
 			     <value name="value">
         			<shadow type="math_number">

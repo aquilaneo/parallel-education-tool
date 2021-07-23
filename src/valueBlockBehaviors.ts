@@ -296,20 +296,6 @@ export class VariablesGetString extends ValueBlock {
 	}
 }
 
-export class LocalVariableReadBlock extends ValueBlock {
-	name: string;
-
-	constructor (blockXml: Element, userProgram: UserProgram, functionName: string, wait: number) {
-		super (blockXml, userProgram, functionName, wait);
-		const name = super.getField ("name");
-		this.name = name ? name : "";
-	}
-
-	executeBlock () {
-		return this.userProgram.readLocalNumberVariable (this.functionName, this.name);
-	}
-}
-
 export class GlobalVariableReadBlock extends ValueBlock {
 	name: string;
 

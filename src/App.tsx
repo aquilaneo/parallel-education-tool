@@ -159,10 +159,31 @@ class Editor extends React.Component {
 		});
 
 		// ========== 変数関連設定 ==========
-		// 数値型変数カテゴリの定義
-		this.workspace.registerToolboxCategoryCallback ("NUMBER_VARIABLE", (workspace) => {
-			const xmlStringList = ["<button text=\"数値型変数の作成...\" callbackKey=\"createNumberVariableButtonPressed\"></button>"];
+		// 数値型変数追加ボタンの定義
+		this.workspace.registerButtonCallback ("createNumberVariableButtonPressed", () => {
+			if (this.workspace) {
+				const name = window.prompt ("変数名を入力");
+				if (name && name !== "") {
+					this.workspace.createVariable (name, "Number");
+				}
+			}
+		});
+		// 文字列型変数追加ボタンの定義
+		this.workspace.registerButtonCallback ("createStringVariableButtonPressed", () => {
+			if (this.workspace) {
+				const name = window.prompt ("変数名を入力");
+				if (name && name !== "") {
+					this.workspace.createVariable (name, "String");
+				}
+			}
+		});
 
+		// ローカル変数カテゴリの定義
+		this.workspace.registerToolboxCategoryCallback ("TYPED_VARIABLE", (workspace) => {
+			const xmlStringList = [];
+
+			// 数値型変数追加ボタン
+			xmlStringList.push ("<button text=\"数値型変数の作成...\" callbackKey=\"createNumberVariableButtonPressed\"></button>");
 			// 数値型変数をリストアップ
 			const numberVariables = workspace.getVariablesOfType ("Number");
 			// 数値型変数あったら代入ブロックとそれぞれの取得ブロックを追加
@@ -176,29 +197,11 @@ class Editor extends React.Component {
 				}
 			}
 
-			// xmlStringListをElement型にして返す
-			return xmlStringList.map ((item) => {
-				return Blockly.Xml.textToDom (item);
-			});
-		});
-
-		// 数値型変数カテゴリのボタン挙動定義
-		this.workspace.registerButtonCallback ("createNumberVariableButtonPressed", () => {
-			if (this.workspace) {
-				const name = window.prompt ("変数名を入力");
-				if (name && name !== "") {
-					this.workspace.createVariable (name, "Number");
-				}
-			}
-		});
-
-		// 文字列型変数カテゴリの定義
-		this.workspace.registerToolboxCategoryCallback ("STRING_VARIABLE", (workspace) => {
-			const xmlStringList = ["<button text=\"文字列型変数の作成...\" callbackKey=\"createStringVariableButtonPressed\"></button>"];
-
-			// 数値型変数をリストアップ
+			// 文字列型変数追加ボタン
+			xmlStringList.push ("<button text=\"文字列型変数の作成...\" callbackKey=\"createStringVariableButtonPressed\"></button>");
+			// 文字列型変数をリストアップ
 			const stringVariables = workspace.getVariablesOfType ("String");
-			// 数値型変数あったら代入ブロックとそれぞれの取得ブロックを追加
+			// 文字列型変数あったら代入ブロックとそれぞれの取得ブロックを追加
 			if (stringVariables.length > 0) {
 				const value = `<value name="value"><shadow type="text"></shadow></value>`;
 				let field = `<field name="variable" id="${stringVariables[0].getId ()}" variabletype="String"></field>`;
@@ -213,16 +216,6 @@ class Editor extends React.Component {
 			return xmlStringList.map ((item) => {
 				return Blockly.Xml.textToDom (item);
 			});
-		});
-
-		// 文字列型変数カテゴリのボタン挙動定義
-		this.workspace.registerButtonCallback ("createStringVariableButtonPressed", () => {
-			if (this.workspace) {
-				const name = window.prompt ("変数名を入力");
-				if (name && name !== "") {
-					this.workspace.createVariable (name, "String");
-				}
-			}
 		});
 		// ================================
 

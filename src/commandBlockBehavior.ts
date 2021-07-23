@@ -296,28 +296,6 @@ export class VariablesSetString extends CommandBlock {
 	}
 }
 
-export class LocalVariableWriteBlock extends CommandBlock {
-	name: string;
-	value: ValueBlockBehaviors.ValueBlock | null;
-
-	constructor (blockXml: Element, userProgram: BlockDefinitions.UserProgram, functionName: string, wait: number) {
-		super (blockXml, userProgram, functionName, wait);
-
-		const name = super.getField ("name");
-		this.name = name ? name : "";
-		const value = super.getValue ("value");
-		this.value = value ? ValueBlockBehaviors.ValueBlock.constructBlock (value, userProgram, functionName) : null;
-	}
-
-	async executeBlock () {
-		assertIsDefined (this.value);
-
-		const value = this.value.executeBlock ();
-		assertIsNumber (value);
-		this.userProgram.writeLocalNumberVariable (this.functionName, this.name, value);
-	}
-}
-
 export class GlobalVariableWriteBlock extends CommandBlock {
 	name: string;
 	value: ValueBlockBehaviors.ValueBlock | null;

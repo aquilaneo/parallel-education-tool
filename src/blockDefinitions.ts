@@ -484,40 +484,6 @@ export const commandBlockDefinitions = [
 		}
 	},
 
-	// ========== ローカル変数書き込み ==========
-	{
-		type: "local_variable_write",
-		wait: 100,
-		instantiate: (blockXml: Element, userProgram: UserProgram, functionName: string, wait: number): CommandBlockBehaviors.CommandBlock => {
-			return new CommandBlockBehaviors.LocalVariableWriteBlock (blockXml, userProgram, functionName, wait);
-		},
-		blocklyJson: {
-			"type": "local_variable_write",
-			"message0": "ローカル変数 %1 %2 に %3 を書き込み",
-			"args0": [
-				{
-					"type": "field_input",
-					"name": "name",
-					"text": "変数名"
-				},
-				{
-					"type": "input_dummy"
-				},
-				{
-					"type": "input_value",
-					"name": "value",
-					"check": "Number"
-				}
-			],
-			"inputsInline": true,
-			"previousStatement": null,
-			"nextStatement": null,
-			"colour": 230,
-			"tooltip": "ローカル変数に値を書き込みます。",
-			"helpUrl": ""
-		}
-	},
-
 	// ========== グローバル変数書き込み ==========
 	{
 		type: "global_variable_write",
@@ -999,31 +965,6 @@ export const valueBlockDefinitions = [
 			"tooltip": "%{BKY_VARIABLES_GET_TOOLTIP}",
 			"extensions": ["contextMenu_variableSetterGetter"]
 		},
-	},
-
-	// ========== ローカル変数読み込み ==========
-	{
-		type: "local_variable_read",
-		wait: 100,
-		instantiate: (blockXml: Element, userProgram: UserProgram, functionName: string, wait: number): ValueBlockBehaviors.ValueBlock => {
-			return new ValueBlockBehaviors.LocalVariableReadBlock (blockXml, userProgram, functionName, wait);
-		},
-		blocklyJson: {
-			"type": "local_variable_read",
-			"message0": "ローカル変数 %1",
-			"args0": [
-				{
-					"type": "field_input",
-					"name": "name",
-					"text": "変数名"
-				}
-			],
-			"inputsInline": true,
-			"output": "Number",
-			"colour": 230,
-			"tooltip": "ローカル変数の値を読み込みます。",
-			"helpUrl": ""
-		}
 	},
 
 	// ========== グローバル変数読み込み ==========
