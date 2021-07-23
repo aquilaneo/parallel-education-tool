@@ -214,10 +214,8 @@ export const getBlockListXml = () => {
         		
 		
 		
-		<category name="数値型変数" colour="330" custom="NUMBER_VARIABLE">
-		
-		</category>
-		
+		<category name="数値型変数" colour="330" custom="NUMBER_VARIABLE"></category>
+		<category name="文字列型変数" colour="330" custom="STRING_VARIABLE"></category>
         
         
         <category name="変数/配列">

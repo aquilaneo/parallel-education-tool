@@ -181,12 +181,46 @@ class Editor extends React.Component {
 				return Blockly.Xml.textToDom (item);
 			});
 		});
+
 		// 数値型変数カテゴリのボタン挙動定義
 		this.workspace.registerButtonCallback ("createNumberVariableButtonPressed", () => {
 			if (this.workspace) {
 				const name = window.prompt ("変数名を入力");
 				if (name && name !== "") {
 					this.workspace.createVariable (name, "Number");
+				}
+			}
+		});
+
+		// 文字列型変数カテゴリの定義
+		this.workspace.registerToolboxCategoryCallback ("STRING_VARIABLE", (workspace) => {
+			const xmlStringList = ["<button text=\"文字列型変数の作成...\" callbackKey=\"createStringVariableButtonPressed\"></button>"];
+
+			// 数値型変数をリストアップ
+			const stringVariables = workspace.getVariablesOfType ("String");
+			// 数値型変数あったら代入ブロックとそれぞれの取得ブロックを追加
+			if (stringVariables.length > 0) {
+				const value = `<value name="value"><shadow type="text"></shadow></value>`;
+				let field = `<field name="variable" id="${stringVariables[0].getId ()}" variabletype="String"></field>`;
+				xmlStringList.push (`<block type="variables_set_string">${field}${value}</block>`);
+				for (const numberVariable of stringVariables) {
+					field = `<field name="variable" id="${numberVariable.getId ()}" variabletype="String"></field>`;
+					xmlStringList.push (`<block type="variables_get_string">${field}</block>`);
+				}
+			}
+
+			// xmlStringListをElement型にして返す
+			return xmlStringList.map ((item) => {
+				return Blockly.Xml.textToDom (item);
+			});
+		});
+
+		// 文字列型変数カテゴリのボタン挙動定義
+		this.workspace.registerButtonCallback ("createStringVariableButtonPressed", () => {
+			if (this.workspace) {
+				const name = window.prompt ("変数名を入力");
+				if (name && name !== "") {
+					this.workspace.createVariable (name, "String");
 				}
 			}
 		});

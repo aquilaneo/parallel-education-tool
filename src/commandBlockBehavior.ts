@@ -270,7 +270,29 @@ export class VariablesSetNumber extends CommandBlock {
 
 		const value = this.value.executeBlock ();
 		assertIsNumber (value);
-		this.userProgram.writeLocalVariable (this.functionName, this.variable, value);
+		this.userProgram.writeLocalNumberVariable (this.functionName, this.variable, value);
+	}
+}
+
+export class VariablesSetString extends CommandBlock {
+	variable: string;
+	value: ValueBlockBehaviors.ValueBlock | null;
+
+	constructor (blockXml: Element, userProgram: BlockDefinitions.UserProgram, functionName: string, wait: number) {
+		super (blockXml, userProgram, functionName, wait);
+
+		const variable = super.getField ("variable");
+		this.variable = variable ? variable : "";
+		const value = super.getValue ("value");
+		this.value = value ? ValueBlockBehaviors.ValueBlock.constructBlock (value, userProgram, functionName) : null;
+	}
+
+	async executeBlock () {
+		assertIsDefined (this.value);
+
+		const value = this.value.executeBlock ();
+		assertIsString (value);
+		this.userProgram.writeLocalStringVariable (this.functionName, this.variable, value);
 	}
 }
 
@@ -292,7 +314,7 @@ export class LocalVariableWriteBlock extends CommandBlock {
 
 		const value = this.value.executeBlock ();
 		assertIsNumber (value);
-		this.userProgram.writeLocalVariable (this.functionName, this.name, value);
+		this.userProgram.writeLocalNumberVariable (this.functionName, this.name, value);
 	}
 }
 
@@ -380,7 +402,8 @@ export class GlobalTwoDimensionalArrayWrite extends CommandBlock {
 
 export class FunctionDefinitionBlock extends CommandBlock {
 	statement: CommandBlock[];
-	localVariables: BlockDefinitions.NumberVariable[] = [];
+	localNumberVariables: BlockDefinitions.NumberVariable[] = [];
+	localStringVariables: BlockDefinitions.StringVariable[] = [];
 
 	constructor (blockXml: Element, userProgram: BlockDefinitions.UserProgram, wait: number) {
 		super (blockXml, userProgram, "", wait);
@@ -401,29 +424,55 @@ export class FunctionDefinitionBlock extends CommandBlock {
 		await this.userProgram.executeBlockList (this.statement);
 	}
 
-	readLocalVariable (variableName: string) {
-		return this.getLocalVariable (variableName).readValue ();
+	readLocalNumberVariable (variableName: string) {
+		return this.getLocalNumberVariable (variableName).readValue ();
 	}
 
-	writeLocalVariable (variableName: string, value: number) {
-		this.getLocalVariable (variableName).writeValue (value);
+	readLocalStringVariable (variableName: string) {
+		return this.getLocalStringVariable (variableName).readValue ();
 	}
 
-	getLocalVariable (variableName: string) {
-		const searchedVariable = this.localVariables.find ((localVariable) => {
+	writeLocalNumberVariable (variableName: string, value: number) {
+		this.getLocalNumberVariable (variableName).writeValue (value);
+	}
+
+	writeLocalStringVariable (variableName: string, value: string) {
+		this.getLocalStringVariable (variableName).writeValue (value);
+	}
+
+	getLocalNumberVariable (variableName: string) {
+		const searchedVariable = this.localNumberVariables.find ((localVariable) => {
 			return localVariable.variableName === variableName;
 		});
 		// なかったら新しい変数を作る
 		if (searchedVariable) {
 			return searchedVariable;
 		} else {
-			return this.addLocalVariable (variableName, 0);
+			return this.addLocalNumberVariable (variableName, 0);
 		}
 	}
 
-	addLocalVariable (variableName: string, initValue: number) {
+	getLocalStringVariable (variableName: string) {
+		const searchedVariable = this.localStringVariables.find ((localVariable) => {
+			return localVariable.variableName === variableName;
+		});
+		// なかったら新しい変数を作る
+		if (searchedVariable) {
+			return searchedVariable;
+		} else {
+			return this.addLocalStringVariable (variableName, "");
+		}
+	}
+
+	addLocalNumberVariable (variableName: string, initValue: number) {
 		const newVariable = new BlockDefinitions.NumberVariable (variableName, initValue);
-		this.localVariables.push (newVariable);
+		this.localNumberVariables.push (newVariable);
+		return newVariable;
+	}
+
+	addLocalStringVariable (variableName: string, initValue: string) {
+		const newVariable = new BlockDefinitions.StringVariable (variableName, initValue);
+		this.localStringVariables.push (newVariable);
 		return newVariable;
 	}
 
@@ -459,7 +508,8 @@ export class FunctionCallBlock extends CommandBlock {
 
 export class EntryPointBlock extends CommandBlock {
 	statement: CommandBlock[];
-	localVariables: BlockDefinitions.NumberVariable[] = [];
+	localNumberVariables: BlockDefinitions.NumberVariable[] = [];
+	localStringVariables: BlockDefinitions.StringVariable[] = [];
 
 	constructor (blockXml: Element, userProgram: BlockDefinitions.UserProgram, wait: number) {
 		super (blockXml, userProgram, "スタート", wait);
@@ -471,7 +521,7 @@ export class EntryPointBlock extends CommandBlock {
 			this.statement = [];
 		}
 
-		this.localVariables = [];
+		this.localNumberVariables = [];
 	}
 
 	async executeBlock () {
@@ -480,29 +530,55 @@ export class EntryPointBlock extends CommandBlock {
 		await this.userProgram.executeBlockList (this.statement);
 	}
 
-	readLocalVariable (variableName: string) {
-		return this.getLocalVariable (variableName).readValue ();
+	readLocalNumberVariable (variableName: string) {
+		return this.getLocalNumberVariable (variableName).readValue ();
 	}
 
-	writeLocalVariable (variableName: string, value: number) {
-		this.getLocalVariable (variableName).writeValue (value);
+	readLocalStringVariable (variableName: string) {
+		return this.getLocalStringVariable (variableName).readValue ();
 	}
 
-	getLocalVariable (variableName: string) {
-		const searchedVariable = this.localVariables.find ((localVariable) => {
+	writeLocalNumberVariable (variableName: string, value: number) {
+		this.getLocalNumberVariable (variableName).writeValue (value);
+	}
+
+	writeLocalStringVariable (variableName: string, value: string) {
+		this.getLocalStringVariable (variableName).writeValue (value);
+	}
+
+	getLocalNumberVariable (variableName: string) {
+		const searchedVariable = this.localNumberVariables.find ((localVariable) => {
 			return localVariable.variableName === variableName;
 		});
 		// なかったら新しい変数を作る
 		if (searchedVariable) {
 			return searchedVariable;
 		} else {
-			return this.addLocalVariable (variableName, 0);
+			return this.addLocalNumberVariable (variableName, 0);
 		}
 	}
 
-	addLocalVariable (variableName: string, initValue: number) {
+	getLocalStringVariable (variableName: string) {
+		const searchedVariable = this.localStringVariables.find ((localVariable) => {
+			return localVariable.variableName === variableName;
+		});
+		// なかったら新しい変数を作る
+		if (searchedVariable) {
+			return searchedVariable;
+		} else {
+			return this.addLocalStringVariable (variableName, "");
+		}
+	}
+
+	addLocalNumberVariable (variableName: string, initValue: number) {
 		const newVariable = new BlockDefinitions.NumberVariable (variableName, initValue);
-		this.localVariables.push (newVariable);
+		this.localNumberVariables.push (newVariable);
+		return newVariable;
+	}
+
+	addLocalStringVariable (variableName: string, initValue: string) {
+		const newVariable = new BlockDefinitions.StringVariable (variableName, initValue);
+		this.localStringVariables.push (newVariable);
 		return newVariable;
 	}
 

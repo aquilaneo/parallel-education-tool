@@ -109,29 +109,47 @@ export class UserProgram {
 		this.mission.writeTwoDimensionalArray (arrayName, row, col, value);
 	}
 
-	readLocalVariable (functionName: string, variableName: string) {
+	readLocalNumberVariable (functionName: string, variableName: string) {
 		// まずはエントリポイントの関数を調べる
 		if (functionName === "スタート") {
 			if (this.entryFunction) {
-				return this.entryFunction.readLocalVariable (variableName);
+				return this.entryFunction.readLocalNumberVariable (variableName);
 			}
 		}
 
 		// 関数名が一致する関数を探索し変数を読み込み
 		const searchedFunction = this.getFunction (functionName);
 		if (searchedFunction) {
-			return searchedFunction.readLocalVariable (variableName);
+			return searchedFunction.readLocalNumberVariable (variableName);
 		} else {
 			console.error (`関数 ${functionName} が見つかりません！`);
 			return 0;
 		}
 	}
 
-	writeLocalVariable (functionName: string, variableName: string, value: number) {
+	readLocalStringVariable (functionName: string, variableName: string) {
 		// まずはエントリポイントの関数を調べる
 		if (functionName === "スタート") {
 			if (this.entryFunction) {
-				this.entryFunction.writeLocalVariable (variableName, value);
+				return this.entryFunction.readLocalStringVariable (variableName);
+			}
+		}
+
+		// 関数名が一致する関数を探索し変数を読み込み
+		const searchedFunction = this.getFunction (functionName);
+		if (searchedFunction) {
+			return searchedFunction.readLocalStringVariable (variableName);
+		} else {
+			console.error (`関数 ${functionName} が見つかりません！`);
+			return "";
+		}
+	}
+
+	writeLocalNumberVariable (functionName: string, variableName: string, value: number) {
+		// まずはエントリポイントの関数を調べる
+		if (functionName === "スタート") {
+			if (this.entryFunction) {
+				this.entryFunction.writeLocalNumberVariable (variableName, value);
 				return;
 			}
 		}
@@ -139,7 +157,25 @@ export class UserProgram {
 		// 関数名が一致する関数を探索し変数を読み込み
 		const searchedFunction = this.getFunction (functionName);
 		if (searchedFunction) {
-			searchedFunction.writeLocalVariable (variableName, value);
+			searchedFunction.writeLocalNumberVariable (variableName, value);
+		} else {
+			console.error (`関数 ${functionName} が見つかりません！`);
+		}
+	}
+
+	writeLocalStringVariable (functionName: string, variableName: string, value: string) {
+		// まずはエントリポイントの関数を調べる
+		if (functionName === "スタート") {
+			if (this.entryFunction) {
+				this.entryFunction.writeLocalStringVariable (variableName, value);
+				return;
+			}
+		}
+
+		// 関数名が一致する関数を探索し変数を読み込み
+		const searchedFunction = this.getFunction (functionName);
+		if (searchedFunction) {
+			searchedFunction.writeLocalStringVariable (variableName, value);
 		} else {
 			console.error (`関数 ${functionName} が見つかりません！`);
 		}
@@ -206,6 +242,24 @@ export class NumberVariable {
 	}
 
 	writeValue (value: number) {
+		this.value = value;
+	}
+}
+
+export class StringVariable {
+	variableName: string;
+	value: string;
+
+	constructor (variableName: string, initValue: string) {
+		this.variableName = variableName;
+		this.value = initValue;
+	}
+
+	readValue () {
+		return this.value;
+	}
+
+	writeValue (value: string) {
 		this.value = value;
 	}
 }
@@ -386,6 +440,39 @@ export const commandBlockDefinitions = [
 					"type": "input_value",
 					"name": "value",
 					"check": "Number"
+				}
+			],
+			"previousStatement": null,
+			"nextStatement": null,
+			"style": "variable_blocks",
+			"tooltip": "%{BKY_VARIABLES_SET_TOOLTIP}",
+			"helpUrl": "%{BKY_VARIABLES_SET_HELPURL}",
+			"extensions": ["contextMenu_variableSetterGetter"]
+		}
+	},
+
+	// ========== 文字列型変数書き込み ==========
+	{
+		type: "variables_set_string",
+		wait: 100,
+		instantiate: (blockXml: Element, userProgram: UserProgram, functionName: string, wait: number): CommandBlockBehaviors.CommandBlock => {
+			return new CommandBlockBehaviors.VariablesSetString (blockXml, userProgram, functionName, wait);
+		},
+		blocklyJson: {
+			"type": "variables_set_string",
+			"message0": "%{BKY_VARIABLES_SET}",
+			"args0": [
+				{
+					"type": "field_variable",
+					"name": "variable",
+					"variable": "%{BKY_VARIABLES_DEFAULT_NAME}",
+					"variableTypes": ["String"],
+					"defaultType": "String"
+				},
+				{
+					"type": "input_value",
+					"name": "value",
+					"check": "String"
 				}
 			],
 			"previousStatement": null,
@@ -880,6 +967,33 @@ export const valueBlockDefinitions = [
 				}
 			],
 			"output": "Number",
+			"style": "variable_blocks",
+			"helpUrl": "%{BKY_VARIABLES_GET_HELPURL}",
+			"tooltip": "%{BKY_VARIABLES_GET_TOOLTIP}",
+			"extensions": ["contextMenu_variableSetterGetter"]
+		},
+	},
+
+	// ========== 文字列型変数読み込み ==========
+	{
+		type: "variables_get_string",
+		wait: 100,
+		instantiate: (blockXml: Element, userProgram: UserProgram, functionName: string, wait: number): ValueBlockBehaviors.ValueBlock => {
+			return new ValueBlockBehaviors.VariablesGetString (blockXml, userProgram, functionName, wait);
+		},
+		blocklyJson: {
+			"type": "variables_get_string",
+			"message0": "%1",
+			"args0": [
+				{
+					"type": "field_variable",
+					"name": "variable",
+					"variable": "%{BKY_VARIABLES_DEFAULT_NAME}",
+					"variableTypes": ["String"],
+					"defaultType": "String"
+				}
+			],
+			"output": "String",
 			"style": "variable_blocks",
 			"helpUrl": "%{BKY_VARIABLES_GET_HELPURL}",
 			"tooltip": "%{BKY_VARIABLES_GET_TOOLTIP}",
