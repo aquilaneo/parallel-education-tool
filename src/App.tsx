@@ -142,6 +142,7 @@ function App () {
 class Editor extends React.Component {
 	workspace: Blockly.WorkspaceSvg | null = null;
 	initialWorkspace = "<xml xmlns=\"https://developers.google.com/blockly/xml\"><block type=\"entry_point\" id=\"5e{JeNdzKRK}Nyg(x2Ul\" x=\"58\" y=\"59\"></block></xml>";
+	isExecuting = false;
 
 	componentDidMount () {
 		// ブロック定義とブロックリストを読み込み
@@ -259,13 +260,17 @@ class Editor extends React.Component {
 	}
 
 	async executeEntryFunction (variableCanvas: VariableCanvas.VariableCanvas, mission: Mission) {
-		const userProgram = this.parseBlocks (variableCanvas, mission);
-		if (userProgram) {
-			// const thread = new BlockDefinitions.Thread ("スレッド", "スレッド", userProgram);
-			// thread.execute ();
-			mission.resetGlobalArray ();
-			variableCanvas.drawTable (mission.currentOneDimensionalArrays, mission.currentTwoDimensionalArrays); // グローバル配列Canvasを初期化
-			await userProgram.executeEntryFunction ();
+		if (!this.isExecuting) {
+			this.isExecuting = true;
+			const userProgram = this.parseBlocks (variableCanvas, mission);
+			if (userProgram) {
+				// const thread = new BlockDefinitions.Thread ("スレッド", "スレッド", userProgram);
+				// thread.execute ();
+				mission.resetGlobalArray ();
+				variableCanvas.drawTable (mission.currentOneDimensionalArrays, mission.currentTwoDimensionalArrays); // グローバル配列Canvasを初期化
+				await userProgram.executeEntryFunction ();
+			}
+			this.isExecuting = false;
 		}
 	}
 
