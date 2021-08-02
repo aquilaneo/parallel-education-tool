@@ -19,6 +19,7 @@ function App () {
 	]);
 	const [threadCount, setThreadCount] = useState (threads.length);
 	const editorRef = useRef<Editor> (null);
+	const consoleRef = useRef<Console> (null);
 
 	const [stopwatch, setStopwatch] = useState (new BlockDefinitions.Stopwatch ());
 
@@ -35,7 +36,13 @@ function App () {
 	const [mission, setMission] = useState (new Mission ({}, twoDimensionalArrays,
 		() => {
 			variableCanvas.drawTable (mission.currentOneDimensionalArrays, mission.currentTwoDimensionalArrays);
-		}));
+		},
+		(text: string) => {
+			if (consoleRef.current) {
+				consoleRef.current.writeConsole (text);
+			}
+		}
+	));
 
 	useEffect (() => {
 		const canvas = document.getElementById ("variable-canvas") as HTMLCanvasElement;
@@ -79,6 +86,9 @@ function App () {
 								ブロックをパース
 							</button>
 							<button onClick={() => {
+								if (consoleRef.current) {
+									consoleRef.current.clearConsole ();
+								}
 								if (editorRef.current) {
 									editorRef.current.executeEntryFunction (variableCanvas, mission);
 								}
@@ -122,6 +132,20 @@ function App () {
 							}}>SW読み取り
 							</button>
 						</div>
+						<div>
+							<button onClick={() => {
+								if (consoleRef.current) {
+									consoleRef.current.writeConsole ("ABC");
+								}
+							}}>コンソール追加
+							</button>
+							<button onClick={() => {
+								if (consoleRef.current) {
+									consoleRef.current.clearConsole ();
+								}
+							}}>コンソール削除
+							</button>
+						</div>
 					</div>
 					<div id={"threads-panel"}>
 						<div>スレッド</div>
@@ -133,6 +157,11 @@ function App () {
 							}
 						</div>
 					</div>
+				</div>
+
+				<div id={"right-panel"}>
+					<div>コンソール</div>
+					<Console ref={consoleRef}/>
 				</div>
 			</div>
 		</div>
@@ -276,6 +305,37 @@ class Editor extends React.Component {
 
 	render () {
 		return <div id="blocklyDiv" style={{width: "100%", height: "100%"}}/>;
+	}
+}
+
+class Console extends React.Component<{}, { outputs: string[] }> {
+	state: { outputs: string[] };
+
+	constructor (props: {}) {
+		super (props);
+		this.state = {outputs: []};
+	}
+
+	writeConsole (text: string) {
+		this.setState (state => ({
+			outputs: [...state.outputs, text]
+		}));
+	}
+
+	clearConsole () {
+		this.setState ({...this.state, outputs: []});
+	}
+
+	render () {
+		const outputs = this.state.outputs.map ((item) => {
+			return <li key={item}>{item}</li>;
+		});
+
+		return (
+			<div>
+				<ul>{outputs}</ul>
+			</div>
+		);
 	}
 }
 

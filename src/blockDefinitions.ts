@@ -79,6 +79,10 @@ export class UserProgram {
 		});
 	}
 
+	print (text: string) {
+		this.mission.print (text);
+	}
+
 	readGlobalVariable (variableName: string) {
 		return this.getGlobalVariable (variableName).readValue ();
 	}

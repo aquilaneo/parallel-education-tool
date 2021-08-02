@@ -108,7 +108,11 @@ export class PrintBlock extends CommandBlock {
 	async executeBlock () {
 		assertIsDefined (this.text);
 
-		console.log (this.text.executeBlock ());
+		const text = this.text.executeBlock ();
+		assertIsString (text);
+
+		console.log (text);
+		this.userProgram.print (text);
 	}
 }
 

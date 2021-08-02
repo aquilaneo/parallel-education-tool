@@ -7,14 +7,21 @@ export class Mission {
 	currentTwoDimensionalArrays: { [key: string]: number[][] } = {};
 	// キャンバス描画関数
 	drawVariableTable: () => void;
+	// コンソール書き込み関数
+	writeConsole: (text: string) => void;
 
 	constructor (initialOneDimensionalArrays: { [key: string]: number[] }, initialTwoDimensionalArrays: { [key: string]: number[][] },
-				 drawVariableTable: () => void) {
+				 drawVariableTable: () => void, writeConsole: (text: string) => void) {
 		this.initialOneDimensionalArrays = initialOneDimensionalArrays;
 		this.initialTwoDimensionalArrays = initialTwoDimensionalArrays;
 		this.resetGlobalArray ();
 
 		this.drawVariableTable = drawVariableTable;
+		this.writeConsole = writeConsole;
+	}
+
+	print (text: string) {
+		this.writeConsole (text);
 	}
 
 	readOneDimensionalArray (arrayName: string, index: number) {
