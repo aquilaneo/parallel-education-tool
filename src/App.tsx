@@ -2,7 +2,7 @@ import React, {useEffect, useRef, useState} from 'react';
 import Blockly from "blockly";
 import * as Ja from "blockly/msg/ja";
 
-import Thread from "./Thread";
+import ThreadView from "./ThreadView";
 import {Mission} from "./mission";
 import * as BlockSettings from "./blockSettings";
 import * as BlockDefinitions from "./blockDefinitions";
@@ -11,17 +11,12 @@ import "./App.scss";
 
 function App () {
 	const [variableCanvas, setVariableCanvas] = useState (new VariableCanvas.VariableCanvas ());
-	const [threads, setThreads] = useState ([
-		{index: 0},
-		{index: 1},
-		{index: 2},
-		{index: 3}
-	]);
-	const [threadCount, setThreadCount] = useState (threads.length);
-	const editorRef = useRef<Editor> (null);
-	const consoleRef = useRef<Console> (null);
-
+	const [threadIndexes, setThreadIndexes] = useState ([] as number[]);
+	const [threadCount, setThreadCount] = useState (threadIndexes.length);
 	const [stopwatch, setStopwatch] = useState (new BlockDefinitions.Stopwatch ());
+
+	const editorRef = useRef<EditorView> (null);
+	const consoleRef = useRef<ConsoleView> (null);
 
 	const twoDimensionalArrays: { [key: string]: number[][] } = {};
 	twoDimensionalArrays["Array1"] = [
@@ -64,7 +59,7 @@ function App () {
 			</div>
 			<div id={"main-view"}>
 				<div id={"left-panel"}>
-					<Editor ref={editorRef}/>
+					<EditorView ref={editorRef}/>
 				</div>
 
 				<div id={"center-panel"}>
@@ -73,10 +68,18 @@ function App () {
 						<canvas id={"variable-canvas"}></canvas>
 						<div>
 							<button onClick={() => {
-								setThreads ([...threads, {index: threadCount}]);
+								setThreadIndexes ([...threadIndexes, threadCount]);
 								setThreadCount (threadCount + 1);
 							}}>
 								スレッドを追加
+							</button>
+							<button onClick={() => {
+								const newThreadIndexes = [...threadIndexes];
+								newThreadIndexes.splice (newThreadIndexes.length - 1, 1);
+								setThreadIndexes (newThreadIndexes);
+								setThreadCount (newThreadIndexes.length);
+							}}>
+								スレッド削除
 							</button>
 							<button onClick={() => {
 								if (editorRef.current) {
@@ -151,8 +154,10 @@ function App () {
 						<div>スレッド</div>
 						<div id={"threads-container"}>
 							{
-								threads.map ((thread) => {
-									return <Thread key={thread.index} info={thread} count={threadCount}/>
+								threadIndexes.map ((threadIndex) => {
+									return <ThreadView key={threadIndex}
+													   threadIndex={threadIndex} threadCount={threadCount}
+													   blocks={"<xml xmlns=\"https://developers.google.com/blockly/xml\"><block type=\"entry_point\" id=\"5e{JeNdzKRK}Nyg(x2Ul\" x=\"58\" y=\"59\"></block></xml>"}/>
 								})
 							}
 						</div>
@@ -161,14 +166,14 @@ function App () {
 
 				<div id={"right-panel"}>
 					<div>コンソール</div>
-					<Console ref={consoleRef}/>
+					<ConsoleView ref={consoleRef}/>
 				</div>
 			</div>
 		</div>
 	)
 }
 
-class Editor extends React.Component {
+class EditorView extends React.Component {
 	workspace: Blockly.WorkspaceSvg | null = null;
 	initialWorkspace = "<xml xmlns=\"https://developers.google.com/blockly/xml\"><block type=\"entry_point\" id=\"5e{JeNdzKRK}Nyg(x2Ul\" x=\"58\" y=\"59\"></block></xml>";
 	isExecuting = false;
@@ -293,7 +298,7 @@ class Editor extends React.Component {
 			this.isExecuting = true;
 			const userProgram = this.parseBlocks (variableCanvas, mission);
 			if (userProgram) {
-				// const thread = new BlockDefinitions.Thread ("スレッド", "スレッド", userProgram);
+				// const thread = new BlockDefinitions.ThreadView ("スレッド", "スレッド", userProgram);
 				// thread.execute ();
 				mission.resetGlobalArray ();
 				variableCanvas.drawTable (mission.currentOneDimensionalArrays, mission.currentTwoDimensionalArrays); // グローバル配列Canvasを初期化
@@ -308,7 +313,7 @@ class Editor extends React.Component {
 	}
 }
 
-class Console extends React.Component<{}, { outputs: string[] }> {
+class ConsoleView extends React.Component<{}, { outputs: string[] }> {
 	state: { outputs: string[] };
 
 	constructor (props: {}) {
