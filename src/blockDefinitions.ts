@@ -79,10 +79,6 @@ export class UserProgram {
 		});
 	}
 
-	print (text: string) {
-		this.mission.print (text);
-	}
-
 	readGlobalVariable (variableName: string) {
 		return this.getGlobalVariable (variableName).readValue ();
 	}
@@ -107,10 +103,6 @@ export class UserProgram {
 		const newVariable = new NumberVariable (variableName, initValue)
 		this.globalVariables.push (newVariable);
 		return newVariable;
-	}
-
-	writeGlobalTwoDimensionalArrays (arrayName: string, row: number, col: number, value: number) {
-		this.mission.writeTwoDimensionalArray (arrayName, row, col, value);
 	}
 
 	readLocalNumberVariable (functionName: string, variableName: string) {
@@ -318,9 +310,11 @@ export class Thread {
 	}
 
 	async execute () {
+		this.userProgram.mission.addThread (this.threadName);
 		this.isExecuting = true;
 		await this.userProgram.executeFunction (this.functionName);
 		this.isExecuting = false;
+		this.userProgram.mission.removeThread (this.threadName);
 	}
 }
 

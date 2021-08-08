@@ -6,22 +6,29 @@ export class Mission {
 	currentOneDimensionalArrays: { [key: string]: number[] } = {};
 	currentTwoDimensionalArrays: { [key: string]: number[][] } = {};
 	// キャンバス描画関数
-	drawVariableTable: () => void;
+	drawVariableView: () => void;
 	// コンソール書き込み関数
-	writeConsole: (text: string) => void;
+	writeConsoleView: (text: string) => void;
+	// スレッド追加
+	addThreadView: (threadName: string) => void;
+	// スレッド削除
+	removeThreadView: (threadName: string) => void;
 
 	constructor (initialOneDimensionalArrays: { [key: string]: number[] }, initialTwoDimensionalArrays: { [key: string]: number[][] },
-				 drawVariableTable: () => void, writeConsole: (text: string) => void) {
+				 drawVariableTable: () => void, writeConsole: (text: string) => void,
+				 addThread: (threadName: string) => void, removeThread: (threadName: string) => void) {
 		this.initialOneDimensionalArrays = initialOneDimensionalArrays;
 		this.initialTwoDimensionalArrays = initialTwoDimensionalArrays;
 		this.resetGlobalArray ();
 
-		this.drawVariableTable = drawVariableTable;
-		this.writeConsole = writeConsole;
+		this.drawVariableView = drawVariableTable;
+		this.writeConsoleView = writeConsole;
+		this.addThreadView = addThread;
+		this.removeThreadView = removeThread;
 	}
 
 	print (text: string) {
-		this.writeConsole (text);
+		this.writeConsoleView (text);
 	}
 
 	readOneDimensionalArray (arrayName: string, index: number) {
@@ -42,7 +49,7 @@ export class Mission {
 		if (array) {
 			if (index < array.length) {
 				array[index] = value;
-				this.drawVariableTable ();
+				this.drawVariableView ();
 			} else {
 				console.error (`${index} の値が1次元配列 ${arrayName} の要素数に対して大きすぎます！`);
 			}
@@ -69,7 +76,7 @@ export class Mission {
 		if (array) {
 			if (row < array.length && col < array[0].length) {
 				array[row][col] = value;
-				this.drawVariableTable ();
+				this.drawVariableView ();
 			} else {
 				console.error (`行 ${row} の値もしくは列 ${col} の値は2次元配列 ${arrayName} の要素数に対して大きすぎます！`);
 			}
@@ -82,5 +89,13 @@ export class Mission {
 		// 現在値に初期値をコピー
 		this.currentOneDimensionalArrays = JSON.parse (JSON.stringify (this.initialOneDimensionalArrays));
 		this.currentTwoDimensionalArrays = JSON.parse (JSON.stringify (this.initialTwoDimensionalArrays));
+	}
+
+	addThread (threadName: string) {
+		this.addThreadView (threadName);
+	}
+
+	removeThread (threadName: string) {
+		this.removeThreadView (threadName);
 	}
 }

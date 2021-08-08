@@ -1,8 +1,7 @@
 import React, {useEffect, useRef, useState} from 'react';
-import Blockly from "blockly";
+import Blockly, {WorkspaceSvg} from "blockly";
 import * as Ja from "blockly/msg/ja";
 
-import ThreadView from "./ThreadView";
 import {Mission} from "./mission";
 import * as BlockSettings from "./blockSettings";
 import * as BlockDefinitions from "./blockDefinitions";
@@ -11,8 +10,8 @@ import "./App.scss";
 
 function App () {
 	const [variableCanvas, setVariableCanvas] = useState (new VariableCanvas.VariableCanvas ());
-	const [threadIndexes, setThreadIndexes] = useState ([] as number[]);
-	const [threadCount, setThreadCount] = useState (threadIndexes.length);
+	const [threadNames, setThreadNames] = useState ([] as string[]);
+	const [threadCount, setThreadCount] = useState (threadNames.length);
 	const [stopwatch, setStopwatch] = useState (new BlockDefinitions.Stopwatch ());
 
 	const editorRef = useRef<EditorView> (null);
@@ -36,6 +35,17 @@ function App () {
 			if (consoleRef.current) {
 				consoleRef.current.writeConsole (text);
 			}
+		},
+		(threadName: string) => {
+			setThreadNames ((oldThreadNames) => [...oldThreadNames, threadName]);
+			setThreadCount ((oldThreadCount) => oldThreadCount + 1);
+		},
+		(threadName: string) => {
+			const newThreadNames = [...threadNames];
+			setThreadNames (newThreadNames.filter ((item) => {
+				return item !== threadName;
+			}));
+			setThreadCount (newThreadNames.length);
 		}
 	));
 
@@ -68,15 +78,15 @@ function App () {
 						<canvas id={"variable-canvas"}></canvas>
 						<div>
 							<button onClick={() => {
-								setThreadIndexes ([...threadIndexes, threadCount]);
+								setThreadNames ([...threadNames, threadCount.toString ()]);
 								setThreadCount (threadCount + 1);
 							}}>
 								スレッドを追加
 							</button>
 							<button onClick={() => {
-								const newThreadIndexes = [...threadIndexes];
+								const newThreadIndexes = [...threadNames];
 								newThreadIndexes.splice (newThreadIndexes.length - 1, 1);
-								setThreadIndexes (newThreadIndexes);
+								setThreadNames (newThreadIndexes);
 								setThreadCount (newThreadIndexes.length);
 							}}>
 								スレッド削除
@@ -154,9 +164,9 @@ function App () {
 						<div>スレッド</div>
 						<div id={"threads-container"}>
 							{
-								threadIndexes.map ((threadIndex) => {
-									return <ThreadView key={threadIndex}
-													   threadIndex={threadIndex} threadCount={threadCount}
+								threadNames.map ((threadNames) => {
+									return <ThreadView key={threadNames}
+													   threadNames={threadNames} threadCount={threadCount}
 													   blocks={"<xml xmlns=\"https://developers.google.com/blockly/xml\"><block type=\"entry_point\" id=\"5e{JeNdzKRK}Nyg(x2Ul\" x=\"58\" y=\"59\"></block></xml>"}/>
 								})
 							}
@@ -313,6 +323,28 @@ class EditorView extends React.Component {
 	}
 }
 
+class ThreadView extends React.Component<{ threadNames: string, threadCount: number, blocks: string }, { workspace: WorkspaceSvg }> {
+	workspace: WorkspaceSvg | null = null;
+
+	componentDidMount () {
+		this.workspace = Blockly.inject (`thread${this.props.threadNames}`);
+
+		const blocksDom = Blockly.Xml.textToDom (this.props.blocks);
+		Blockly.Xml.domToWorkspace (blocksDom, this.workspace);
+	}
+
+	render () {
+		const divWidth = `${100 / this.props.threadCount}%`;
+		return (
+			<div style={{width: divWidth}}>
+				<div>{this.props.threadNames}</div>
+				<div id={`thread${this.props.threadNames}`}
+					 style={{width: "100%", height: "calc(100% - 24px)"}}/>
+			</div>
+		);
+	}
+}
+
 class ConsoleView extends React.Component<{}, { outputs: string[] }> {
 	state: { outputs: string[] };
 
@@ -332,8 +364,8 @@ class ConsoleView extends React.Component<{}, { outputs: string[] }> {
 	}
 
 	render () {
-		const outputs = this.state.outputs.map ((item) => {
-			return <li key={item}>{item}</li>;
+		const outputs = this.state.outputs.map ((item, i) => {
+			return <li key={i}>{item}</li>;
 		});
 
 		return (

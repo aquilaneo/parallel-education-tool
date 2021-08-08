@@ -112,7 +112,7 @@ export class PrintBlock extends CommandBlock {
 		assertIsString (text);
 
 		console.log (text);
-		this.userProgram.print (text);
+		this.userProgram.mission.print (text);
 	}
 }
 
@@ -401,7 +401,7 @@ export class GlobalTwoDimensionalArrayWrite extends CommandBlock {
 		assertIsNumber (col);
 		assertIsNumber (value);
 
-		this.userProgram.writeGlobalTwoDimensionalArrays (this.name, row, col, value);
+		this.userProgram.mission.writeTwoDimensionalArray(this.name, row, col, value);
 	}
 }
 
