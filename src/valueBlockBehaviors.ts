@@ -310,6 +310,31 @@ export class GlobalVariableReadBlock extends ValueBlock {
 	}
 }
 
+export class GetArgumentBlock extends ValueBlock {
+	argument: string;
+
+	constructor (blockXml: Element, userProgram: UserProgram, functionName: string, wait: number) {
+		super (blockXml, userProgram, functionName, wait);
+		const argument = super.getField ("argument");
+		this.argument = argument ? argument : "";
+	}
+
+	executeBlock () {
+		const myFunc = this.userProgram.getFunction (this.functionName);
+		if (myFunc) {
+			switch (this.argument) {
+				case "argument1":
+					return myFunc.getArgument (0);
+				case "argument2":
+					return myFunc.getArgument (1);
+				case "argument3":
+					return myFunc.getArgument (2);
+			}
+		}
+		return 0;
+	}
+}
+
 export class StopwatchReadBlock extends ValueBlock {
 	swNumber: ValueBlock | null;
 

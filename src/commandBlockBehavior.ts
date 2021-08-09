@@ -106,13 +106,15 @@ export class PrintBlock extends CommandBlock {
 	}
 
 	async executeBlock () {
+		const func = this.userProgram.getFunction (this.functionName);
+		if (func) {
+			console.log (func.argument1, func.argument2, func.argument3);
+		}
+
 		assertIsDefined (this.text);
 
 		const text = this.text.executeBlock ();
-		assertIsString (text);
-
-		console.log (text);
-		this.userProgram.mission.print (text);
+		this.userProgram.mission.print (text.toString ());
 	}
 }
 
@@ -401,7 +403,7 @@ export class GlobalTwoDimensionalArrayWrite extends CommandBlock {
 		assertIsNumber (col);
 		assertIsNumber (value);
 
-		this.userProgram.mission.writeTwoDimensionalArray(this.name, row, col, value);
+		this.userProgram.mission.writeTwoDimensionalArray (this.name, row, col, value);
 	}
 }
 
@@ -409,6 +411,9 @@ export class FunctionDefinitionBlock extends CommandBlock {
 	statement: CommandBlock[];
 	localNumberVariables: BlockDefinitions.NumberVariable[] = [];
 	localStringVariables: BlockDefinitions.StringVariable[] = [];
+	argument1: number = 0;
+	argument2: number = 0;
+	argument3: number = 0;
 
 	constructor (blockXml: Element, userProgram: BlockDefinitions.UserProgram, wait: number) {
 		super (blockXml, userProgram, "", wait);
@@ -427,6 +432,25 @@ export class FunctionDefinitionBlock extends CommandBlock {
 		assertIsDefined (this.statement);
 
 		await this.userProgram.executeBlockList (this.statement);
+	}
+
+	setArguments (argument1: number, argument2: number, argument3: number) {
+		this.argument1 = argument1;
+		this.argument2 = argument2;
+		this.argument3 = argument3;
+	}
+
+	getArgument (argumentNumber: number) {
+		switch (argumentNumber) {
+			case 0:
+				return this.argument1;
+			case 1:
+				return this.argument2;
+			case 2:
+				return this.argument3;
+			default:
+				return 0;
+		}
 	}
 
 	readLocalNumberVariable (variableName: string) {
@@ -498,16 +522,36 @@ export class FunctionDefinitionBlock extends CommandBlock {
 
 export class FunctionCallBlock extends CommandBlock {
 	name: string;
+	argument1: ValueBlockBehaviors.ValueBlock | null;
+	argument2: ValueBlockBehaviors.ValueBlock | null;
+	argument3: ValueBlockBehaviors.ValueBlock | null;
 
 	constructor (blockXml: Element, userProgram: BlockDefinitions.UserProgram, functionName: string, wait: number) {
 		super (blockXml, userProgram, functionName, wait);
 
 		const name = super.getField ("name");
 		this.name = name ? name : "";
+
+		const argument1 = super.getValue ("argument1");
+		this.argument1 = argument1 ? ValueBlockBehaviors.ValueBlock.constructBlock (argument1, userProgram, functionName) : null;
+		const argument2 = super.getValue ("argument2");
+		this.argument2 = argument2 ? ValueBlockBehaviors.ValueBlock.constructBlock (argument2, userProgram, functionName) : null;
+		const argument3 = super.getValue ("argument3");
+		this.argument3 = argument3 ? ValueBlockBehaviors.ValueBlock.constructBlock (argument3, userProgram, functionName) : null;
 	}
 
 	async executeBlock () {
-		await this.userProgram.executeFunction (this.name);
+		assertIsDefined (this.argument1);
+		assertIsDefined (this.argument2);
+		assertIsDefined (this.argument3);
+		const argument1 = this.argument1.executeBlock ();
+		const argument2 = this.argument2.executeBlock ();
+		const argument3 = this.argument3.executeBlock ();
+		assertIsNumber (argument1);
+		assertIsNumber (argument2);
+		assertIsNumber (argument3);
+
+		await this.userProgram.executeFunction (this.name, argument1, argument2, argument3);
 	}
 }
 
@@ -662,6 +706,9 @@ export class StopwatchResetBlock extends CommandBlock {
 export class ThreadCreateBlock extends CommandBlock {
 	threadFunctionName: string;
 	threadName: ValueBlockBehaviors.ValueBlock | null;
+	argument1: ValueBlockBehaviors.ValueBlock | null;
+	argument2: ValueBlockBehaviors.ValueBlock | null;
+	argument3: ValueBlockBehaviors.ValueBlock | null;
 
 	constructor (blockXml: Element, userProgram: BlockDefinitions.UserProgram, functionName: string, wait: number) {
 		super (blockXml, userProgram, functionName, wait);
@@ -670,6 +717,13 @@ export class ThreadCreateBlock extends CommandBlock {
 		this.threadFunctionName = threadFunctionName ? threadFunctionName : "";
 		const threadName = super.getValue ("thread_name");
 		this.threadName = threadName ? ValueBlockBehaviors.ValueBlock.constructBlock (threadName, userProgram, functionName) : null;
+		const argument1 = super.getValue ("argument1");
+		this.argument1 = argument1 ? ValueBlockBehaviors.ValueBlock.constructBlock (argument1, userProgram, functionName) : null;
+		const argument2 = super.getValue ("argument2");
+		this.argument2 = argument2 ? ValueBlockBehaviors.ValueBlock.constructBlock (argument2, userProgram, functionName) : null;
+		const argument3 = super.getValue ("argument3");
+		this.argument3 = argument3 ? ValueBlockBehaviors.ValueBlock.constructBlock (argument3, userProgram, functionName) : null;
+
 	}
 
 	async executeBlock () {
@@ -678,7 +732,17 @@ export class ThreadCreateBlock extends CommandBlock {
 		const threadName = this.threadName.executeBlock ();
 		assertIsString (threadName);
 
-		this.userProgram.addThread (threadName, this.threadFunctionName);
+		assertIsDefined (this.argument1);
+		assertIsDefined (this.argument2);
+		assertIsDefined (this.argument3);
+		const argument1 = this.argument1.executeBlock ();
+		const argument2 = this.argument2.executeBlock ();
+		const argument3 = this.argument3.executeBlock ();
+		assertIsNumber (argument1);
+		assertIsNumber (argument2);
+		assertIsNumber (argument3);
+
+		this.userProgram.addThread (threadName, this.threadFunctionName, argument1, argument2, argument3);
 		this.userProgram.executeThread (threadName);
 	}
 }

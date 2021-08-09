@@ -63,10 +63,11 @@ export class UserProgram {
 		await this.entryFunction.executeBlock ();
 	}
 
-	async executeFunction (functionName: string) {
+	async executeFunction (functionName: string, argument1: number, argument2: number, argument3: number) {
 		// 関数名が一致する関数を実行
 		const searchedFunction = this.getFunction (functionName);
 		if (searchedFunction) {
+			searchedFunction.setArguments (argument1, argument2, argument3);
 			await searchedFunction.executeBlock ();
 		} else {
 			console.error (`関数 ${functionName} が見つかりません！`);
@@ -203,10 +204,10 @@ export class UserProgram {
 		}
 	}
 
-	addThread (threadName: string, threadFunctionName: string) {
+	addThread (threadName: string, threadFunctionName: string, argument1: number, argument2: number, argument3: number) {
 		const threadFunction = this.getFunction (threadFunctionName);
 		if (threadFunction) {
-			this.threads.push (new Thread (threadName, threadFunctionName, this));
+			this.threads.push (new Thread (threadName, threadFunctionName, this, argument1, argument2, argument3));
 		}
 	}
 
@@ -301,18 +302,24 @@ export class Thread {
 	functionName: string;
 	userProgram: UserProgram;
 	isExecuting: boolean;
+	argument1: number;
+	argument2: number;
+	argument3: number;
 
-	constructor (threadName: string, functionName: string, userProgram: UserProgram) {
+	constructor (threadName: string, functionName: string, userProgram: UserProgram, argument1: number, argument2: number, argument3: number) {
 		this.threadName = threadName;
 		this.functionName = functionName;
 		this.userProgram = userProgram;
 		this.isExecuting = false;
+		this.argument1 = argument1;
+		this.argument2 = argument2;
+		this.argument3 = argument3;
 	}
 
 	async execute () {
 		this.userProgram.mission.addThread (this.threadName);
 		this.isExecuting = true;
-		await this.userProgram.executeFunction (this.functionName);
+		await this.userProgram.executeFunction (this.functionName, this.argument1, this.argument2, this.argument3);
 		this.isExecuting = false;
 		this.userProgram.mission.removeThread (this.threadName);
 	}
@@ -672,12 +679,30 @@ export const commandBlockDefinitions = [
 		},
 		blocklyJson: {
 			"type": "function_call",
-			"message0": "関数実行 %1",
+			"message0": "実行 %1 %2 引数1 %3 引数2 %4 引数3 %5",
 			"args0": [
 				{
 					"type": "field_input",
 					"name": "name",
 					"text": "関数名"
+				},
+				{
+					"type": "input_dummy"
+				},
+				{
+					"type": "input_value",
+					"name": "argument1",
+					"check": "Number"
+				},
+				{
+					"type": "input_value",
+					"name": "argument2",
+					"check": "Number"
+				},
+				{
+					"type": "input_value",
+					"name": "argument3",
+					"check": "Number"
 				}
 			],
 			"inputsInline": true,
@@ -802,7 +827,7 @@ export const commandBlockDefinitions = [
 		},
 		blocklyJson: {
 			"type": "thread_create",
-			"message0": "%1 をスレッド名 %2 として並列実行",
+			"message0": "スレッド作成 %1 スレッド名 %2 引数1 %3 引数2 %4 引数3 %5",
 			"args0": [
 				{
 					"type": "field_input",
@@ -813,6 +838,21 @@ export const commandBlockDefinitions = [
 					"type": "input_value",
 					"name": "thread_name",
 					"check": "String"
+				},
+				{
+					"type": "input_value",
+					"name": "argument1",
+					"check": "Number"
+				},
+				{
+					"type": "input_value",
+					"name": "argument2",
+					"check": "Number"
+				},
+				{
+					"type": "input_value",
+					"name": "argument3",
+					"check": "Number"
 				}
 			],
 			"inputsInline": true,
@@ -1019,6 +1059,44 @@ export const valueBlockDefinitions = [
 			"output": "Number",
 			"colour": 230,
 			"tooltip": "グローバル変数の値を読み込みます。",
+			"helpUrl": ""
+		}
+	},
+
+	// ========== 引数読み取り ==========
+	{
+		type: "get_argument",
+		wait: 100,
+		instantiate: (blockXml: Element, userProgram: UserProgram, functionName: string, wait: number): ValueBlockBehaviors.ValueBlock => {
+			return new ValueBlockBehaviors.GetArgumentBlock (blockXml, userProgram, functionName, wait);
+		},
+		blocklyJson: {
+			"type": "get_argument",
+			"message0": "%1",
+			"args0": [
+				{
+					"type": "field_dropdown",
+					"name": "argument",
+					"options": [
+						[
+							"引数1",
+							"argument1"
+						],
+						[
+							"引数2",
+							"argument2"
+						],
+						[
+							"引数3",
+							"argument3"
+						]
+					]
+				}
+			],
+			"inputsInline": true,
+			"output": "Number",
+			"colour": 230,
+			"tooltip": "引数を読み取ります。",
 			"helpUrl": ""
 		}
 	},

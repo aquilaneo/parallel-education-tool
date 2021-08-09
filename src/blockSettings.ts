@@ -265,8 +265,25 @@ export const getBlockListXml = () => {
 		
 		<category name="関数">
 			<block type="function_definition"></block>
-			<block type="function_call"></block>
+			<block type="function_call">
+				<value name="argument1">
+					<shadow type="math_number">
+        				<field name="NUM">0</field>
+					</shadow>
+				</value>
+				<value name="argument2">
+					<shadow type="math_number">
+        				<field name="NUM">0</field>
+					</shadow>
+				</value>
+				<value name="argument3">
+					<shadow type="math_number">
+        				<field name="NUM">0</field>
+					</shadow>
+				</value>
+			</block>
 			<block type="entry_point"></block>
+			<block type="get_argument"></block>
 		</category>
 		
 		
@@ -309,6 +326,21 @@ export const getBlockListXml = () => {
 			<block type="thread_create">
 				<value name="thread_name">
 					<shadow type="text"></shadow>
+				</value>
+				<value name="argument1">
+					<shadow type="math_number">
+        				<field name="NUM">0</field>
+					</shadow>
+				</value>
+				<value name="argument2">
+					<shadow type="math_number">
+        				<field name="NUM">0</field>
+					</shadow>
+				</value>
+				<value name="argument3">
+					<shadow type="math_number">
+        				<field name="NUM">0</field>
+					</shadow>
 				</value>
 			</block>
 			<block type="thread_join">
