@@ -476,8 +476,6 @@ export class FunctionCallBlock extends CommandBlock {
 
 export class EntryPointBlock extends CommandBlock {
 	statement: CommandBlock[];
-	localNumberVariables: BlockDefinitions.NumberVariable[] = [];
-	localStringVariables: BlockDefinitions.StringVariable[] = [];
 
 	constructor (blockXml: Element, userProgram: BlockDefinitions.UserProgram, myRoutine: BlockDefinitions.Routine, wait: number) {
 		super (blockXml, userProgram, myRoutine, wait);
@@ -488,8 +486,6 @@ export class EntryPointBlock extends CommandBlock {
 		} else {
 			this.statement = [];
 		}
-
-		this.localNumberVariables = [];
 	}
 
 	async executeBlock () {
@@ -608,30 +604,30 @@ export class ThreadCreateBlock extends CommandBlock {
 		assertIsNumber (argument2);
 		assertIsNumber (argument3);
 
-		const func = this.userProgram.getFunctionDefinitionBlockByName (this.routineName);
-		if (func) {
-			this.userProgram.addThread (this.routineName, threadID, func, argument1, argument2, argument3);
+		const functionStatementElement = this.userProgram.getFunctionStatementElementByName (this.routineName);
+		if (functionStatementElement) {
+			this.userProgram.addThread (this.routineName, threadID, functionStatementElement.element, argument1, argument2, argument3);
 			await this.userProgram.executeThread (threadID);
 		}
 	}
 }
 
 export class ThreadJoinBlock extends CommandBlock {
-	threaedID: ValueBlockBehaviors.ValueBlock | null;
+	threadID: ValueBlockBehaviors.ValueBlock | null;
 	threadIDStr: string;
 
 	constructor (blockXml: Element, userProgram: BlockDefinitions.UserProgram, myRoutine: BlockDefinitions.Routine, wait: number) {
 		super (blockXml, userProgram, myRoutine, wait);
 
 		const threadID = super.getValue ("thread_name");
-		this.threaedID = threadID ? ValueBlockBehaviors.ValueBlock.constructBlock (threadID, userProgram, myRoutine) : null;
+		this.threadID = threadID ? ValueBlockBehaviors.ValueBlock.constructBlock (threadID, userProgram, myRoutine) : null;
 		this.threadIDStr = "";
 	}
 
 	async executeBlock () {
-		assertIsDefined (this.threaedID);
+		assertIsDefined (this.threadID);
 
-		const threadName = this.threaedID.executeBlock ();
+		const threadName = this.threadID.executeBlock ();
 		assertIsString (threadName);
 		this.threadIDStr = threadName;
 	}

@@ -10,7 +10,7 @@ export class UserProgram {
 	entryFunction: Function | null = null; // エントリポイント
 	functions: Function[] = []; // 関数一覧
 	threads: Thread[] = []; // スレッド一覧
-	functionDefinitionBlocks: CommandBlockBehaviors.FunctionDefinitionBlock[] = [];
+	functionStatementElements: { name: string, element: Element }[] = [];
 	globalVariables: NumberVariable[] = [];
 	stopwatches: { key: number, sw: Stopwatch } [] = []; // ストップウォッチ一覧
 
@@ -41,7 +41,8 @@ export class UserProgram {
 			func.setDefinitionBlock (functionBlock);
 			func.setFunctionName (functionBlock.functionName);
 			this.functions.push (func);
-			this.functionDefinitionBlocks.push (functionBlock);
+			this.functionStatementElements.push ({name: functionBlock.functionName, element: functionXml});
+			// this.functionDefinitionBlocks.push (functionBlock);
 		}
 
 		console.log ("エントリポイント", this.entryFunction);
@@ -87,9 +88,9 @@ export class UserProgram {
 		});
 	}
 
-	getFunctionDefinitionBlockByName (functionName: string) {
-		return this.functionDefinitionBlocks.find ((func) => {
-			return func.functionName === functionName;
+	getFunctionStatementElementByName (functionName: string) {
+		return this.functionStatementElements.find ((item) => {
+			return item.name === functionName;
 		});
 	}
 
@@ -145,9 +146,12 @@ export class UserProgram {
 		}
 	}
 
-	addThread (routineName: string, threadID: string, definitionBlock: CommandBlockBehaviors.FunctionDefinitionBlock,
+	addThread (routineName: string, threadID: string, functionStatementElement: Element,
 			   argument1: number, argument2: number, argument3: number) {
-		this.threads.push (new Thread (routineName, threadID, definitionBlock, this, argument1, argument2, argument3));
+		const thread = new Thread (routineName, threadID, null, this, argument1, argument2, argument3);
+		const functionInstance = CommandBlockBehaviors.FunctionDefinitionBlock.constructBlock (functionStatementElement, this, thread)[0];
+		thread.setDefinitionBlock (functionInstance);
+		this.threads.push (thread);
 	}
 
 	removeThread (threadID: string) {
@@ -260,6 +264,14 @@ export class Routine {
 		await this.definitionBlock?.executeBlock ();
 	}
 
+	setDefinitionBlock (definitionBlock: CommandBlockBehaviors.FunctionDefinitionBlock | CommandBlockBehaviors.EntryPointBlock) {
+		this.definitionBlock = definitionBlock;
+	}
+
+	setFunctionName (functionName: string) {
+		this.routineName = functionName;
+	}
+
 	setArguments (argument1: number, argument2: number, argument3: number) {
 		this.argument1 = argument1;
 		this.argument2 = argument2;
@@ -336,14 +348,6 @@ export class Function extends Routine {
 	constructor (routineName: string, definitionBlock: CommandBlockBehaviors.FunctionDefinitionBlock | CommandBlockBehaviors.EntryPointBlock | null) {
 		super (routineName, definitionBlock);
 	}
-
-	setDefinitionBlock (definitionBlock: CommandBlockBehaviors.FunctionDefinitionBlock | CommandBlockBehaviors.EntryPointBlock) {
-		this.definitionBlock = definitionBlock;
-	}
-
-	setFunctionName (functionName: string) {
-		this.routineName = functionName;
-	}
 }
 
 export class Thread extends Routine {
@@ -351,7 +355,7 @@ export class Thread extends Routine {
 	userProgram: UserProgram;
 	isExecuting: boolean = false;
 
-	constructor (routineName: string, threadID: string, definitionBlock: CommandBlockBehaviors.FunctionDefinitionBlock, userProgram: UserProgram,
+	constructor (routineName: string, threadID: string, definitionBlock: CommandBlockBehaviors.FunctionDefinitionBlock | null, userProgram: UserProgram,
 				 argument1: number, argument2: number, argument3: number) {
 		super (routineName, definitionBlock);
 		this.threadID = threadID;
