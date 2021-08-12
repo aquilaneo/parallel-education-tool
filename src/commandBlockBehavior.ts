@@ -1,17 +1,16 @@
 import * as BlockDefinitions from "./blockDefinitions";
 import * as ValueBlockBehaviors from "./valueBlockBehaviors";
 import {assertIsDefined, assertIsNumber, assertIsString} from "./common";
-import {ValueBlock} from "./valueBlockBehaviors";
 
 export class CommandBlock {
 	blockType: string;
 	id: string;
 	blockXml: Element;
 	userProgram: BlockDefinitions.UserProgram;
-	functionName: string;
+	myRoutine: BlockDefinitions.Routine;
 	wait: number;
 
-	constructor (blockXml: Element, userProgram: BlockDefinitions.UserProgram, functionName: string, wait: number) {
+	constructor (blockXml: Element, userProgram: BlockDefinitions.UserProgram, myRoutine: BlockDefinitions.Routine, wait: number) {
 		// ブロックのxmlからブロックタイプを取得
 		const blockType = blockXml.getAttribute ("type");
 		this.blockType = blockType ? blockType : "";
@@ -22,7 +21,7 @@ export class CommandBlock {
 		this.blockXml = blockXml;
 
 		this.userProgram = userProgram;
-		this.functionName = functionName;
+		this.myRoutine = myRoutine;
 		this.wait = wait;
 	}
 
@@ -67,7 +66,7 @@ export class CommandBlock {
 	}
 
 	// nextタグでつながっているコマンドブロックをオブジェクト化し配列化
-	static constructBlock (blockXml: Element, userProgram: BlockDefinitions.UserProgram, functionName: string) {
+	static constructBlock (blockXml: Element, userProgram: BlockDefinitions.UserProgram, myRoutine: BlockDefinitions.Routine) {
 		const constructedBlocks = [];
 		let block = blockXml;
 		while (true) {
@@ -75,7 +74,7 @@ export class CommandBlock {
 			for (const commandBlockDefinition of BlockDefinitions.commandBlockDefinitions) {
 				if (commandBlockDefinition.type === block.getAttribute ("type")) {
 					const wait = commandBlockDefinition.wait;
-					constructedBlocks.push (commandBlockDefinition.instantiate (block, userProgram, functionName, wait));
+					constructedBlocks.push (commandBlockDefinition.instantiate (block, userProgram, myRoutine, wait));
 					break;
 				}
 			}
@@ -98,19 +97,14 @@ export class CommandBlock {
 export class PrintBlock extends CommandBlock {
 	text: ValueBlockBehaviors.ValueBlock | null;
 
-	constructor (blockXml: Element, userProgram: BlockDefinitions.UserProgram, functionName: string, wait: number) {
-		super (blockXml, userProgram, functionName, wait);
+	constructor (blockXml: Element, userProgram: BlockDefinitions.UserProgram, myRoutine: BlockDefinitions.Routine, wait: number) {
+		super (blockXml, userProgram, myRoutine, wait);
 
 		const text = super.getValue ("TEXT");
-		this.text = text ? ValueBlockBehaviors.ValueBlock.constructBlock (text, userProgram, functionName) : null;
+		this.text = text ? ValueBlockBehaviors.ValueBlock.constructBlock (text, userProgram, myRoutine) : null;
 	}
 
 	async executeBlock () {
-		const func = this.userProgram.getFunction (this.functionName);
-		if (func) {
-			console.log (func.argument1, func.argument2, func.argument3);
-		}
-
 		assertIsDefined (this.text);
 
 		const text = this.text.executeBlock ();
@@ -121,11 +115,11 @@ export class PrintBlock extends CommandBlock {
 export class SecondsWaitBlock extends CommandBlock {
 	second: ValueBlockBehaviors.ValueBlock | null;
 
-	constructor (blockXml: Element, userProgram: BlockDefinitions.UserProgram, functionName: string, wait: number) {
-		super (blockXml, userProgram, functionName, wait);
+	constructor (blockXml: Element, userProgram: BlockDefinitions.UserProgram, myRoutine: BlockDefinitions.Routine, wait: number) {
+		super (blockXml, userProgram, myRoutine, wait);
 
 		const second = super.getValue ("second");
-		this.second = second ? ValueBlockBehaviors.ValueBlock.constructBlock (second, userProgram, functionName) : null;
+		this.second = second ? ValueBlockBehaviors.ValueBlock.constructBlock (second, userProgram, myRoutine) : null;
 	}
 
 	async executeBlock () {
@@ -140,11 +134,11 @@ export class SecondsWaitBlock extends CommandBlock {
 export class MilliSecondsWaitBlock extends CommandBlock {
 	millisecond: ValueBlockBehaviors.ValueBlock | null;
 
-	constructor (blockXml: Element, userProgram: BlockDefinitions.UserProgram, functionName: string, wait: number) {
-		super (blockXml, userProgram, functionName, wait);
+	constructor (blockXml: Element, userProgram: BlockDefinitions.UserProgram, myRoutine: BlockDefinitions.Routine, wait: number) {
+		super (blockXml, userProgram, myRoutine, wait);
 
 		const second = super.getValue ("millisecond");
-		this.millisecond = second ? ValueBlockBehaviors.ValueBlock.constructBlock (second, userProgram, functionName) : null;
+		this.millisecond = second ? ValueBlockBehaviors.ValueBlock.constructBlock (second, userProgram, myRoutine) : null;
 	}
 
 	async executeBlock () {
@@ -160,12 +154,12 @@ export class IfBlock extends CommandBlock {
 	condition: ValueBlockBehaviors.ValueBlock | null;
 	statement: CommandBlock[];
 
-	constructor (blockXml: Element, userProgram: BlockDefinitions.UserProgram, functionName: string, wait: number) {
-		super (blockXml, userProgram, functionName, wait);
+	constructor (blockXml: Element, userProgram: BlockDefinitions.UserProgram, myRoutine: BlockDefinitions.Routine, wait: number) {
+		super (blockXml, userProgram, myRoutine, wait);
 		const condition = super.getValue ("IF0");
-		this.condition = condition ? ValueBlockBehaviors.ValueBlock.constructBlock (condition, userProgram, functionName) : null;
+		this.condition = condition ? ValueBlockBehaviors.ValueBlock.constructBlock (condition, userProgram, myRoutine) : null;
 		const statement = super.getStatement ("DO0");
-		this.statement = statement ? CommandBlock.constructBlock (statement, userProgram, functionName) : [];
+		this.statement = statement ? CommandBlock.constructBlock (statement, userProgram, myRoutine) : [];
 	}
 
 	async executeBlock () {
@@ -182,14 +176,14 @@ export class IfElseBlock extends CommandBlock {
 	statement1: CommandBlock[];
 	statement2: CommandBlock[];
 
-	constructor (blockXml: Element, userProgram: BlockDefinitions.UserProgram, functionName: string, wait: number) {
-		super (blockXml, userProgram, functionName, wait);
+	constructor (blockXml: Element, userProgram: BlockDefinitions.UserProgram, myRoutine: BlockDefinitions.Routine, wait: number) {
+		super (blockXml, userProgram, myRoutine, wait);
 		const condition = super.getValue ("IF0");
-		this.condition = condition ? ValueBlockBehaviors.ValueBlock.constructBlock (condition, userProgram, functionName) : null;
+		this.condition = condition ? ValueBlockBehaviors.ValueBlock.constructBlock (condition, userProgram, myRoutine) : null;
 		const statement1 = super.getStatement ("DO0");
-		this.statement1 = statement1 ? CommandBlock.constructBlock (statement1, userProgram, functionName) : [];
+		this.statement1 = statement1 ? CommandBlock.constructBlock (statement1, userProgram, myRoutine) : [];
 		const statement2 = super.getStatement ("ELSE");
-		this.statement2 = statement2 ? CommandBlock.constructBlock (statement2, userProgram, functionName) : [];
+		this.statement2 = statement2 ? CommandBlock.constructBlock (statement2, userProgram, myRoutine) : [];
 	}
 
 	async executeBlock () {
@@ -207,12 +201,12 @@ export class ForBlock extends CommandBlock {
 	count: ValueBlockBehaviors.ValueBlock | null;
 	statement: CommandBlock [];
 
-	constructor (blockXml: Element, userProgram: BlockDefinitions.UserProgram, functionName: string, wait: number) {
-		super (blockXml, userProgram, functionName, wait);
+	constructor (blockXml: Element, userProgram: BlockDefinitions.UserProgram, myRoutine: BlockDefinitions.Routine, wait: number) {
+		super (blockXml, userProgram, myRoutine, wait);
 		const count = super.getValue ("TIMES");
-		this.count = count ? ValueBlockBehaviors.ValueBlock.constructBlock (count, userProgram, functionName) : null;
+		this.count = count ? ValueBlockBehaviors.ValueBlock.constructBlock (count, userProgram, myRoutine) : null;
 		const statement = super.getStatement ("DO");
-		this.statement = statement ? CommandBlock.constructBlock (statement, userProgram, functionName) : [];
+		this.statement = statement ? CommandBlock.constructBlock (statement, userProgram, myRoutine) : [];
 	}
 
 	async executeBlock () {
@@ -230,14 +224,14 @@ export class WhileBlock extends CommandBlock {
 	condition: ValueBlockBehaviors.ValueBlock | null;
 	statement: CommandBlock[];
 
-	constructor (blockXml: Element, userProgram: BlockDefinitions.UserProgram, functionName: string, wait: number) {
-		super (blockXml, userProgram, functionName, wait);
+	constructor (blockXml: Element, userProgram: BlockDefinitions.UserProgram, myRoutine: BlockDefinitions.Routine, wait: number) {
+		super (blockXml, userProgram, myRoutine, wait);
 		const mode = super.getField ("MODE");
 		this.mode = mode ? mode : "";
 		const condition = super.getValue ("BOOL");
-		this.condition = condition ? ValueBlockBehaviors.ValueBlock.constructBlock (condition, userProgram, functionName) : null;
+		this.condition = condition ? ValueBlockBehaviors.ValueBlock.constructBlock (condition, userProgram, myRoutine) : null;
 		const statement = super.getStatement ("DO");
-		this.statement = statement ? CommandBlock.constructBlock (statement, userProgram, functionName) : [];
+		this.statement = statement ? CommandBlock.constructBlock (statement, userProgram, myRoutine) : [];
 	}
 
 	async executeBlock () {
@@ -262,13 +256,13 @@ export class VariablesSetNumber extends CommandBlock {
 	variable: string;
 	value: ValueBlockBehaviors.ValueBlock | null;
 
-	constructor (blockXml: Element, userProgram: BlockDefinitions.UserProgram, functionName: string, wait: number) {
-		super (blockXml, userProgram, functionName, wait);
+	constructor (blockXml: Element, userProgram: BlockDefinitions.UserProgram, myRoutine: BlockDefinitions.Routine, wait: number) {
+		super (blockXml, userProgram, myRoutine, wait);
 
 		const variable = super.getField ("variable");
 		this.variable = variable ? variable : "";
 		const value = super.getValue ("value");
-		this.value = value ? ValueBlockBehaviors.ValueBlock.constructBlock (value, userProgram, functionName) : null;
+		this.value = value ? ValueBlockBehaviors.ValueBlock.constructBlock (value, userProgram, myRoutine) : null;
 	}
 
 	async executeBlock () {
@@ -276,7 +270,7 @@ export class VariablesSetNumber extends CommandBlock {
 
 		const value = this.value.executeBlock ();
 		assertIsNumber (value);
-		this.userProgram.writeLocalNumberVariable (this.functionName, this.variable, value);
+		this.myRoutine?.writeLocalNumberVariable (this.variable, value);
 	}
 }
 
@@ -284,13 +278,13 @@ export class VariablesAddNumber extends CommandBlock {
 	variable: string;
 	value: ValueBlockBehaviors.ValueBlock | null;
 
-	constructor (blockXml: Element, userProgram: BlockDefinitions.UserProgram, functionName: string, wait: number) {
-		super (blockXml, userProgram, functionName, wait);
+	constructor (blockXml: Element, userProgram: BlockDefinitions.UserProgram, myRoutine: BlockDefinitions.Routine, wait: number) {
+		super (blockXml, userProgram, myRoutine, wait);
 
 		const variable = super.getField ("variable");
 		this.variable = variable ? variable : "";
 		const value = super.getValue ("value");
-		this.value = value ? ValueBlockBehaviors.ValueBlock.constructBlock (value, userProgram, functionName) : null;
+		this.value = value ? ValueBlockBehaviors.ValueBlock.constructBlock (value, userProgram, myRoutine) : null;
 	}
 
 	async executeBlock () {
@@ -298,8 +292,8 @@ export class VariablesAddNumber extends CommandBlock {
 
 		const value = this.value.executeBlock ();
 		assertIsNumber (value);
-		const result = this.userProgram.readLocalNumberVariable (this.functionName, this.variable) + value;
-		this.userProgram.writeLocalNumberVariable (this.functionName, this.variable, result);
+		const operand = this.myRoutine?.readLocalNumberVariable (this.variable);
+		this.myRoutine?.writeLocalNumberVariable (this.variable, operand + 1);
 	}
 }
 
@@ -307,13 +301,13 @@ export class VariablesSetString extends CommandBlock {
 	variable: string;
 	value: ValueBlockBehaviors.ValueBlock | null;
 
-	constructor (blockXml: Element, userProgram: BlockDefinitions.UserProgram, functionName: string, wait: number) {
-		super (blockXml, userProgram, functionName, wait);
+	constructor (blockXml: Element, userProgram: BlockDefinitions.UserProgram, myRoutine: BlockDefinitions.Routine, wait: number) {
+		super (blockXml, userProgram, myRoutine, wait);
 
 		const variable = super.getField ("variable");
 		this.variable = variable ? variable : "";
 		const value = super.getValue ("value");
-		this.value = value ? ValueBlockBehaviors.ValueBlock.constructBlock (value, userProgram, functionName) : null;
+		this.value = value ? ValueBlockBehaviors.ValueBlock.constructBlock (value, userProgram, myRoutine) : null;
 	}
 
 	async executeBlock () {
@@ -321,7 +315,7 @@ export class VariablesSetString extends CommandBlock {
 
 		const value = this.value.executeBlock ();
 		assertIsString (value);
-		this.userProgram.writeLocalStringVariable (this.functionName, this.variable, value);
+		this.myRoutine?.writeLocalStringVariable (this.variable, value);
 	}
 }
 
@@ -329,13 +323,13 @@ export class GlobalVariableWriteBlock extends CommandBlock {
 	name: string;
 	value: ValueBlockBehaviors.ValueBlock | null;
 
-	constructor (blockXml: Element, userProgram: BlockDefinitions.UserProgram, functionName: string, wait: number) {
-		super (blockXml, userProgram, functionName, wait);
+	constructor (blockXml: Element, userProgram: BlockDefinitions.UserProgram, myRoutine: BlockDefinitions.Routine, wait: number) {
+		super (blockXml, userProgram, myRoutine, wait);
 
 		const name = super.getField ("name");
 		this.name = name ? name : "";
 		const value = super.getValue ("value");
-		this.value = value ? ValueBlockBehaviors.ValueBlock.constructBlock (value, userProgram, functionName) : null;
+		this.value = value ? ValueBlockBehaviors.ValueBlock.constructBlock (value, userProgram, myRoutine) : null;
 	}
 
 	async executeBlock () {
@@ -352,15 +346,15 @@ export class GlobalOneDimensionalArrayWrite extends CommandBlock {
 	index: ValueBlockBehaviors.ValueBlock | null;
 	value: ValueBlockBehaviors.ValueBlock | null;
 
-	constructor (blocklyXml: Element, userProgram: BlockDefinitions.UserProgram, functionName: string, wait: number) {
-		super (blocklyXml, userProgram, functionName, wait);
+	constructor (blocklyXml: Element, userProgram: BlockDefinitions.UserProgram, myRoutine: BlockDefinitions.Routine, wait: number) {
+		super (blocklyXml, userProgram, myRoutine, wait);
 
 		const name = super.getField ("name");
 		this.name = name ? name : "";
 		const index = super.getValue ("index");
-		this.index = index ? ValueBlockBehaviors.ValueBlock.constructBlock (index, userProgram, functionName) : null;
+		this.index = index ? ValueBlockBehaviors.ValueBlock.constructBlock (index, userProgram, myRoutine) : null;
 		const value = super.getValue ("value");
-		this.value = value ? ValueBlockBehaviors.ValueBlock.constructBlock (value, userProgram, functionName) : null;
+		this.value = value ? ValueBlockBehaviors.ValueBlock.constructBlock (value, userProgram, myRoutine) : null;
 	}
 
 	async executeBlock () {
@@ -378,17 +372,17 @@ export class GlobalTwoDimensionalArrayWrite extends CommandBlock {
 	col: ValueBlockBehaviors.ValueBlock | null;
 	value: ValueBlockBehaviors.ValueBlock | null;
 
-	constructor (blocklyXml: Element, userProgram: BlockDefinitions.UserProgram, functionName: string, wait: number) {
-		super (blocklyXml, userProgram, functionName, wait);
+	constructor (blocklyXml: Element, userProgram: BlockDefinitions.UserProgram, myRoutine: BlockDefinitions.Routine, wait: number) {
+		super (blocklyXml, userProgram, myRoutine, wait);
 
 		const name = super.getField ("name");
 		this.name = name ? name : "";
 		const row = super.getValue ("row");
-		this.row = row ? ValueBlockBehaviors.ValueBlock.constructBlock (row, userProgram, functionName) : null;
+		this.row = row ? ValueBlockBehaviors.ValueBlock.constructBlock (row, userProgram, myRoutine) : null;
 		const col = super.getValue ("col");
-		this.col = col ? ValueBlockBehaviors.ValueBlock.constructBlock (col, userProgram, functionName) : null;
+		this.col = col ? ValueBlockBehaviors.ValueBlock.constructBlock (col, userProgram, myRoutine) : null;
 		const value = super.getValue ("value");
-		this.value = value ? ValueBlockBehaviors.ValueBlock.constructBlock (value, userProgram, functionName) : null;
+		this.value = value ? ValueBlockBehaviors.ValueBlock.constructBlock (value, userProgram, myRoutine) : null;
 	}
 
 	async executeBlock () {
@@ -408,21 +402,17 @@ export class GlobalTwoDimensionalArrayWrite extends CommandBlock {
 }
 
 export class FunctionDefinitionBlock extends CommandBlock {
+	functionName: string;
 	statement: CommandBlock[];
-	localNumberVariables: BlockDefinitions.NumberVariable[] = [];
-	localStringVariables: BlockDefinitions.StringVariable[] = [];
-	argument1: number = 0;
-	argument2: number = 0;
-	argument3: number = 0;
 
-	constructor (blockXml: Element, userProgram: BlockDefinitions.UserProgram, wait: number) {
-		super (blockXml, userProgram, "", wait);
+	constructor (blockXml: Element, userProgram: BlockDefinitions.UserProgram, myRoutine: BlockDefinitions.Routine, wait: number) {
+		super (blockXml, userProgram, myRoutine, wait);
 
 		const functionName = super.getField ("name");
 		this.functionName = functionName ? functionName : "";
 		const statement = blockXml.getElementsByTagName ("statement");
 		if (statement.length > 0 && statement[0].getAttribute ("name") === "routine") {
-			this.statement = CommandBlock.constructBlock (statement[0].getElementsByTagName ("block")[0], userProgram, this.functionName);
+			this.statement = CommandBlock.constructBlock (statement[0].getElementsByTagName ("block")[0], userProgram, myRoutine);
 		} else {
 			this.statement = [];
 		}
@@ -434,78 +424,7 @@ export class FunctionDefinitionBlock extends CommandBlock {
 		await this.userProgram.executeBlockList (this.statement);
 	}
 
-	setArguments (argument1: number, argument2: number, argument3: number) {
-		this.argument1 = argument1;
-		this.argument2 = argument2;
-		this.argument3 = argument3;
-	}
-
-	getArgument (argumentNumber: number) {
-		switch (argumentNumber) {
-			case 0:
-				return this.argument1;
-			case 1:
-				return this.argument2;
-			case 2:
-				return this.argument3;
-			default:
-				return 0;
-		}
-	}
-
-	readLocalNumberVariable (variableName: string) {
-		return this.getLocalNumberVariable (variableName).readValue ();
-	}
-
-	readLocalStringVariable (variableName: string) {
-		return this.getLocalStringVariable (variableName).readValue ();
-	}
-
-	writeLocalNumberVariable (variableName: string, value: number) {
-		this.getLocalNumberVariable (variableName).writeValue (value);
-	}
-
-	writeLocalStringVariable (variableName: string, value: string) {
-		this.getLocalStringVariable (variableName).writeValue (value);
-	}
-
-	getLocalNumberVariable (variableName: string) {
-		const searchedVariable = this.localNumberVariables.find ((localVariable) => {
-			return localVariable.variableName === variableName;
-		});
-		// なかったら新しい変数を作る
-		if (searchedVariable) {
-			return searchedVariable;
-		} else {
-			return this.addLocalNumberVariable (variableName, 0);
-		}
-	}
-
-	getLocalStringVariable (variableName: string) {
-		const searchedVariable = this.localStringVariables.find ((localVariable) => {
-			return localVariable.variableName === variableName;
-		});
-		// なかったら新しい変数を作る
-		if (searchedVariable) {
-			return searchedVariable;
-		} else {
-			return this.addLocalStringVariable (variableName, "");
-		}
-	}
-
-	addLocalNumberVariable (variableName: string, initValue: number) {
-		const newVariable = new BlockDefinitions.NumberVariable (variableName, initValue);
-		this.localNumberVariables.push (newVariable);
-		return newVariable;
-	}
-
-	addLocalStringVariable (variableName: string, initValue: string) {
-		const newVariable = new BlockDefinitions.StringVariable (variableName, initValue);
-		this.localStringVariables.push (newVariable);
-		return newVariable;
-	}
-
-	static constructBlock (blockXml: Element, userProgram: BlockDefinitions.UserProgram) {
+	static constructBlock (blockXml: Element, userProgram: BlockDefinitions.UserProgram, myRoutine: BlockDefinitions.Routine) {
 		const blockType = "function_definition";
 		if (blockXml.getAttribute ("type") === blockType) {
 			const functionBlockDefinition = BlockDefinitions.commandBlockDefinitions.find ((definition) => {
@@ -513,7 +432,7 @@ export class FunctionDefinitionBlock extends CommandBlock {
 			});
 
 			if (functionBlockDefinition) {
-				return [new FunctionDefinitionBlock (blockXml, userProgram, functionBlockDefinition.wait)];
+				return [new FunctionDefinitionBlock (blockXml, userProgram, myRoutine, functionBlockDefinition.wait)];
 			}
 		}
 		return [];
@@ -526,18 +445,18 @@ export class FunctionCallBlock extends CommandBlock {
 	argument2: ValueBlockBehaviors.ValueBlock | null;
 	argument3: ValueBlockBehaviors.ValueBlock | null;
 
-	constructor (blockXml: Element, userProgram: BlockDefinitions.UserProgram, functionName: string, wait: number) {
-		super (blockXml, userProgram, functionName, wait);
+	constructor (blockXml: Element, userProgram: BlockDefinitions.UserProgram, myRoutine: BlockDefinitions.Routine, wait: number) {
+		super (blockXml, userProgram, myRoutine, wait);
 
 		const name = super.getField ("name");
 		this.name = name ? name : "";
 
 		const argument1 = super.getValue ("argument1");
-		this.argument1 = argument1 ? ValueBlockBehaviors.ValueBlock.constructBlock (argument1, userProgram, functionName) : null;
+		this.argument1 = argument1 ? ValueBlockBehaviors.ValueBlock.constructBlock (argument1, userProgram, myRoutine) : null;
 		const argument2 = super.getValue ("argument2");
-		this.argument2 = argument2 ? ValueBlockBehaviors.ValueBlock.constructBlock (argument2, userProgram, functionName) : null;
+		this.argument2 = argument2 ? ValueBlockBehaviors.ValueBlock.constructBlock (argument2, userProgram, myRoutine) : null;
 		const argument3 = super.getValue ("argument3");
-		this.argument3 = argument3 ? ValueBlockBehaviors.ValueBlock.constructBlock (argument3, userProgram, functionName) : null;
+		this.argument3 = argument3 ? ValueBlockBehaviors.ValueBlock.constructBlock (argument3, userProgram, myRoutine) : null;
 	}
 
 	async executeBlock () {
@@ -560,12 +479,12 @@ export class EntryPointBlock extends CommandBlock {
 	localNumberVariables: BlockDefinitions.NumberVariable[] = [];
 	localStringVariables: BlockDefinitions.StringVariable[] = [];
 
-	constructor (blockXml: Element, userProgram: BlockDefinitions.UserProgram, wait: number) {
-		super (blockXml, userProgram, "スタート", wait);
+	constructor (blockXml: Element, userProgram: BlockDefinitions.UserProgram, myRoutine: BlockDefinitions.Routine, wait: number) {
+		super (blockXml, userProgram, myRoutine, wait);
 
 		const statement = blockXml.getElementsByTagName ("statement");
 		if (statement.length > 0 && statement[0].getAttribute ("name") === "routine") {
-			this.statement = CommandBlock.constructBlock (statement[0].getElementsByTagName ("block")[0], userProgram, "スタート");
+			this.statement = CommandBlock.constructBlock (statement[0].getElementsByTagName ("block")[0], userProgram, myRoutine);
 		} else {
 			this.statement = [];
 		}
@@ -579,59 +498,7 @@ export class EntryPointBlock extends CommandBlock {
 		await this.userProgram.executeBlockList (this.statement);
 	}
 
-	readLocalNumberVariable (variableName: string) {
-		return this.getLocalNumberVariable (variableName).readValue ();
-	}
-
-	readLocalStringVariable (variableName: string) {
-		return this.getLocalStringVariable (variableName).readValue ();
-	}
-
-	writeLocalNumberVariable (variableName: string, value: number) {
-		this.getLocalNumberVariable (variableName).writeValue (value);
-	}
-
-	writeLocalStringVariable (variableName: string, value: string) {
-		this.getLocalStringVariable (variableName).writeValue (value);
-	}
-
-	getLocalNumberVariable (variableName: string) {
-		const searchedVariable = this.localNumberVariables.find ((localVariable) => {
-			return localVariable.variableName === variableName;
-		});
-		// なかったら新しい変数を作る
-		if (searchedVariable) {
-			return searchedVariable;
-		} else {
-			return this.addLocalNumberVariable (variableName, 0);
-		}
-	}
-
-	getLocalStringVariable (variableName: string) {
-		const searchedVariable = this.localStringVariables.find ((localVariable) => {
-			return localVariable.variableName === variableName;
-		});
-		// なかったら新しい変数を作る
-		if (searchedVariable) {
-			return searchedVariable;
-		} else {
-			return this.addLocalStringVariable (variableName, "");
-		}
-	}
-
-	addLocalNumberVariable (variableName: string, initValue: number) {
-		const newVariable = new BlockDefinitions.NumberVariable (variableName, initValue);
-		this.localNumberVariables.push (newVariable);
-		return newVariable;
-	}
-
-	addLocalStringVariable (variableName: string, initValue: string) {
-		const newVariable = new BlockDefinitions.StringVariable (variableName, initValue);
-		this.localStringVariables.push (newVariable);
-		return newVariable;
-	}
-
-	static constructBlock (blockXml: Element, userProgram: BlockDefinitions.UserProgram) {
+	static constructBlock (blockXml: Element, userProgram: BlockDefinitions.UserProgram, myRoutine: BlockDefinitions.Routine) {
 		const blockType = "entry_point";
 		if (blockXml.getAttribute ("type") === blockType) {
 			const functionBlockDefinition = BlockDefinitions.commandBlockDefinitions.find ((definition) => {
@@ -639,7 +506,7 @@ export class EntryPointBlock extends CommandBlock {
 			});
 
 			if (functionBlockDefinition) {
-				return [new EntryPointBlock (blockXml, userProgram, functionBlockDefinition.wait)];
+				return [new EntryPointBlock (blockXml, userProgram, myRoutine, functionBlockDefinition.wait)];
 			}
 		}
 		return [];
@@ -649,11 +516,11 @@ export class EntryPointBlock extends CommandBlock {
 export class StopwatchStartBlock extends CommandBlock {
 	swNumber: ValueBlockBehaviors.ValueBlock | null;
 
-	constructor (blockXml: Element, userProgram: BlockDefinitions.UserProgram, functionName: string, wait: number) {
-		super (blockXml, userProgram, functionName, wait);
+	constructor (blockXml: Element, userProgram: BlockDefinitions.UserProgram, myRoutine: BlockDefinitions.Routine, wait: number) {
+		super (blockXml, userProgram, myRoutine, wait);
 
 		const swNumber = super.getValue ("number");
-		this.swNumber = swNumber ? ValueBlockBehaviors.ValueBlock.constructBlock (swNumber, userProgram, functionName) : null;
+		this.swNumber = swNumber ? ValueBlockBehaviors.ValueBlock.constructBlock (swNumber, userProgram, myRoutine) : null;
 	}
 
 	async executeBlock () {
@@ -668,11 +535,11 @@ export class StopwatchStartBlock extends CommandBlock {
 export class StopwatchStopBlock extends CommandBlock {
 	swNumber: ValueBlockBehaviors.ValueBlock | null;
 
-	constructor (blockXml: Element, userProgram: BlockDefinitions.UserProgram, functionName: string, wait: number) {
-		super (blockXml, userProgram, functionName, wait);
+	constructor (blockXml: Element, userProgram: BlockDefinitions.UserProgram, myRoutine: BlockDefinitions.Routine, wait: number) {
+		super (blockXml, userProgram, myRoutine, wait);
 
 		const swNumber = super.getValue ("number");
-		this.swNumber = swNumber ? ValueBlockBehaviors.ValueBlock.constructBlock (swNumber, userProgram, functionName) : null;
+		this.swNumber = swNumber ? ValueBlockBehaviors.ValueBlock.constructBlock (swNumber, userProgram, myRoutine) : null;
 	}
 
 	async executeBlock () {
@@ -687,11 +554,11 @@ export class StopwatchStopBlock extends CommandBlock {
 export class StopwatchResetBlock extends CommandBlock {
 	swNumber: ValueBlockBehaviors.ValueBlock | null;
 
-	constructor (blockXml: Element, userProgram: BlockDefinitions.UserProgram, functionName: string, wait: number) {
-		super (blockXml, userProgram, functionName, wait);
+	constructor (blockXml: Element, userProgram: BlockDefinitions.UserProgram, myRoutine: BlockDefinitions.Routine, wait: number) {
+		super (blockXml, userProgram, myRoutine, wait);
 
 		const swNumber = super.getValue ("number");
-		this.swNumber = swNumber ? ValueBlockBehaviors.ValueBlock.constructBlock (swNumber, userProgram, functionName) : null;
+		this.swNumber = swNumber ? ValueBlockBehaviors.ValueBlock.constructBlock (swNumber, userProgram, myRoutine) : null;
 	}
 
 	async executeBlock () {
@@ -704,33 +571,32 @@ export class StopwatchResetBlock extends CommandBlock {
 }
 
 export class ThreadCreateBlock extends CommandBlock {
-	threadFunctionName: string;
-	threadName: ValueBlockBehaviors.ValueBlock | null;
+	routineName: string;
+	threadID: ValueBlockBehaviors.ValueBlock | null;
 	argument1: ValueBlockBehaviors.ValueBlock | null;
 	argument2: ValueBlockBehaviors.ValueBlock | null;
 	argument3: ValueBlockBehaviors.ValueBlock | null;
 
-	constructor (blockXml: Element, userProgram: BlockDefinitions.UserProgram, functionName: string, wait: number) {
-		super (blockXml, userProgram, functionName, wait);
+	constructor (blockXml: Element, userProgram: BlockDefinitions.UserProgram, myRoutine: BlockDefinitions.Routine, wait: number) {
+		super (blockXml, userProgram, myRoutine, wait);
 
 		const threadFunctionName = super.getField ("thread_function_name");
-		this.threadFunctionName = threadFunctionName ? threadFunctionName : "";
-		const threadName = super.getValue ("thread_name");
-		this.threadName = threadName ? ValueBlockBehaviors.ValueBlock.constructBlock (threadName, userProgram, functionName) : null;
+		this.routineName = threadFunctionName ? threadFunctionName : "";
+		const threadID = super.getValue ("thread_name");
+		this.threadID = threadID ? ValueBlockBehaviors.ValueBlock.constructBlock (threadID, userProgram, myRoutine) : null;
 		const argument1 = super.getValue ("argument1");
-		this.argument1 = argument1 ? ValueBlockBehaviors.ValueBlock.constructBlock (argument1, userProgram, functionName) : null;
+		this.argument1 = argument1 ? ValueBlockBehaviors.ValueBlock.constructBlock (argument1, userProgram, myRoutine) : null;
 		const argument2 = super.getValue ("argument2");
-		this.argument2 = argument2 ? ValueBlockBehaviors.ValueBlock.constructBlock (argument2, userProgram, functionName) : null;
+		this.argument2 = argument2 ? ValueBlockBehaviors.ValueBlock.constructBlock (argument2, userProgram, myRoutine) : null;
 		const argument3 = super.getValue ("argument3");
-		this.argument3 = argument3 ? ValueBlockBehaviors.ValueBlock.constructBlock (argument3, userProgram, functionName) : null;
-
+		this.argument3 = argument3 ? ValueBlockBehaviors.ValueBlock.constructBlock (argument3, userProgram, myRoutine) : null;
 	}
 
 	async executeBlock () {
-		assertIsDefined (this.threadName);
+		assertIsDefined (this.threadID);
 
-		const threadName = this.threadName.executeBlock ();
-		assertIsString (threadName);
+		const threadID = this.threadID.executeBlock ();
+		assertIsString (threadID);
 
 		assertIsDefined (this.argument1);
 		assertIsDefined (this.argument2);
@@ -742,33 +608,36 @@ export class ThreadCreateBlock extends CommandBlock {
 		assertIsNumber (argument2);
 		assertIsNumber (argument3);
 
-		this.userProgram.addThread (threadName, this.threadFunctionName, argument1, argument2, argument3);
-		this.userProgram.executeThread (threadName);
+		const func = this.userProgram.getFunctionDefinitionBlockByName (this.routineName);
+		if (func) {
+			this.userProgram.addThread (this.routineName, threadID, func, argument1, argument2, argument3);
+			await this.userProgram.executeThread (threadID);
+		}
 	}
 }
 
 export class ThreadJoinBlock extends CommandBlock {
-	threadName: ValueBlockBehaviors.ValueBlock | null;
-	threadNameStr: string;
+	threaedID: ValueBlockBehaviors.ValueBlock | null;
+	threadIDStr: string;
 
-	constructor (blockXml: Element, userProgram: BlockDefinitions.UserProgram, functionName: string, wait: number) {
-		super (blockXml, userProgram, functionName, wait);
+	constructor (blockXml: Element, userProgram: BlockDefinitions.UserProgram, myRoutine: BlockDefinitions.Routine, wait: number) {
+		super (blockXml, userProgram, myRoutine, wait);
 
-		const threadName = super.getValue ("thread_name");
-		this.threadName = threadName ? ValueBlockBehaviors.ValueBlock.constructBlock (threadName, userProgram, functionName) : null;
-		this.threadNameStr = "";
+		const threadID = super.getValue ("thread_name");
+		this.threaedID = threadID ? ValueBlockBehaviors.ValueBlock.constructBlock (threadID, userProgram, myRoutine) : null;
+		this.threadIDStr = "";
 	}
 
 	async executeBlock () {
-		assertIsDefined (this.threadName);
+		assertIsDefined (this.threaedID);
 
-		const threadName = this.threadName.executeBlock ();
+		const threadName = this.threaedID.executeBlock ();
 		assertIsString (threadName);
-		this.threadNameStr = threadName;
+		this.threadIDStr = threadName;
 	}
 
 	isWaiting (): boolean {
-		const thread = this.userProgram.getThread (this.threadNameStr);
+		const thread = this.userProgram.getThread (this.threadIDStr);
 		if (thread) {
 			return thread.isExecuting;
 		} else {

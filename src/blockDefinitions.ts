@@ -3,16 +3,16 @@
 import * as CommandBlockBehaviors from "./commandBlockBehavior";
 import * as ValueBlockBehaviors from "./valueBlockBehaviors";
 import {assertIsDefined} from "./common";
-import {VariableCanvas} from "./variableCanvas";
 import {Mission} from "./mission";
 
 export class UserProgram {
 	mission: Mission;
-	entryFunction: CommandBlockBehaviors.EntryPointBlock | null = null; // エントリポイント
-	functions: CommandBlockBehaviors.FunctionDefinitionBlock[] = []; // 関数一覧
+	entryFunction: Function | null = null; // エントリポイント
+	functions: Function[] = []; // 関数一覧
+	threads: Thread[] = []; // スレッド一覧
+	functionDefinitionBlocks: CommandBlockBehaviors.FunctionDefinitionBlock[] = [];
 	globalVariables: NumberVariable[] = [];
 	stopwatches: { key: number, sw: Stopwatch } [] = []; // ストップウォッチ一覧
-	threads: Thread[] = [];
 
 	constructor (xml: Element, mission: Mission) {
 		console.log (xml);
@@ -31,11 +31,18 @@ export class UserProgram {
 
 		// エントリポイントと関数ブロックのXMLをパース
 		if (entryFunctionXml) {
-			this.entryFunction = CommandBlockBehaviors.EntryPointBlock.constructBlock (entryFunctionXml, this)[0];
+			this.entryFunction = new Function ("スタート", null);
+			const entryFunctionBlock = CommandBlockBehaviors.EntryPointBlock.constructBlock (entryFunctionXml, this, this.entryFunction)[0];
+			this.entryFunction = new Function ("スタート", entryFunctionBlock);
 		}
-		this.functions = functionsXml.map ((functionXml) => {
-			return CommandBlockBehaviors.FunctionDefinitionBlock.constructBlock (functionXml, this)[0];
-		});
+		for (const functionXml of functionsXml) {
+			const func = new Function ("", null);
+			const functionBlock = CommandBlockBehaviors.FunctionDefinitionBlock.constructBlock (functionXml, this, func)[0];
+			func.setDefinitionBlock (functionBlock);
+			func.setFunctionName (functionBlock.functionName);
+			this.functions.push (func);
+			this.functionDefinitionBlocks.push (functionBlock);
+		}
 
 		console.log ("エントリポイント", this.entryFunction);
 		console.log ("関数", this.functions);
@@ -65,7 +72,7 @@ export class UserProgram {
 
 	async executeFunction (functionName: string, argument1: number, argument2: number, argument3: number) {
 		// 関数名が一致する関数を実行
-		const searchedFunction = this.getFunction (functionName);
+		const searchedFunction = this.getFunctionByName (functionName);
 		if (searchedFunction) {
 			searchedFunction.setArguments (argument1, argument2, argument3);
 			await searchedFunction.executeBlock ();
@@ -74,8 +81,14 @@ export class UserProgram {
 		}
 	}
 
-	getFunction (functionName: string) {
+	getFunctionByName (functionName: string) {
 		return this.functions.find ((func) => {
+			return func.routineName === functionName;
+		});
+	}
+
+	getFunctionDefinitionBlockByName (functionName: string) {
+		return this.functionDefinitionBlocks.find ((func) => {
 			return func.functionName === functionName;
 		});
 	}
@@ -106,78 +119,6 @@ export class UserProgram {
 		return newVariable;
 	}
 
-	readLocalNumberVariable (functionName: string, variableName: string) {
-		// まずはエントリポイントの関数を調べる
-		if (functionName === "スタート") {
-			if (this.entryFunction) {
-				return this.entryFunction.readLocalNumberVariable (variableName);
-			}
-		}
-
-		// 関数名が一致する関数を探索し変数を読み込み
-		const searchedFunction = this.getFunction (functionName);
-		if (searchedFunction) {
-			return searchedFunction.readLocalNumberVariable (variableName);
-		} else {
-			console.error (`関数 ${functionName} が見つかりません！`);
-			return 0;
-		}
-	}
-
-	readLocalStringVariable (functionName: string, variableName: string) {
-		// まずはエントリポイントの関数を調べる
-		if (functionName === "スタート") {
-			if (this.entryFunction) {
-				return this.entryFunction.readLocalStringVariable (variableName);
-			}
-		}
-
-		// 関数名が一致する関数を探索し変数を読み込み
-		const searchedFunction = this.getFunction (functionName);
-		if (searchedFunction) {
-			return searchedFunction.readLocalStringVariable (variableName);
-		} else {
-			console.error (`関数 ${functionName} が見つかりません！`);
-			return "";
-		}
-	}
-
-	writeLocalNumberVariable (functionName: string, variableName: string, value: number) {
-		// まずはエントリポイントの関数を調べる
-		if (functionName === "スタート") {
-			if (this.entryFunction) {
-				this.entryFunction.writeLocalNumberVariable (variableName, value);
-				return;
-			}
-		}
-
-		// 関数名が一致する関数を探索し変数を読み込み
-		const searchedFunction = this.getFunction (functionName);
-		if (searchedFunction) {
-			searchedFunction.writeLocalNumberVariable (variableName, value);
-		} else {
-			console.error (`関数 ${functionName} が見つかりません！`);
-		}
-	}
-
-	writeLocalStringVariable (functionName: string, variableName: string, value: string) {
-		// まずはエントリポイントの関数を調べる
-		if (functionName === "スタート") {
-			if (this.entryFunction) {
-				this.entryFunction.writeLocalStringVariable (variableName, value);
-				return;
-			}
-		}
-
-		// 関数名が一致する関数を探索し変数を読み込み
-		const searchedFunction = this.getFunction (functionName);
-		if (searchedFunction) {
-			searchedFunction.writeLocalStringVariable (variableName, value);
-		} else {
-			console.error (`関数 ${functionName} が見つかりません！`);
-		}
-	}
-
 	addStopwatch (swNumber: number) {
 		// 番号が重複していたら上書き、そうでなければ追加
 		const searchedIndex = this.stopwatches.findIndex ((sw) => {
@@ -204,23 +145,27 @@ export class UserProgram {
 		}
 	}
 
-	addThread (threadName: string, threadFunctionName: string, argument1: number, argument2: number, argument3: number) {
-		const threadFunction = this.getFunction (threadFunctionName);
-		if (threadFunction) {
-			this.threads.push (new Thread (threadName, threadFunctionName, this, argument1, argument2, argument3));
-		}
+	addThread (routineName: string, threadID: string, definitionBlock: CommandBlockBehaviors.FunctionDefinitionBlock,
+			   argument1: number, argument2: number, argument3: number) {
+		this.threads.push (new Thread (routineName, threadID, definitionBlock, this, argument1, argument2, argument3));
 	}
 
-	executeThread (threadName: string) {
-		const thread = this.getThread (threadName);
+	removeThread (threadID: string) {
+		this.threads = this.threads.filter ((item) => {
+			return item.threadID !== threadID;
+		});
+	}
+
+	async executeThread (threadID: string) {
+		const thread = this.getThread (threadID);
 		if (thread) {
-			thread.execute ();
+			await thread.executeBlock ();
 		}
 	}
 
-	getThread (threadName: string) {
+	getThread (threadID: string) {
 		return this.threads.find ((thread) => {
-			return thread.threadName === threadName;
+			return thread.threadID === threadID;
 		});
 	}
 }
@@ -297,31 +242,131 @@ export class Stopwatch {
 	}
 }
 
-export class Thread {
-	threadName: string;
-	functionName: string;
-	userProgram: UserProgram;
-	isExecuting: boolean;
-	argument1: number;
-	argument2: number;
-	argument3: number;
+export class Routine {
+	routineName: string;
+	argument1: number = 0;
+	argument2: number = 0;
+	argument3: number = 0;
+	definitionBlock: CommandBlockBehaviors.FunctionDefinitionBlock | CommandBlockBehaviors.EntryPointBlock | null;
+	localNumberVariables: NumberVariable[] = [];
+	localStringVariables: StringVariable[] = [];
 
-	constructor (threadName: string, functionName: string, userProgram: UserProgram, argument1: number, argument2: number, argument3: number) {
-		this.threadName = threadName;
-		this.functionName = functionName;
-		this.userProgram = userProgram;
-		this.isExecuting = false;
+	constructor (routineName: string, definitionBlock: CommandBlockBehaviors.FunctionDefinitionBlock | CommandBlockBehaviors.EntryPointBlock | null) {
+		this.routineName = routineName;
+		this.definitionBlock = definitionBlock;
+	}
+
+	async executeBlock () {
+		await this.definitionBlock?.executeBlock ();
+	}
+
+	setArguments (argument1: number, argument2: number, argument3: number) {
 		this.argument1 = argument1;
 		this.argument2 = argument2;
 		this.argument3 = argument3;
 	}
 
-	async execute () {
-		this.userProgram.mission.addThread (this.threadName);
+	getArgument (argumentNumber: number) {
+		switch (argumentNumber) {
+			case 0:
+				return this.argument1;
+			case 1:
+				return this.argument2;
+			case 2:
+				return this.argument3;
+			default:
+				return 0;
+		}
+	}
+
+	readLocalNumberVariable (variableName: string) {
+		return this.getLocalNumberVariable (variableName).readValue ();
+	}
+
+	readLocalStringVariable (variableName: string) {
+		return this.getLocalStringVariable (variableName).readValue ();
+	}
+
+	writeLocalNumberVariable (variableName: string, value: number) {
+		this.getLocalNumberVariable (variableName).writeValue (value);
+	}
+
+	writeLocalStringVariable (variableName: string, value: string) {
+		this.getLocalStringVariable (variableName).writeValue (value);
+	}
+
+	getLocalNumberVariable (variableName: string) {
+		const searchedVariable = this.localNumberVariables.find ((localVariable) => {
+			return localVariable.variableName === variableName;
+		});
+		// なかったら新しい変数を作る
+		if (searchedVariable) {
+			return searchedVariable;
+		} else {
+			return this.addLocalNumberVariable (variableName, 0);
+		}
+	}
+
+	getLocalStringVariable (variableName: string) {
+		const searchedVariable = this.localStringVariables.find ((localVariable) => {
+			return localVariable.variableName === variableName;
+		});
+		// なかったら新しい変数を作る
+		if (searchedVariable) {
+			return searchedVariable;
+		} else {
+			return this.addLocalStringVariable (variableName, "");
+		}
+	}
+
+	addLocalNumberVariable (variableName: string, initValue: number) {
+		const newVariable = new NumberVariable (variableName, initValue);
+		this.localNumberVariables.push (newVariable);
+		return newVariable;
+	}
+
+	addLocalStringVariable (variableName: string, initValue: string) {
+		const newVariable = new StringVariable (variableName, initValue);
+		this.localStringVariables.push (newVariable);
+		return newVariable;
+	}
+}
+
+export class Function extends Routine {
+	constructor (routineName: string, definitionBlock: CommandBlockBehaviors.FunctionDefinitionBlock | CommandBlockBehaviors.EntryPointBlock | null) {
+		super (routineName, definitionBlock);
+	}
+
+	setDefinitionBlock (definitionBlock: CommandBlockBehaviors.FunctionDefinitionBlock | CommandBlockBehaviors.EntryPointBlock) {
+		this.definitionBlock = definitionBlock;
+	}
+
+	setFunctionName (functionName: string) {
+		this.routineName = functionName;
+	}
+}
+
+export class Thread extends Routine {
+	threadID: string;
+	userProgram: UserProgram;
+	isExecuting: boolean = false;
+
+	constructor (routineName: string, threadID: string, definitionBlock: CommandBlockBehaviors.FunctionDefinitionBlock, userProgram: UserProgram,
+				 argument1: number, argument2: number, argument3: number) {
+		super (routineName, definitionBlock);
+		this.threadID = threadID;
+		this.userProgram = userProgram;
+		this.argument1 = argument1;
+		this.argument2 = argument2;
+		this.argument3 = argument3;
+	}
+
+	async executeBlock () {
+		this.userProgram.mission.addThread (this.threadID);
 		this.isExecuting = true;
-		await this.userProgram.executeFunction (this.functionName, this.argument1, this.argument2, this.argument3);
+		super.executeBlock ();
 		this.isExecuting = false;
-		this.userProgram.mission.removeThread (this.threadName);
+		this.userProgram.mission.removeThread (this.threadID);
 	}
 }
 
@@ -330,8 +375,8 @@ export const commandBlockDefinitions = [
 	{
 		type: "text_print",
 		wait: 100,
-		instantiate: (blockXml: Element, userProgram: UserProgram, functionName: string, wait: number): CommandBlockBehaviors.CommandBlock => {
-			return new CommandBlockBehaviors.PrintBlock (blockXml, userProgram, functionName, wait);
+		instantiate: (blockXml: Element, userProgram: UserProgram, myRoutine: Routine, wait: number): CommandBlockBehaviors.CommandBlock => {
+			return new CommandBlockBehaviors.PrintBlock (blockXml, userProgram, myRoutine, wait);
 		}
 	},
 
@@ -339,8 +384,8 @@ export const commandBlockDefinitions = [
 	{
 		type: "wait_ms",
 		wait: 0,
-		instantiate: (blockXml: Element, userProgram: UserProgram, functionName: string, wait: number): CommandBlockBehaviors.CommandBlock => {
-			return new CommandBlockBehaviors.MilliSecondsWaitBlock (blockXml, userProgram, functionName, wait);
+		instantiate: (blockXml: Element, userProgram: UserProgram, myRoutine: Routine, wait: number): CommandBlockBehaviors.CommandBlock => {
+			return new CommandBlockBehaviors.MilliSecondsWaitBlock (blockXml, userProgram, myRoutine, wait);
 		},
 		blocklyJson: {
 			"type": "wait_ms",
@@ -365,8 +410,8 @@ export const commandBlockDefinitions = [
 	{
 		type: "wait_s",
 		wait: 0,
-		instantiate: (blockXml: Element, userProgram: UserProgram, functionName: string, wait: number): CommandBlockBehaviors.CommandBlock => {
-			return new CommandBlockBehaviors.SecondsWaitBlock (blockXml, userProgram, functionName, wait);
+		instantiate: (blockXml: Element, userProgram: UserProgram, myRoutine: Routine, wait: number): CommandBlockBehaviors.CommandBlock => {
+			return new CommandBlockBehaviors.SecondsWaitBlock (blockXml, userProgram, myRoutine, wait);
 		},
 		blocklyJson: {
 			"type": "wait_s",
@@ -391,8 +436,8 @@ export const commandBlockDefinitions = [
 	{
 		type: "controls_if",
 		wait: 100,
-		instantiate: (blockXml: Element, userProgram: UserProgram, functionName: string, wait: number): CommandBlockBehaviors.CommandBlock => {
-			return new CommandBlockBehaviors.IfBlock (blockXml, userProgram, functionName, wait);
+		instantiate: (blockXml: Element, userProgram: UserProgram, myRoutine: Routine, wait: number): CommandBlockBehaviors.CommandBlock => {
+			return new CommandBlockBehaviors.IfBlock (blockXml, userProgram, myRoutine, wait);
 		}
 	},
 
@@ -400,8 +445,8 @@ export const commandBlockDefinitions = [
 	{
 		type: "controls_ifelse",
 		wait: 100,
-		instantiate: (blockXml: Element, userProgram: UserProgram, functionName: string, wait: number): CommandBlockBehaviors.CommandBlock => {
-			return new CommandBlockBehaviors.IfElseBlock (blockXml, userProgram, functionName, wait);
+		instantiate: (blockXml: Element, userProgram: UserProgram, myRoutine: Routine, wait: number): CommandBlockBehaviors.CommandBlock => {
+			return new CommandBlockBehaviors.IfElseBlock (blockXml, userProgram, myRoutine, wait);
 		}
 	},
 
@@ -409,8 +454,8 @@ export const commandBlockDefinitions = [
 	{
 		type: "controls_repeat_ext",
 		wait: 100,
-		instantiate: (blockXml: Element, userProgram: UserProgram, functionName: string, wait: number): CommandBlockBehaviors.CommandBlock => {
-			return new CommandBlockBehaviors.ForBlock (blockXml, userProgram, functionName, wait);
+		instantiate: (blockXml: Element, userProgram: UserProgram, myRoutine: Routine, wait: number): CommandBlockBehaviors.CommandBlock => {
+			return new CommandBlockBehaviors.ForBlock (blockXml, userProgram, myRoutine, wait);
 		}
 	},
 
@@ -418,8 +463,8 @@ export const commandBlockDefinitions = [
 	{
 		type: "controls_whileUntil",
 		wait: 100,
-		instantiate: (blockXml: Element, userProgram: UserProgram, functionName: string, wait: number): CommandBlockBehaviors.CommandBlock => {
-			return new CommandBlockBehaviors.WhileBlock (blockXml, userProgram, functionName, wait);
+		instantiate: (blockXml: Element, userProgram: UserProgram, myRoutine: Routine, wait: number): CommandBlockBehaviors.CommandBlock => {
+			return new CommandBlockBehaviors.WhileBlock (blockXml, userProgram, myRoutine, wait);
 		}
 	},
 
@@ -427,8 +472,8 @@ export const commandBlockDefinitions = [
 	{
 		type: "variables_set_number",
 		wait: 100,
-		instantiate: (blockXml: Element, userProgram: UserProgram, functionName: string, wait: number): CommandBlockBehaviors.CommandBlock => {
-			return new CommandBlockBehaviors.VariablesSetNumber (blockXml, userProgram, functionName, wait);
+		instantiate: (blockXml: Element, userProgram: UserProgram, myRoutine: Routine, wait: number): CommandBlockBehaviors.CommandBlock => {
+			return new CommandBlockBehaviors.VariablesSetNumber (blockXml, userProgram, myRoutine, wait);
 		},
 		blocklyJson: {
 			"type": "variables_set_number",
@@ -460,8 +505,8 @@ export const commandBlockDefinitions = [
 	{
 		type: "variables_add_number",
 		wait: 100,
-		instantiate: (blockXml: Element, userProgram: UserProgram, functionName: string, wait: number): CommandBlockBehaviors.CommandBlock => {
-			return new CommandBlockBehaviors.VariablesAddNumber (blockXml, userProgram, functionName, wait);
+		instantiate: (blockXml: Element, userProgram: UserProgram, myRoutine: Routine, wait: number): CommandBlockBehaviors.CommandBlock => {
+			return new CommandBlockBehaviors.VariablesAddNumber (blockXml, userProgram, myRoutine, wait);
 		},
 		blocklyJson: {
 			"type": "variables_add_number",
@@ -493,8 +538,8 @@ export const commandBlockDefinitions = [
 	{
 		type: "variables_set_string",
 		wait: 100,
-		instantiate: (blockXml: Element, userProgram: UserProgram, functionName: string, wait: number): CommandBlockBehaviors.CommandBlock => {
-			return new CommandBlockBehaviors.VariablesSetString (blockXml, userProgram, functionName, wait);
+		instantiate: (blockXml: Element, userProgram: UserProgram, myRoutine: Routine, wait: number): CommandBlockBehaviors.CommandBlock => {
+			return new CommandBlockBehaviors.VariablesSetString (blockXml, userProgram, myRoutine, wait);
 		},
 		blocklyJson: {
 			"type": "variables_set_string",
@@ -526,8 +571,8 @@ export const commandBlockDefinitions = [
 	{
 		type: "global_variable_write",
 		wait: 100,
-		instantiate: (blockXml: Element, userProgram: UserProgram, functionName: string, wait: number): CommandBlockBehaviors.CommandBlock => {
-			return new CommandBlockBehaviors.GlobalVariableWriteBlock (blockXml, userProgram, functionName, wait);
+		instantiate: (blockXml: Element, userProgram: UserProgram, myRoutine: Routine, wait: number): CommandBlockBehaviors.CommandBlock => {
+			return new CommandBlockBehaviors.GlobalVariableWriteBlock (blockXml, userProgram, myRoutine, wait);
 		},
 		blocklyJson: {
 			"type": "global_variable_write",
@@ -560,8 +605,8 @@ export const commandBlockDefinitions = [
 	{
 		type: "global_one_dimensional_array_write",
 		wait: 100,
-		instantiate: (blockXml: Element, userProgram: UserProgram, functionName: string, wait: number): CommandBlockBehaviors.CommandBlock => {
-			return new CommandBlockBehaviors.GlobalOneDimensionalArrayWrite (blockXml, userProgram, functionName, wait);
+		instantiate: (blockXml: Element, userProgram: UserProgram, myRoutine: Routine, wait: number): CommandBlockBehaviors.CommandBlock => {
+			return new CommandBlockBehaviors.GlobalOneDimensionalArrayWrite (blockXml, userProgram, myRoutine, wait);
 		},
 		blocklyJson: {
 			"type": "global_one_dimensional_array_write",
@@ -599,8 +644,8 @@ export const commandBlockDefinitions = [
 	{
 		type: "global_two_dimensional_array_write",
 		wait: 100,
-		instantiate: (blockXml: Element, userProgram: UserProgram, functionName: string, wait: number): CommandBlockBehaviors.CommandBlock => {
-			return new CommandBlockBehaviors.GlobalTwoDimensionalArrayWrite (blockXml, userProgram, functionName, wait);
+		instantiate: (blockXml: Element, userProgram: UserProgram, myRoutine: Routine, wait: number): CommandBlockBehaviors.CommandBlock => {
+			return new CommandBlockBehaviors.GlobalTwoDimensionalArrayWrite (blockXml, userProgram, myRoutine, wait);
 		},
 		blocklyJson: {
 			"type": "global_two_dimensional_array_write",
@@ -643,8 +688,8 @@ export const commandBlockDefinitions = [
 	{
 		type: "function_definition",
 		wait: 100,
-		instantiate: (blockXml: Element, userProgram: UserProgram, functionName: string, wait: number): CommandBlockBehaviors.CommandBlock => {
-			return new CommandBlockBehaviors.FunctionDefinitionBlock (blockXml, userProgram, wait);
+		instantiate: (blockXml: Element, userProgram: UserProgram, myRoutine: Routine, wait: number): CommandBlockBehaviors.CommandBlock => {
+			return new CommandBlockBehaviors.FunctionDefinitionBlock (blockXml, userProgram, myRoutine, wait);
 		},
 		blocklyJson: {
 			"type": "function_definition",
@@ -674,8 +719,8 @@ export const commandBlockDefinitions = [
 	{
 		type: "function_call",
 		wait: 100,
-		instantiate: (blockXml: Element, userProgram: UserProgram, functionName: string, wait: number): CommandBlockBehaviors.CommandBlock => {
-			return new CommandBlockBehaviors.FunctionCallBlock (blockXml, userProgram, functionName, wait);
+		instantiate: (blockXml: Element, userProgram: UserProgram, myRoutine: Routine, wait: number): CommandBlockBehaviors.CommandBlock => {
+			return new CommandBlockBehaviors.FunctionCallBlock (blockXml, userProgram, myRoutine, wait);
 		},
 		blocklyJson: {
 			"type": "function_call",
@@ -718,8 +763,8 @@ export const commandBlockDefinitions = [
 	{
 		type: "entry_point",
 		wait: 100,
-		instantiate: (blockXml: Element, userProgram: UserProgram, functionName: string, wait: number): CommandBlockBehaviors.CommandBlock => {
-			return new CommandBlockBehaviors.EntryPointBlock (blockXml, userProgram, wait);
+		instantiate: (blockXml: Element, userProgram: UserProgram, myRoutine: Routine, wait: number): CommandBlockBehaviors.CommandBlock => {
+			return new CommandBlockBehaviors.EntryPointBlock (blockXml, userProgram, myRoutine, wait);
 		},
 		blocklyJson: {
 			"type": "entry_point",
@@ -744,8 +789,8 @@ export const commandBlockDefinitions = [
 	{
 		type: "stopwatch_start",
 		wait: 100,
-		instantiate: (blockXml: Element, userProgram: UserProgram, functionName: string, wait: number): CommandBlockBehaviors.CommandBlock => {
-			return new CommandBlockBehaviors.StopwatchStartBlock (blockXml, userProgram, functionName, wait);
+		instantiate: (blockXml: Element, userProgram: UserProgram, myRoutine: Routine, wait: number): CommandBlockBehaviors.CommandBlock => {
+			return new CommandBlockBehaviors.StopwatchStartBlock (blockXml, userProgram, myRoutine, wait);
 		},
 		blocklyJson: {
 			"type": "stopwatch_start",
@@ -770,8 +815,8 @@ export const commandBlockDefinitions = [
 	{
 		type: "stopwatch_stop",
 		wait: 100,
-		instantiate: (blockXml: Element, userProgram: UserProgram, functionName: string, wait: number): CommandBlockBehaviors.CommandBlock => {
-			return new CommandBlockBehaviors.StopwatchStopBlock (blockXml, userProgram, functionName, wait);
+		instantiate: (blockXml: Element, userProgram: UserProgram, myRoutine: Routine, wait: number): CommandBlockBehaviors.CommandBlock => {
+			return new CommandBlockBehaviors.StopwatchStopBlock (blockXml, userProgram, myRoutine, wait);
 		},
 		blocklyJson: {
 			"type": "stopwatch_stop",
@@ -796,8 +841,8 @@ export const commandBlockDefinitions = [
 	{
 		type: "stopwatch_reset",
 		wait: 100,
-		instantiate: (blockXml: Element, userProgram: UserProgram, functionName: string, wait: number): CommandBlockBehaviors.CommandBlock => {
-			return new CommandBlockBehaviors.StopwatchResetBlock (blockXml, userProgram, functionName, wait);
+		instantiate: (blockXml: Element, userProgram: UserProgram, myRoutine: Routine, wait: number): CommandBlockBehaviors.CommandBlock => {
+			return new CommandBlockBehaviors.StopwatchResetBlock (blockXml, userProgram, myRoutine, wait);
 		},
 		blocklyJson: {
 			"type": "stopwatch_reset",
@@ -822,8 +867,8 @@ export const commandBlockDefinitions = [
 	{
 		type: "thread_create",
 		wait: 100,
-		instantiate: (blockXml: Element, userProgram: UserProgram, functionName: string, wait: number): CommandBlockBehaviors.CommandBlock => {
-			return new CommandBlockBehaviors.ThreadCreateBlock (blockXml, userProgram, functionName, wait);
+		instantiate: (blockXml: Element, userProgram: UserProgram, myRoutine: Routine, wait: number): CommandBlockBehaviors.CommandBlock => {
+			return new CommandBlockBehaviors.ThreadCreateBlock (blockXml, userProgram, myRoutine, wait);
 		},
 		blocklyJson: {
 			"type": "thread_create",
@@ -868,8 +913,8 @@ export const commandBlockDefinitions = [
 	{
 		type: "thread_join",
 		wait: 100,
-		instantiate: (blockXml: Element, userProgram: UserProgram, functionName: string, wait: number): CommandBlockBehaviors.CommandBlock => {
-			return new CommandBlockBehaviors.ThreadJoinBlock (blockXml, userProgram, functionName, wait);
+		instantiate: (blockXml: Element, userProgram: UserProgram, myRoutine: Routine, wait: number): CommandBlockBehaviors.CommandBlock => {
+			return new CommandBlockBehaviors.ThreadJoinBlock (blockXml, userProgram, myRoutine, wait);
 		},
 		blocklyJson: {
 			"type": "thread_join",
@@ -896,8 +941,8 @@ export const valueBlockDefinitions = [
 	{
 		type: "logic_compare",
 		wait: 100,
-		instantiate: (blockXml: Element, userProgram: UserProgram, functionName: string, wait: number): ValueBlockBehaviors.ValueBlock => {
-			return new ValueBlockBehaviors.CompareBlock (blockXml, userProgram, functionName, wait);
+		instantiate: (blockXml: Element, userProgram: UserProgram, myRoutine: Routine, wait: number): ValueBlockBehaviors.ValueBlock => {
+			return new ValueBlockBehaviors.CompareBlock (blockXml, userProgram, myRoutine, wait);
 		}
 	},
 
@@ -905,8 +950,8 @@ export const valueBlockDefinitions = [
 	{
 		type: "logic_operation",
 		wait: 100,
-		instantiate: (blockXml: Element, userProgram: UserProgram, functionName: string, wait: number): ValueBlockBehaviors.ValueBlock => {
-			return new ValueBlockBehaviors.LogicOperationBlock (blockXml, userProgram, functionName, wait);
+		instantiate: (blockXml: Element, userProgram: UserProgram, myRoutine: Routine, wait: number): ValueBlockBehaviors.ValueBlock => {
+			return new ValueBlockBehaviors.LogicOperationBlock (blockXml, userProgram, myRoutine, wait);
 		}
 	},
 
@@ -914,8 +959,8 @@ export const valueBlockDefinitions = [
 	{
 		type: "logic_negate",
 		wait: 100,
-		instantiate: (blockXml: Element, userProgram: UserProgram, functionName: string, wait: number): ValueBlockBehaviors.ValueBlock => {
-			return new ValueBlockBehaviors.NotBlock (blockXml, userProgram, functionName, wait);
+		instantiate: (blockXml: Element, userProgram: UserProgram, myRoutine: Routine, wait: number): ValueBlockBehaviors.ValueBlock => {
+			return new ValueBlockBehaviors.NotBlock (blockXml, userProgram, myRoutine, wait);
 		}
 	},
 
@@ -923,8 +968,8 @@ export const valueBlockDefinitions = [
 	{
 		type: "math_number",
 		wait: 100,
-		instantiate: (blockXml: Element, userProgram: UserProgram, functionName: string, wait: number): ValueBlockBehaviors.ValueBlock => {
-			return new ValueBlockBehaviors.NumberBlock (blockXml, userProgram, functionName, wait);
+		instantiate: (blockXml: Element, userProgram: UserProgram, myRoutine: Routine, wait: number): ValueBlockBehaviors.ValueBlock => {
+			return new ValueBlockBehaviors.NumberBlock (blockXml, userProgram, myRoutine, wait);
 		}
 	},
 
@@ -932,8 +977,8 @@ export const valueBlockDefinitions = [
 	{
 		type: "math_arithmetic",
 		wait: 100,
-		instantiate: (blockXml: Element, userProgram: UserProgram, functionName: string, wait: number): ValueBlockBehaviors.ValueBlock => {
-			return new ValueBlockBehaviors.CalculateBlock (blockXml, userProgram, functionName, wait);
+		instantiate: (blockXml: Element, userProgram: UserProgram, myRoutine: Routine, wait: number): ValueBlockBehaviors.ValueBlock => {
+			return new ValueBlockBehaviors.CalculateBlock (blockXml, userProgram, myRoutine, wait);
 		}
 	},
 
@@ -941,8 +986,8 @@ export const valueBlockDefinitions = [
 	{
 		type: "text",
 		wait: 100,
-		instantiate: (blockXml: Element, userProgram: UserProgram, functionName: string, wait: number): ValueBlockBehaviors.ValueBlock => {
-			return new ValueBlockBehaviors.TextBlock (blockXml, userProgram, functionName, wait);
+		instantiate: (blockXml: Element, userProgram: UserProgram, myRoutine: Routine, wait: number): ValueBlockBehaviors.ValueBlock => {
+			return new ValueBlockBehaviors.TextBlock (blockXml, userProgram, myRoutine, wait);
 		}
 	},
 
@@ -950,8 +995,8 @@ export const valueBlockDefinitions = [
 	{
 		type: "str_arithmetic",
 		wait: 100,
-		instantiate: (blockXml: Element, userProgram: UserProgram, functionName: string, wait: number): ValueBlockBehaviors.ValueBlock => {
-			return new ValueBlockBehaviors.TextCalculateBlock (blockXml, userProgram, functionName, wait);
+		instantiate: (blockXml: Element, userProgram: UserProgram, myRoutine: Routine, wait: number): ValueBlockBehaviors.ValueBlock => {
+			return new ValueBlockBehaviors.TextCalculateBlock (blockXml, userProgram, myRoutine, wait);
 		},
 		blocklyJson: {
 			"type": "str_arithmetic",
@@ -988,8 +1033,8 @@ export const valueBlockDefinitions = [
 	{
 		type: "variables_get_number",
 		wait: 100,
-		instantiate: (blockXml: Element, userProgram: UserProgram, functionName: string, wait: number): ValueBlockBehaviors.ValueBlock => {
-			return new ValueBlockBehaviors.VariablesGetNumber (blockXml, userProgram, functionName, wait);
+		instantiate: (blockXml: Element, userProgram: UserProgram, myRoutine: Routine, wait: number): ValueBlockBehaviors.ValueBlock => {
+			return new ValueBlockBehaviors.VariablesGetNumber (blockXml, userProgram, myRoutine, wait);
 		},
 		blocklyJson: {
 			"type": "variables_get_number",
@@ -1015,8 +1060,8 @@ export const valueBlockDefinitions = [
 	{
 		type: "variables_get_string",
 		wait: 100,
-		instantiate: (blockXml: Element, userProgram: UserProgram, functionName: string, wait: number): ValueBlockBehaviors.ValueBlock => {
-			return new ValueBlockBehaviors.VariablesGetString (blockXml, userProgram, functionName, wait);
+		instantiate: (blockXml: Element, userProgram: UserProgram, myRoutine: Routine, wait: number): ValueBlockBehaviors.ValueBlock => {
+			return new ValueBlockBehaviors.VariablesGetString (blockXml, userProgram, myRoutine, wait);
 		},
 		blocklyJson: {
 			"type": "variables_get_string",
@@ -1042,8 +1087,8 @@ export const valueBlockDefinitions = [
 	{
 		type: "global_variable_read",
 		wait: 100,
-		instantiate: (blockXml: Element, userProgram: UserProgram, functionName: string, wait: number): ValueBlockBehaviors.ValueBlock => {
-			return new ValueBlockBehaviors.GlobalVariableReadBlock (blockXml, userProgram, functionName, wait);
+		instantiate: (blockXml: Element, userProgram: UserProgram, myRoutine: Routine, wait: number): ValueBlockBehaviors.ValueBlock => {
+			return new ValueBlockBehaviors.GlobalVariableReadBlock (blockXml, userProgram, myRoutine, wait);
 		},
 		blocklyJson: {
 			"type": "global_variable_read",
@@ -1067,8 +1112,8 @@ export const valueBlockDefinitions = [
 	{
 		type: "get_argument",
 		wait: 100,
-		instantiate: (blockXml: Element, userProgram: UserProgram, functionName: string, wait: number): ValueBlockBehaviors.ValueBlock => {
-			return new ValueBlockBehaviors.GetArgumentBlock (blockXml, userProgram, functionName, wait);
+		instantiate: (blockXml: Element, userProgram: UserProgram, myRoutine: Routine, wait: number): ValueBlockBehaviors.ValueBlock => {
+			return new ValueBlockBehaviors.GetArgumentBlock (blockXml, userProgram, myRoutine, wait);
 		},
 		blocklyJson: {
 			"type": "get_argument",
@@ -1105,8 +1150,8 @@ export const valueBlockDefinitions = [
 	{
 		type: "stopwatch_read",
 		wait: 100,
-		instantiate: (blockXml: Element, userProgram: UserProgram, functionName: string, wait: number): ValueBlockBehaviors.ValueBlock => {
-			return new ValueBlockBehaviors.StopwatchReadBlock (blockXml, userProgram, functionName, wait);
+		instantiate: (blockXml: Element, userProgram: UserProgram, myRoutine: Routine, wait: number): ValueBlockBehaviors.ValueBlock => {
+			return new ValueBlockBehaviors.StopwatchReadBlock (blockXml, userProgram, myRoutine, wait);
 		},
 		blocklyJson: {
 			"type": "stopwatch_read",
