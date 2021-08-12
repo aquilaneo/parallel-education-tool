@@ -290,10 +290,10 @@ export class VariablesAddNumber extends CommandBlock {
 	async executeBlock () {
 		assertIsDefined (this.value);
 
+		const operand = this.myRoutine?.readLocalNumberVariable (this.variable);
 		const value = this.value.executeBlock ();
 		assertIsNumber (value);
-		const operand = this.myRoutine?.readLocalNumberVariable (this.variable);
-		this.myRoutine?.writeLocalNumberVariable (this.variable, operand + 1);
+		this.myRoutine?.writeLocalNumberVariable (this.variable, operand + value);
 	}
 }
 
