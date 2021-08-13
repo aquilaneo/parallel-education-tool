@@ -1,5 +1,6 @@
 import * as BlockDefinitions from "./blockDefinitions";
 import {assertIsBoolean, assertIsDefined, assertIsNumber, assertIsString} from "./common";
+import {CommandBlock} from "./commandBlockBehavior";
 
 export class ValueBlock {
 	blockType: string;
@@ -309,6 +310,57 @@ export class GlobalVariableReadBlock extends ValueBlock {
 
 	executeBlock () {
 		return this.userProgram.readGlobalVariable (this.name);
+	}
+}
+
+export class GlobalOneDimensionalArrayRead extends ValueBlock {
+	name: string;
+	index: ValueBlock | null;
+
+	constructor (blocklyXml: Element, userProgram: BlockDefinitions.UserProgram, myRoutine: BlockDefinitions.Routine, wait: number) {
+		super (blocklyXml, userProgram, myRoutine, wait);
+
+		const name = super.getField ("name");
+		this.name = name ? name : "";
+		const index = super.getValue ("index");
+		this.index = index ? ValueBlock.constructBlock (index, userProgram, myRoutine) : null;
+	}
+
+	executeBlock () {
+		assertIsDefined (this.index);
+
+		const index = this.index.executeBlock ();
+		return 0;
+	}
+}
+
+export class GlobalTwoDimensionalArrayRead extends ValueBlock {
+	name: string;
+	row: ValueBlock | null;
+	col: ValueBlock | null;
+
+	constructor (blocklyXml: Element, userProgram: BlockDefinitions.UserProgram, myRoutine: BlockDefinitions.Routine, wait: number) {
+		super (blocklyXml, userProgram, myRoutine, wait);
+
+		const name = super.getField ("name");
+		this.name = name ? name : "";
+		const row = super.getValue ("row");
+		this.row = row ? ValueBlock.constructBlock (row, userProgram, myRoutine) : null;
+		const col = super.getValue ("col");
+		this.col = col ? ValueBlock.constructBlock (col, userProgram, myRoutine) : null;
+	}
+
+	executeBlock () {
+		assertIsDefined (this.row);
+		assertIsDefined (this.col);
+
+		const row = this.row.executeBlock ();
+		const col = this.col.executeBlock ();
+		assertIsNumber (row);
+		assertIsNumber (col);
+
+		const result = this.userProgram.mission.readTwoDimensionalArray (this.name, row, col);
+		return result ? result : 0;
 	}
 }
 

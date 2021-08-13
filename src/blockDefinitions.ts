@@ -1112,6 +1112,77 @@ export const valueBlockDefinitions = [
 		}
 	},
 
+	// ========== グローバル1次元配列読み込み ==========
+	{
+		type: "global_one_dimensional_array_read",
+		wait: 100,
+		instantiate: (blockXml: Element, userProgram: UserProgram, myRoutine: Routine, wait: number): ValueBlockBehaviors.ValueBlock => {
+			return new ValueBlockBehaviors.GlobalOneDimensionalArrayRead (blockXml, userProgram, myRoutine, wait);
+		},
+		blocklyJson: {
+			"type": "global_one_dimensional_array_read",
+			"message0": "グローバル配列 %1 %2 %3 番目",
+			"args0": [
+				{
+					"type": "field_input",
+					"name": "name",
+					"text": "配列名"
+				},
+				{
+					"type": "input_dummy"
+				},
+				{
+					"type": "input_value",
+					"name": "index",
+					"check": "Number"
+				}
+			],
+			"inputsInline": true,
+			"output": "Number",
+			"colour": 230,
+			"tooltip": "1次元のグローバル配列の値を読み取ります。",
+			"helpUrl": ""
+		}
+	},
+
+	// ========== グローバル2次元配列読み込み ==========
+	{
+		type: "global_two_dimensional_array_read",
+		wait: 100,
+		instantiate: (blockXml: Element, userProgram: UserProgram, myRoutine: Routine, wait: number): ValueBlockBehaviors.ValueBlock => {
+			return new ValueBlockBehaviors.GlobalTwoDimensionalArrayRead (blockXml, userProgram, myRoutine, wait);
+		},
+		blocklyJson: {
+			"type": "global_two_dimensional_array_read",
+			"message0": "グローバル2次元配列 %1 %2 %3 行 %4 列目",
+			"args0": [
+				{
+					"type": "field_input",
+					"name": "name",
+					"text": "配列名"
+				},
+				{
+					"type": "input_dummy"
+				},
+				{
+					"type": "input_value",
+					"name": "row",
+					"check": "Number"
+				},
+				{
+					"type": "input_value",
+					"name": "col",
+					"check": "Number"
+				}
+			],
+			"inputsInline": true,
+			"output": "Number",
+			"colour": 230,
+			"tooltip": "1次元のグローバル配列の値を読み取ります。",
+			"helpUrl": ""
+		}
+	},
+
 	// ========== 引数読み取り ==========
 	{
 		type: "get_argument",

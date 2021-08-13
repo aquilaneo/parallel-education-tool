@@ -218,16 +218,14 @@ export const getBlockListXml = () => {
         
         
         
-        <category name="グローバル配列">
-			<block type="global_variable_write">
-			     <value name="value">
-        			<shadow type="math_number">
+        <category name="グローバル配列">	
+			<block type="global_one_dimensional_array_read">
+				<value name="index">
+					<shadow type="math_number">
         				<field name="NUM">0</field>
 					</shadow>
 				</value>
 			</block>
-			
-			<block type="global_variable_read"></block>
 			
 			<block type="global_one_dimensional_array_write">
 				<value name="index">
@@ -236,6 +234,19 @@ export const getBlockListXml = () => {
 					</shadow>
 				</value>
 				<value name="value">
+					<shadow type="math_number">
+        				<field name="NUM">0</field>
+					</shadow>
+				</value>
+			</block>
+			
+			<block type="global_two_dimensional_array_read">
+				<value name="row">
+					<shadow type="math_number">
+        				<field name="NUM">0</field>
+					</shadow>
+				</value>
+				<value name="col">
 					<shadow type="math_number">
         				<field name="NUM">0</field>
 					</shadow>
