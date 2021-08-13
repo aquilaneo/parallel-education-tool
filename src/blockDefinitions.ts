@@ -368,7 +368,7 @@ export class Thread extends Routine {
 	async executeBlock () {
 		this.userProgram.mission.addThread (this.threadID);
 		this.isExecuting = true;
-		super.executeBlock ();
+		await super.executeBlock ();
 		this.isExecuting = false;
 		this.userProgram.mission.removeThread (this.threadID);
 	}

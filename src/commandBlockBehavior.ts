@@ -607,7 +607,7 @@ export class ThreadCreateBlock extends CommandBlock {
 		const functionStatementElement = this.userProgram.getFunctionStatementElementByName (this.routineName);
 		if (functionStatementElement) {
 			this.userProgram.addThread (this.routineName, threadID, functionStatementElement.element, argument1, argument2, argument3);
-			await this.userProgram.executeThread (threadID);
+			this.userProgram.executeThread (threadID);
 		}
 	}
 }
