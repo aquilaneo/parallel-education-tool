@@ -53,5 +53,24 @@ $console-width: 15%;
     #right-panel {
         width: $console-width;
         height: 100%;
+
+        #console {
+            padding: 0;
+            margin: 0.4rem 0;
+            list-style: none;
+            font-size: 0.9rem;
+        }
+
+        .console-log {
+            color: black;
+            padding: 0 0.6rem;
+            background-color: rgb(245, 245, 245);
+        }
+
+        .console-error {
+            color: red;
+            background-color: rgb(255, 240, 240);
+            padding: 0 0.6rem;
+        }
     }
 }

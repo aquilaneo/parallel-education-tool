@@ -78,7 +78,7 @@ export class UserProgram {
 			searchedFunction.setArguments (argument1, argument2, argument3);
 			await searchedFunction.executeBlock ();
 		} else {
-			console.error (`関数 ${functionName} が見つかりません！`);
+			this.mission.printError (`"${functionName}" という関数は存在しません！`);
 		}
 	}
 

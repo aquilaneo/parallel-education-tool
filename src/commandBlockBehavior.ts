@@ -11,6 +11,7 @@ export class CommandBlock {
 	wait: number;
 
 	constructor (blockXml: Element, userProgram: BlockDefinitions.UserProgram, myRoutine: BlockDefinitions.Routine, wait: number) {
+		console.error("AAA");
 		// ブロックのxmlからブロックタイプを取得
 		const blockType = blockXml.getAttribute ("type");
 		this.blockType = blockType ? blockType : "";
@@ -108,7 +109,7 @@ export class PrintBlock extends CommandBlock {
 		assertIsDefined (this.text);
 
 		const text = this.text.executeBlock ();
-		this.userProgram.mission.print (text.toString ());
+		this.userProgram.mission.printLog (text.toString ());
 	}
 }
 

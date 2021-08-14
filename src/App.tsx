@@ -33,9 +33,9 @@ function App () {
 		() => {
 			variableCanvas.drawTable (mission.currentTwoDimensionalArrays, mission.currentOneDimensionalArrays);
 		},
-		(text: string) => {
+		(output: { text: string, type: ConsoleOutputType }) => {
 			if (consoleRef.current) {
-				consoleRef.current.writeConsole (text);
+				consoleRef.current.writeConsole (output);
 			}
 		},
 		(threadName: string) => {
@@ -150,7 +150,7 @@ function App () {
 						<div>
 							<button onClick={() => {
 								if (consoleRef.current) {
-									consoleRef.current.writeConsole ("ABC");
+									consoleRef.current.writeConsole ({text: "ABC", type: ConsoleOutputType.Log});
 								}
 							}}>コンソール追加
 							</button>
@@ -347,17 +347,19 @@ class ThreadView extends React.Component<{ threadNames: string, threadCount: num
 	}
 }
 
-class ConsoleView extends React.Component<{}, { outputs: string[] }> {
-	state: { outputs: string[] };
+export enum ConsoleOutputType { Log, Error}
+
+class ConsoleView extends React.Component<{}, { outputs: { text: string, type: ConsoleOutputType }[] }> {
+	state: { outputs: { text: string, type: ConsoleOutputType }[] };
 
 	constructor (props: {}) {
 		super (props);
 		this.state = {outputs: []};
 	}
 
-	writeConsole (text: string) {
+	writeConsole (output: { text: string, type: ConsoleOutputType }) {
 		this.setState (state => ({
-			outputs: [...state.outputs, text]
+			outputs: [...state.outputs, output]
 		}));
 	}
 
@@ -367,12 +369,17 @@ class ConsoleView extends React.Component<{}, { outputs: string[] }> {
 
 	render () {
 		const outputs = this.state.outputs.map ((item, i) => {
-			return <li key={i}>{item}</li>;
+			switch (item.type) {
+				case ConsoleOutputType.Log:
+					return <li key={i} className={"console-log"}>{item.text}</li>;
+				case ConsoleOutputType.Error:
+					return <li key={i} className={"console-error"}>{item.text}</li>
+			}
 		});
 
 		return (
 			<div>
-				<ul>{outputs}</ul>
+				<ul id={"console"}>{outputs}</ul>
 			</div>
 		);
 	}

@@ -1,3 +1,5 @@
+import {ConsoleOutputType} from "./App";
+
 export class Mission {
 	// グローバルデータ初期値
 	initialOneDimensionalArrays: { [key: string]: number[] };
@@ -8,14 +10,14 @@ export class Mission {
 	// キャンバス描画関数
 	drawVariableView: () => void;
 	// コンソール書き込み関数
-	writeConsoleView: (text: string) => void;
+	writeConsoleView: (output: { text: string, type: ConsoleOutputType }) => void;
 	// スレッド追加
 	addThreadView: (threadName: string) => void;
 	// スレッド削除
 	removeThreadView: (threadName: string) => void;
 
 	constructor (initialTwoDimensionalArrays: { [key: string]: number[][] }, initialOneDimensionalArrays: { [key: string]: number[] },
-				 drawVariableTable: () => void, writeConsole: (text: string) => void,
+				 drawVariableTable: () => void, writeConsole: (output: { text: string, type: ConsoleOutputType }) => void,
 				 addThread: (threadName: string) => void, removeThread: (threadName: string) => void) {
 		this.initialOneDimensionalArrays = initialOneDimensionalArrays;
 		this.initialTwoDimensionalArrays = initialTwoDimensionalArrays;
@@ -27,8 +29,12 @@ export class Mission {
 		this.removeThreadView = removeThread;
 	}
 
-	print (text: string) {
-		this.writeConsoleView (text);
+	printLog (text: string) {
+		this.writeConsoleView ({text: text, type: ConsoleOutputType.Log});
+	}
+
+	printError (text: string) {
+		this.writeConsoleView ({text: text, type: ConsoleOutputType.Error});
 	}
 
 	readOneDimensionalArray (arrayName: string, index: number) {
@@ -37,10 +43,10 @@ export class Mission {
 			if (index < array.length) {
 				return array[index];
 			} else {
-				console.error (`${index} の値が1次元配列 ${arrayName} の要素数に対して大きすぎます！`);
+				this.printError (`${index} の値が1次元配列 ${arrayName} の要素数に対して大きすぎます！`);
 			}
 		} else {
-			console.error (`${arrayName} という1次元配列は存在しません！`);
+			this.printError (`"${arrayName}" という1次元配列は存在しません！`);
 		}
 	}
 
@@ -51,10 +57,10 @@ export class Mission {
 				array[index] = value;
 				this.drawVariableView ();
 			} else {
-				console.error (`${index} の値が1次元配列 ${arrayName} の要素数に対して大きすぎます！`);
+				this.printError (`${index} の値が1次元配列 ${arrayName} の要素数に対して大きすぎます！`);
 			}
 		} else {
-			console.error (`${arrayName} という1次元配列は存在しません！`);
+			this.printError (`"${arrayName}" という1次元配列は存在しません！`);
 		}
 	}
 
@@ -64,10 +70,10 @@ export class Mission {
 			if (row < array.length && col < array[0].length) {
 				return array[row][col];
 			} else {
-				console.error (`行 ${row} の値もしくは列 ${col} の値は2次元配列 ${arrayName} の要素数に対して大きすぎます！`);
+				this.printError (`行 ${row} の値もしくは列 ${col} の値は2次元配列 ${arrayName} の要素数に対して大きすぎます！`);
 			}
 		} else {
-			console.error (`${arrayName} という2次元配列は存在しません！`);
+			this.printError (`"${arrayName}" という2次元配列は存在しません！`);
 		}
 	}
 
@@ -78,10 +84,10 @@ export class Mission {
 				array[row][col] = value;
 				this.drawVariableView ();
 			} else {
-				console.error (`行 ${row} の値もしくは列 ${col} の値は2次元配列 ${arrayName} の要素数に対して大きすぎます！`);
+				this.printError (`行 ${row} の値もしくは列 ${col} の値は2次元配列 ${arrayName} の要素数に対して大きすぎます！`);
 			}
 		} else {
-			console.error (`${arrayName} という2次元配列は存在しません！`);
+			this.printError (`"${arrayName}" という2次元配列は存在しません！`);
 		}
 	}
 
