@@ -12,7 +12,7 @@ export class VariableCanvas {
 		this.resize ();
 	}
 
-	drawTable (oneDimensionalArrays: { [key: string]: number[] }, twoDimensionalArrays: { [key: string]: number[][] }) {
+	drawTable (twoDimensionalArrays: { [key: string]: number[][] }, oneDimensionalArrays: { [key: string]: number[] }) {
 		if (this.context) {
 			this.context.clearRect (0, 0, this.screenWidth, this.screenHeight);
 
@@ -27,7 +27,7 @@ export class VariableCanvas {
 			const indexFontSize = 24;
 			const tableFontSize = 36;
 
-			// 表を描画
+			// ========== 2次元配列の表を描画 ==========
 			let originX = xOffset;
 			let originY = yOffset;
 			for (const key of Object.keys (twoDimensionalArrays)) {
@@ -75,6 +75,45 @@ export class VariableCanvas {
 				}
 
 				originY += cellHeight * twoDimensionalArrays[key].length + yOffset; // 次の表に向けoriginYを加算
+			}
+
+
+			// ========== 1次元配列の表を描画 ==========
+			for (const key of Object.keys (oneDimensionalArrays)) {
+				this.context.font = `${nameFontSize}px serif`;
+				this.context.fillStyle = "black";
+				this.context.textAlign = "left";
+				this.context.fillText (key, originX, originY + cellHeight / 2 + nameFontSize / 2);
+
+				// 表の上にインデックス番号を振る
+				this.context.font = `${indexFontSize}px serif`;
+				this.context.fillStyle = "black";
+				this.context.textAlign = "center";
+				for (let col = 0; col < oneDimensionalArrays[key].length; col++) {
+					const indexX = cellWidth * col + originX + nameWidth;
+					this.context.fillText (col.toString (), indexX + cellWidth / 2, originY - indexFontSize / 2);
+				}
+
+				// 表本体を描画
+				this.context.font = `${tableFontSize}px serif`;
+				this.context.textAlign = "center";
+				for (let col = 0; col < oneDimensionalArrays[key].length; col++) {
+					// セルの左上座標を定義
+					const cellX = cellWidth * col + originX + nameWidth;
+					const cellY = originY;
+
+					// セルを描画
+					this.context.fillStyle = colors[col % 2];
+					this.context.fillRect (cellX, cellY, cellWidth, cellHeight);
+
+					// 枠線描画
+					this.context.strokeStyle = "black";
+					this.context.strokeRect (cellX, cellY, cellWidth, cellHeight);
+
+					// 値を描画
+					this.context.fillStyle = "black";
+					this.context.fillText (oneDimensionalArrays[key][col].toString (), cellX + cellWidth / 2, cellY + tableFontSize / 2 + cellHeight / 2);
+				}
 			}
 		}
 	}

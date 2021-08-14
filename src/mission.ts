@@ -14,7 +14,7 @@ export class Mission {
 	// スレッド削除
 	removeThreadView: (threadName: string) => void;
 
-	constructor (initialOneDimensionalArrays: { [key: string]: number[] }, initialTwoDimensionalArrays: { [key: string]: number[][] },
+	constructor (initialTwoDimensionalArrays: { [key: string]: number[][] }, initialOneDimensionalArrays: { [key: string]: number[] },
 				 drawVariableTable: () => void, writeConsole: (text: string) => void,
 				 addThread: (threadName: string) => void, removeThread: (threadName: string) => void) {
 		this.initialOneDimensionalArrays = initialOneDimensionalArrays;

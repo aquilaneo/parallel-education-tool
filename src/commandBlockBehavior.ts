@@ -363,6 +363,9 @@ export class GlobalOneDimensionalArrayWrite extends CommandBlock {
 
 		const index = this.index.executeBlock ();
 		const value = this.value.executeBlock ();
+		assertIsNumber (index);
+		assertIsNumber (value);
+		this.userProgram.mission.writeOneDimensionalArray (this.name, index, value);
 	}
 }
 

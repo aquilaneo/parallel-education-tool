@@ -330,7 +330,10 @@ export class GlobalOneDimensionalArrayRead extends ValueBlock {
 		assertIsDefined (this.index);
 
 		const index = this.index.executeBlock ();
-		return 0;
+		assertIsNumber (index);
+
+		const result = this.userProgram.mission.readOneDimensionalArray (this.name, index);
+		return result ? result : 0;
 	}
 }
 

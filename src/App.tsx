@@ -26,10 +26,12 @@ function App () {
 		[9, 10],
 		[11, 12]
 	];
+	const oneDimensionalArrays: { [key: string]: number[] } = {};
+	oneDimensionalArrays["Array3"] = [2, 4, 6, 8];
 
-	const [mission, setMission] = useState (new Mission ({}, twoDimensionalArrays,
+	const [mission, setMission] = useState (new Mission (twoDimensionalArrays, oneDimensionalArrays,
 		() => {
-			variableCanvas.drawTable (mission.currentOneDimensionalArrays, mission.currentTwoDimensionalArrays);
+			variableCanvas.drawTable (mission.currentTwoDimensionalArrays, mission.currentOneDimensionalArrays);
 		},
 		(text: string) => {
 			if (consoleRef.current) {
@@ -52,11 +54,11 @@ function App () {
 	useEffect (() => {
 		const canvas = document.getElementById ("variable-canvas") as HTMLCanvasElement;
 		variableCanvas.initialize (canvas);
-		variableCanvas.drawTable (mission.currentOneDimensionalArrays, mission.currentTwoDimensionalArrays);
+		variableCanvas.drawTable (mission.currentTwoDimensionalArrays, mission.currentOneDimensionalArrays);
 		// リサイズ処理
 		window.onresize = () => {
 			variableCanvas.resize ();
-			variableCanvas.drawTable (mission.currentOneDimensionalArrays, mission.currentTwoDimensionalArrays);
+			variableCanvas.drawTable (mission.currentTwoDimensionalArrays, mission.currentOneDimensionalArrays);
 		};
 	});
 
@@ -311,7 +313,7 @@ class EditorView extends React.Component {
 				// const thread = new BlockDefinitions.ThreadView ("スレッド", "スレッド", userProgram);
 				// thread.execute ();
 				mission.resetGlobalArray ();
-				variableCanvas.drawTable (mission.currentOneDimensionalArrays, mission.currentTwoDimensionalArrays); // グローバル配列Canvasを初期化
+				variableCanvas.drawTable (mission.currentTwoDimensionalArrays, mission.currentOneDimensionalArrays); // グローバル配列Canvasを初期化
 				await userProgram.executeEntryFunction ();
 			}
 			this.isExecuting = false;
