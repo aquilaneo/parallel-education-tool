@@ -1,5 +1,6 @@
 import * as BlockDefinitions from "./blockDefinitions";
 import * as ValueBlockBehaviors from "./valueBlockBehaviors";
+import Blockly from "blockly";
 import {assertIsDefined, assertIsNumber, assertIsString} from "./common";
 
 export class CommandBlock {
@@ -11,7 +12,6 @@ export class CommandBlock {
 	wait: number;
 
 	constructor (blockXml: Element, userProgram: BlockDefinitions.UserProgram, myRoutine: BlockDefinitions.Routine, wait: number) {
-		console.error("AAA");
 		// ブロックのxmlからブロックタイプを取得
 		const blockType = blockXml.getAttribute ("type");
 		this.blockType = blockType ? blockType : "";

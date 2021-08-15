@@ -1,4 +1,5 @@
 import {ConsoleOutputType} from "./App";
+import Blockly from "blockly";
 
 export class Mission {
 	// グローバルデータ初期値
@@ -12,13 +13,13 @@ export class Mission {
 	// コンソール書き込み関数
 	writeConsoleView: (output: { text: string, type: ConsoleOutputType }) => void;
 	// スレッド追加
-	addThreadView: (threadName: string) => void;
+	addThreadView: (threadInfo: { name: string, blocksXml: string }) => void;
 	// スレッド削除
 	removeThreadView: (threadName: string) => void;
 
 	constructor (initialTwoDimensionalArrays: { [key: string]: number[][] }, initialOneDimensionalArrays: { [key: string]: number[] },
 				 drawVariableTable: () => void, writeConsole: (output: { text: string, type: ConsoleOutputType }) => void,
-				 addThread: (threadName: string) => void, removeThread: (threadName: string) => void) {
+				 addThread: (threadInfo: { name: string, blocksXml: string }) => void, removeThread: (threadName: string) => void) {
 		this.initialOneDimensionalArrays = initialOneDimensionalArrays;
 		this.initialTwoDimensionalArrays = initialTwoDimensionalArrays;
 		this.resetGlobalArray ();
@@ -97,8 +98,9 @@ export class Mission {
 		this.currentTwoDimensionalArrays = JSON.parse (JSON.stringify (this.initialTwoDimensionalArrays));
 	}
 
-	addThread (threadName: string) {
-		this.addThreadView (threadName);
+	addThread (threadName: string, functionStatementElement: Element) {
+		const xml = Blockly.Xml.domToText (functionStatementElement);
+		this.addThreadView ({name: threadName, blocksXml: xml});
 	}
 
 	removeThread (threadName: string) {

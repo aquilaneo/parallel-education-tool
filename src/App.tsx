@@ -10,8 +10,8 @@ import "./App.scss";
 
 function App () {
 	const [variableCanvas, setVariableCanvas] = useState (new VariableCanvas.VariableCanvas ());
-	const [threadNames, setThreadNames] = useState ([] as string[]);
-	const [threadCount, setThreadCount] = useState (threadNames.length);
+	const [threadInfos, setThreadInfos] = useState ([] as { name: string, blocksXml: string }[]);
+	const [threadCount, setThreadCount] = useState (threadInfos.length);
 	const [stopwatch, setStopwatch] = useState (new BlockDefinitions.Stopwatch ());
 
 	const editorRef = useRef<EditorView> (null);
@@ -38,14 +38,14 @@ function App () {
 				consoleRef.current.writeConsole (output);
 			}
 		},
-		(threadName: string) => {
-			setThreadNames ((oldThreadNames) => [...oldThreadNames, threadName]);
+		(threadInfo: { name: string, blocksXml: string }) => {
+			setThreadInfos ((oldThreadNames) => [...oldThreadNames, threadInfo]);
 			setThreadCount ((oldThreadCount) => oldThreadCount + 1);
 		},
 		(threadName: string) => {
-			const newThreadNames = [...threadNames];
-			setThreadNames (newThreadNames.filter ((item) => {
-				return item !== threadName;
+			const newThreadNames = [...threadInfos];
+			setThreadInfos (newThreadNames.filter ((item) => {
+				return item.name !== threadName;
 			}));
 			setThreadCount (newThreadNames.length);
 		}
@@ -79,20 +79,20 @@ function App () {
 						<div>変数</div>
 						<canvas id={"variable-canvas"}></canvas>
 						<div>
-							<button onClick={() => {
-								setThreadNames ([...threadNames, threadCount.toString ()]);
-								setThreadCount (threadCount + 1);
-							}}>
-								スレッドを追加
-							</button>
-							<button onClick={() => {
-								const newThreadIndexes = [...threadNames];
-								newThreadIndexes.splice (newThreadIndexes.length - 1, 1);
-								setThreadNames (newThreadIndexes);
-								setThreadCount (newThreadIndexes.length);
-							}}>
-								スレッド削除
-							</button>
+							{/*<button onClick={() => {*/}
+							{/*	setThreadInfos ([...threadInfos, threadCount.toString ()]);*/}
+							{/*	setThreadCount (threadCount + 1);*/}
+							{/*}}>*/}
+							{/*	スレッドを追加*/}
+							{/*</button>*/}
+							{/*<button onClick={() => {*/}
+							{/*	const newThreadIndexes = [...threadInfos];*/}
+							{/*	newThreadIndexes.splice (newThreadIndexes.length - 1, 1);*/}
+							{/*	setThreadInfos (newThreadIndexes);*/}
+							{/*	setThreadCount (newThreadIndexes.length);*/}
+							{/*}}>*/}
+							{/*	スレッド削除*/}
+							{/*</button>*/}
 							<button onClick={() => {
 								if (editorRef.current) {
 									editorRef.current.parseBlocks (variableCanvas, mission);
@@ -166,10 +166,10 @@ function App () {
 						<div>スレッド</div>
 						<div id={"threads-container"}>
 							{
-								threadNames.map ((threadNames) => {
-									return <ThreadView key={threadNames}
-													   threadNames={threadNames} threadCount={threadCount}
-													   blocks={"<xml xmlns=\"https://developers.google.com/blockly/xml\"><block type=\"entry_point\" id=\"5e{JeNdzKRK}Nyg(x2Ul\" x=\"58\" y=\"59\"></block></xml>"}/>
+								threadInfos.map ((threadInfo) => {
+									return <ThreadView key={threadInfo.name}
+													   threadNames={threadInfo.name} threadCount={threadCount}
+													   blocks={threadInfo.blocksXml}/>
 								})
 							}
 						</div>
@@ -330,9 +330,9 @@ class ThreadView extends React.Component<{ threadNames: string, threadCount: num
 
 	componentDidMount () {
 		this.workspace = Blockly.inject (`thread${this.props.threadNames}`);
-
-		const blocksDom = Blockly.Xml.textToDom (this.props.blocks);
-		Blockly.Xml.domToWorkspace (blocksDom, this.workspace);
+		const xml = `<xml xmlns="https://developers.google.com/blockly/xml">${this.props.blocks}</xml>`;
+		const dom = Blockly.Xml.textToDom (xml);
+		Blockly.Xml.domToWorkspace (dom, this.workspace);
 	}
 
 	render () {

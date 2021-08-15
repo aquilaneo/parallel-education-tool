@@ -31,12 +31,12 @@ export class UserProgram {
 
 		// エントリポイントと関数ブロックのXMLをパース
 		if (entryFunctionXml) {
-			this.entryFunction = new Function ("スタート", null);
+			this.entryFunction = new Function ("スタート", null, entryFunctionXml);
 			const entryFunctionBlock = CommandBlockBehaviors.EntryPointBlock.constructBlock (entryFunctionXml, this, this.entryFunction)[0];
-			this.entryFunction = new Function ("スタート", entryFunctionBlock);
+			this.entryFunction.setDefinitionBlock (entryFunctionBlock);
 		}
 		for (const functionXml of functionsXml) {
-			const func = new Function ("", null);
+			const func = new Function ("", null, functionXml);
 			const functionBlock = CommandBlockBehaviors.FunctionDefinitionBlock.constructBlock (functionXml, this, func)[0];
 			func.setDefinitionBlock (functionBlock);
 			func.setFunctionName (functionBlock.functionName);
@@ -148,7 +148,7 @@ export class UserProgram {
 
 	addThread (routineName: string, threadID: string, functionStatementElement: Element,
 			   argument1: number, argument2: number, argument3: number) {
-		const thread = new Thread (routineName, threadID, null, this, argument1, argument2, argument3);
+		const thread = new Thread (routineName, threadID, null, this, functionStatementElement, argument1, argument2, argument3);
 		const functionInstance = CommandBlockBehaviors.FunctionDefinitionBlock.constructBlock (functionStatementElement, this, thread)[0];
 		thread.setDefinitionBlock (functionInstance);
 		this.threads.push (thread);
@@ -252,12 +252,14 @@ export class Routine {
 	argument2: number = 0;
 	argument3: number = 0;
 	definitionBlock: CommandBlockBehaviors.FunctionDefinitionBlock | CommandBlockBehaviors.EntryPointBlock | null;
+	functionStatementElement: Element;
 	localNumberVariables: NumberVariable[] = [];
 	localStringVariables: StringVariable[] = [];
 
-	constructor (routineName: string, definitionBlock: CommandBlockBehaviors.FunctionDefinitionBlock | CommandBlockBehaviors.EntryPointBlock | null) {
+	constructor (routineName: string, definitionBlock: CommandBlockBehaviors.FunctionDefinitionBlock | CommandBlockBehaviors.EntryPointBlock | null, functionStatementElement: Element) {
 		this.routineName = routineName;
 		this.definitionBlock = definitionBlock;
+		this.functionStatementElement = functionStatementElement;
 	}
 
 	async executeBlock () {
@@ -345,8 +347,8 @@ export class Routine {
 }
 
 export class Function extends Routine {
-	constructor (routineName: string, definitionBlock: CommandBlockBehaviors.FunctionDefinitionBlock | CommandBlockBehaviors.EntryPointBlock | null) {
-		super (routineName, definitionBlock);
+	constructor (routineName: string, definitionBlock: CommandBlockBehaviors.FunctionDefinitionBlock | CommandBlockBehaviors.EntryPointBlock | null, functionStatementElement: Element) {
+		super (routineName, definitionBlock, functionStatementElement);
 	}
 }
 
@@ -355,9 +357,9 @@ export class Thread extends Routine {
 	userProgram: UserProgram;
 	isExecuting: boolean = false;
 
-	constructor (routineName: string, threadID: string, definitionBlock: CommandBlockBehaviors.FunctionDefinitionBlock | null, userProgram: UserProgram,
+	constructor (routineName: string, threadID: string, definitionBlock: CommandBlockBehaviors.FunctionDefinitionBlock | null, userProgram: UserProgram, functionStatementElement: Element,
 				 argument1: number, argument2: number, argument3: number) {
-		super (routineName, definitionBlock);
+		super (routineName, definitionBlock, functionStatementElement);
 		this.threadID = threadID;
 		this.userProgram = userProgram;
 		this.argument1 = argument1;
@@ -366,7 +368,7 @@ export class Thread extends Routine {
 	}
 
 	async executeBlock () {
-		this.userProgram.mission.addThread (this.threadID);
+		this.userProgram.mission.addThread (this.threadID, this.functionStatementElement);
 		this.isExecuting = true;
 		await super.executeBlock ();
 		this.isExecuting = false;
