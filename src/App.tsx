@@ -7,6 +7,7 @@ import * as BlockSettings from "./blockSettings";
 import * as BlockDefinitions from "./blockDefinitions";
 import * as VariableCanvas from "./variableCanvas";
 import "./App.scss";
+import {UserProgram} from "./blockDefinitions";
 
 function App () {
 	const [variableCanvas, setVariableCanvas] = useState (new VariableCanvas.VariableCanvas ());
@@ -79,20 +80,6 @@ function App () {
 						<div>変数</div>
 						<canvas id={"variable-canvas"}></canvas>
 						<div>
-							{/*<button onClick={() => {*/}
-							{/*	setThreadInfos ([...threadInfos, threadCount.toString ()]);*/}
-							{/*	setThreadCount (threadCount + 1);*/}
-							{/*}}>*/}
-							{/*	スレッドを追加*/}
-							{/*</button>*/}
-							{/*<button onClick={() => {*/}
-							{/*	const newThreadIndexes = [...threadInfos];*/}
-							{/*	newThreadIndexes.splice (newThreadIndexes.length - 1, 1);*/}
-							{/*	setThreadInfos (newThreadIndexes);*/}
-							{/*	setThreadCount (newThreadIndexes.length);*/}
-							{/*}}>*/}
-							{/*	スレッド削除*/}
-							{/*</button>*/}
 							<button onClick={() => {
 								if (editorRef.current) {
 									editorRef.current.parseBlocks (variableCanvas, mission);
@@ -101,14 +88,19 @@ function App () {
 								ブロックをパース
 							</button>
 							<button onClick={() => {
-								if (consoleRef.current) {
+								if (editorRef.current && !editorRef.current.isExecuting && consoleRef.current) {
 									consoleRef.current.clearConsole ();
-								}
-								if (editorRef.current) {
-									editorRef.current.executeEntryFunction (variableCanvas, mission);
+									editorRef.current.executeUserProgram (variableCanvas, mission);
 								}
 							}}>
 								ブロックを実行
+							</button>
+							<button onClick={() => {
+								if (editorRef.current) {
+									editorRef.current.stopUserProgram ();
+								}
+							}}>
+								実行を停止
 							</button>
 							<button onClick={() => {
 								if (editorRef.current) {
@@ -188,6 +180,7 @@ function App () {
 class EditorView extends React.Component {
 	workspace: Blockly.WorkspaceSvg | null = null;
 	initialWorkspace = "<xml xmlns=\"https://developers.google.com/blockly/xml\"><block type=\"entry_point\" id=\"5e{JeNdzKRK}Nyg(x2Ul\" x=\"58\" y=\"59\"></block></xml>";
+	userProgram: UserProgram | null = null;
 	isExecuting = false;
 
 	componentDidMount () {
@@ -299,23 +292,24 @@ class EditorView extends React.Component {
 		// ワークスペース上のブロックをプログラム化
 		if (this.workspace) {
 			const xml = Blockly.Xml.workspaceToDom (this.workspace);
-			return new BlockDefinitions.UserProgram (xml, mission);
-		} else {
-			return null;
+			this.userProgram = new BlockDefinitions.UserProgram (xml, mission);
 		}
 	}
 
-	async executeEntryFunction (variableCanvas: VariableCanvas.VariableCanvas, mission: Mission) {
-		if (!this.isExecuting) {
-			this.isExecuting = true;
-			const userProgram = this.parseBlocks (variableCanvas, mission);
-			if (userProgram) {
-				// const thread = new BlockDefinitions.ThreadView ("スレッド", "スレッド", userProgram);
-				// thread.execute ();
-				mission.resetGlobalArray ();
-				variableCanvas.drawTable (mission.currentTwoDimensionalArrays, mission.currentOneDimensionalArrays); // グローバル配列Canvasを初期化
-				await userProgram.executeEntryFunction ();
-			}
+	async executeUserProgram (variableCanvas: VariableCanvas.VariableCanvas, mission: Mission) {
+		this.isExecuting = true;
+		this.parseBlocks (variableCanvas, mission);
+		if (this.userProgram) {
+			mission.resetGlobalArray ();
+			variableCanvas.drawTable (mission.currentTwoDimensionalArrays, mission.currentOneDimensionalArrays); // グローバル配列Canvasを初期化
+			await this.userProgram.executeUserProgram ();
+		}
+		this.isExecuting = false;
+	}
+
+	stopUserProgram () {
+		if (this.userProgram) {
+			this.userProgram.stopUserProgram ();
 			this.isExecuting = false;
 		}
 	}

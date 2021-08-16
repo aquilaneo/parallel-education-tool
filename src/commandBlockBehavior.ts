@@ -1,6 +1,5 @@
 import * as BlockDefinitions from "./blockDefinitions";
 import * as ValueBlockBehaviors from "./valueBlockBehaviors";
-import Blockly from "blockly";
 import {assertIsDefined, assertIsNumber, assertIsString} from "./common";
 
 export class CommandBlock {
@@ -215,7 +214,11 @@ export class ForBlock extends CommandBlock {
 
 		const count = this.count.executeBlock ();
 		for (let i = 0; i < count; i++) {
-			await this.userProgram.executeBlockList (this.statement);
+			if (!this.userProgram.stopFlg) {
+				await this.userProgram.executeBlockList (this.statement);
+			} else {
+				return;
+			}
 		}
 	}
 }
@@ -241,12 +244,20 @@ export class WhileBlock extends CommandBlock {
 		switch (this.mode) {
 			case "WHILE":
 				while (this.condition.executeBlock ()) {
-					await this.userProgram.executeBlockList (this.statement);
+					if (!this.userProgram.stopFlg) {
+						await this.userProgram.executeBlockList (this.statement);
+					} else {
+						return;
+					}
 				}
 				break;
 			case "UNTIL":
 				while (!this.condition.executeBlock ()) {
-					await this.userProgram.executeBlockList (this.statement);
+					if (!this.userProgram.stopFlg) {
+						await this.userProgram.executeBlockList (this.statement);
+					} else {
+						return;
+					}
 				}
 				break;
 		}

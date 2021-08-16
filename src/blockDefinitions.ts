@@ -6,6 +6,7 @@ import {assertIsDefined} from "./common";
 import {Mission} from "./mission";
 
 export class UserProgram {
+	stopFlg: boolean = false;
 	mission: Mission;
 	entryFunction: Function | null = null; // エントリポイント
 	functions: Function[] = []; // 関数一覧
@@ -42,7 +43,6 @@ export class UserProgram {
 			func.setFunctionName (functionBlock.functionName);
 			this.functions.push (func);
 			this.functionStatementElements.push ({name: functionBlock.functionName, element: functionXml});
-			// this.functionDefinitionBlocks.push (functionBlock);
 		}
 
 		console.log ("エントリポイント", this.entryFunction);
@@ -51,24 +51,39 @@ export class UserProgram {
 
 	async executeBlockList (blockList: CommandBlockBehaviors.CommandBlock[]) {
 		for (const block of blockList) {
-			await block.executeBlock ();
-			await sleep (block.wait);
+			if (!this.stopFlg) {
+				await block.executeBlock ();
 
-			// 動的時間待機を考慮
-			while (block.isWaiting ()) {
-				await sleep (1);
+				// 各ブロックの待機時間
+				const start = new Date ();
+				let time = 0;
+				while (time < block.wait && !this.stopFlg) {
+					await sleep1ms ();
+					time = new Date ().getTime () - start.getTime ();
+				}
+				// 動的時間待機を考慮
+				while (block.isWaiting () && !this.stopFlg) {
+					await sleep1ms ();
+				}
+			} else {
+				return;
 			}
 		}
 
-		function sleep (ms: number) {
-			return new Promise (resolve => setTimeout (resolve, ms));
+		function sleep1ms () {
+			return new Promise (resolve => setTimeout (resolve, 1));
 		}
 	}
 
-	async executeEntryFunction () {
+	async executeUserProgram () {
 		assertIsDefined (this.entryFunction);
 
 		await this.entryFunction.executeBlock ();
+		this.stopUserProgram ();
+	}
+
+	stopUserProgram () {
+		this.stopFlg = true;
 	}
 
 	async executeFunction (functionName: string, argument1: number, argument2: number, argument3: number) {
