@@ -1,6 +1,4 @@
 $top-menu-height: 2rem;
-$editor-width: 30%;
-$console-width: 15%;
 
 #top-menu {
     display: flex;
@@ -15,12 +13,10 @@ $console-width: 15%;
     display: flex;
 
     #left-panel {
-        width: $editor-width;
         height: 100%;
     }
 
     #center-panel {
-        width: calc(100% - #{$editor-width} - #{$console-width});
         height: 100%;
 
         $threads-height: 40%;
@@ -51,7 +47,6 @@ $console-width: 15%;
     }
 
     #right-panel {
-        width: $console-width;
         height: 100%;
 
         #console {

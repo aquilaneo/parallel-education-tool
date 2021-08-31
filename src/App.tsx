@@ -6,18 +6,23 @@ import {Mission} from "./mission";
 import * as BlockSettings from "./blockSettings";
 import * as BlockDefinitions from "./blockDefinitions";
 import * as VariableCanvas from "./variableCanvas";
-import "./App.scss";
 import {UserProgram} from "./blockDefinitions";
+import * as SplitView from "./splitView";
+
+import "./App.scss";
 
 function App () {
+	// state定義
 	const [variableCanvas, setVariableCanvas] = useState (new VariableCanvas.VariableCanvas ());
 	const [threadInfos, setThreadInfos] = useState ([] as { name: string, blocksXml: string }[]);
 	const [threadCount, setThreadCount] = useState (threadInfos.length);
 	const [stopwatch, setStopwatch] = useState (new BlockDefinitions.Stopwatch ());
 
+	// 参照の取得
 	const editorRef = useRef<EditorView> (null);
 	const consoleRef = useRef<ConsoleView> (null);
 
+	// グローバル配列定義
 	const twoDimensionalArrays: { [key: string]: number[][] } = {};
 	twoDimensionalArrays["Array1"] = [
 		[1, 2, 3, 4],
@@ -30,6 +35,7 @@ function App () {
 	const oneDimensionalArrays: { [key: string]: number[] } = {};
 	oneDimensionalArrays["Array3"] = [2, 4, 6, 8];
 
+	// ミッション定義
 	const [mission, setMission] = useState (new Mission (twoDimensionalArrays, oneDimensionalArrays,
 		() => {
 			variableCanvas.drawTable (mission.currentTwoDimensionalArrays, mission.currentOneDimensionalArrays);
@@ -52,16 +58,30 @@ function App () {
 		}
 	));
 
+	// リサイズ処理
+	function onResize () {
+		variableCanvas.resize ();
+		variableCanvas.drawTable (mission.currentTwoDimensionalArrays, mission.currentOneDimensionalArrays);
+	}
+
 	useEffect (() => {
 		const canvas = document.getElementById ("variable-canvas") as HTMLCanvasElement;
 		variableCanvas.initialize (canvas);
-		variableCanvas.drawTable (mission.currentTwoDimensionalArrays, mission.currentOneDimensionalArrays);
+		onResize ();
+
 		// リサイズ処理
 		window.onresize = () => {
-			variableCanvas.resize ();
-			variableCanvas.drawTable (mission.currentTwoDimensionalArrays, mission.currentOneDimensionalArrays);
+			onResize ();
 		};
 	});
+
+	// 幅の指定
+	const editorInitialWidth = "30%";
+	const editorMinWidth = "20%";
+	const centerInitialWidth = "55%";
+	const centerMinWidth = "30%";
+	const consoleInitialWidth = "15%";
+	const consoleMinWidth = "5%";
 
 	return (
 		<div style={{width: "100vw", height: "100vh"}}>
@@ -70,12 +90,13 @@ function App () {
 				<div>第1章 「OOOOOOOO」</div>
 				<div>ユーザアイコン</div>
 			</div>
-			<div id={"main-view"}>
-				<div id={"left-panel"}>
+			<SplitView.SplitView id={"main-view"}>
+				<SplitView.SplitPanel id={"left-panel"} initialWidth={editorInitialWidth} minWidth={editorMinWidth}>
 					<EditorView ref={editorRef}/>
-				</div>
+				</SplitView.SplitPanel>
 
-				<div id={"center-panel"}>
+				<SplitView.SplitPanel id={"center-panel"} initialWidth={centerInitialWidth} minWidth={centerMinWidth}
+									  onresize={onResize}>
 					<div id={"variables-panel"}>
 						<div>変数</div>
 						<canvas id={"variable-canvas"}></canvas>
@@ -166,13 +187,13 @@ function App () {
 							}
 						</div>
 					</div>
-				</div>
+				</SplitView.SplitPanel>
 
-				<div id={"right-panel"}>
+				<SplitView.SplitPanel id={"right-panel"} initialWidth={consoleInitialWidth} minWidth={consoleMinWidth}>
 					<div>コンソール</div>
 					<ConsoleView ref={consoleRef}/>
-				</div>
-			</div>
+				</SplitView.SplitPanel>
+			</SplitView.SplitView>
 		</div>
 	)
 }
