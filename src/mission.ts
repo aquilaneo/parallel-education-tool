@@ -1,13 +1,27 @@
 import {ConsoleOutputType} from "./App";
 import Blockly from "blockly";
 
+export interface MissionContent {
+	missionName: string, // ミッション名
+	missionExplanation: string, // ミッションの説明
+	initialTwoDimensionalArrays: { [key: string]: number[][] }; // グローバル2次元配列の初期値
+	initialOneDimensionalArrays: { [key: string]: number[] }; // グローバル1次元配列の初期値
+	judge: (consoleOutput: string,
+			initialTwoDimensionalArrays: { [key: string]: number[][] },
+			initialOneDimensionalArrays: { [key: string]: number[] },
+			twoDimensionalArraysResult: { [key: string]: number[][] },
+			oneDimensionalArraysResult: { [key: string]: number[] },
+	) => boolean; // ミッション達成判断関数(プログラム終了時に呼び出される)
+}
+
 export class Mission {
-	// グローバルデータ初期値
-	initialOneDimensionalArrays: { [key: string]: number[] };
-	initialTwoDimensionalArrays: { [key: string]: number[][] };
+	// 現在のミッション内容
+	missionContent: MissionContent;
 	// グローバルデータ現在値
-	currentOneDimensionalArrays: { [key: string]: number[] } = {};
 	currentTwoDimensionalArrays: { [key: string]: number[][] } = {};
+	currentOneDimensionalArrays: { [key: string]: number[] } = {};
+	// コンソール出力内容
+	consoleOutputs: string[] = [];
 	// キャンバス描画関数
 	drawVariableView: () => void;
 	// コンソール書き込み関数
@@ -17,52 +31,32 @@ export class Mission {
 	// スレッド削除
 	removeThreadView: (threadName: string) => void;
 
-	constructor (initialTwoDimensionalArrays: { [key: string]: number[][] }, initialOneDimensionalArrays: { [key: string]: number[] },
+	constructor (missionContent: MissionContent,
 				 drawVariableTable: () => void, writeConsole: (output: { text: string, type: ConsoleOutputType }) => void,
 				 addThread: (threadInfo: { name: string, blocksXml: string }) => void, removeThread: (threadName: string) => void) {
-		this.initialOneDimensionalArrays = initialOneDimensionalArrays;
-		this.initialTwoDimensionalArrays = initialTwoDimensionalArrays;
-		this.resetGlobalArray ();
-
+		this.missionContent = missionContent;
 		this.drawVariableView = drawVariableTable;
 		this.writeConsoleView = writeConsole;
 		this.addThreadView = addThread;
 		this.removeThreadView = removeThread;
+
+		this.resetGlobalArray ();
+	}
+
+	judge () {
+		const lastConsoleOutput = this.consoleOutputs.length > 0 ? this.consoleOutputs[this.consoleOutputs.length] : "";
+		return this.missionContent.judge (lastConsoleOutput,
+			this.missionContent.initialTwoDimensionalArrays, this.missionContent.initialOneDimensionalArrays,
+			this.currentTwoDimensionalArrays, this.currentOneDimensionalArrays);
 	}
 
 	printLog (text: string) {
+		this.consoleOutputs.push (text);
 		this.writeConsoleView ({text: text, type: ConsoleOutputType.Log});
 	}
 
 	printError (text: string) {
 		this.writeConsoleView ({text: text, type: ConsoleOutputType.Error});
-	}
-
-	readOneDimensionalArray (arrayName: string, index: number) {
-		const array = this.currentOneDimensionalArrays[arrayName];
-		if (array) {
-			if (index < array.length) {
-				return array[index];
-			} else {
-				this.printError (`${index} の値が1次元配列 ${arrayName} の要素数に対して大きすぎます！`);
-			}
-		} else {
-			this.printError (`"${arrayName}" という1次元配列は存在しません！`);
-		}
-	}
-
-	writeOneDimensionalArray (arrayName: string, index: number, value: number) {
-		const array = this.currentOneDimensionalArrays[arrayName];
-		if (array) {
-			if (index < array.length) {
-				array[index] = value;
-				this.drawVariableView ();
-			} else {
-				this.printError (`${index} の値が1次元配列 ${arrayName} の要素数に対して大きすぎます！`);
-			}
-		} else {
-			this.printError (`"${arrayName}" という1次元配列は存在しません！`);
-		}
 	}
 
 	readTwoDimensionalArray (arrayName: string, row: number, col: number) {
@@ -92,10 +86,37 @@ export class Mission {
 		}
 	}
 
+	readOneDimensionalArray (arrayName: string, index: number) {
+		const array = this.currentOneDimensionalArrays[arrayName];
+		if (array) {
+			if (index < array.length) {
+				return array[index];
+			} else {
+				this.printError (`${index} の値が1次元配列 ${arrayName} の要素数に対して大きすぎます！`);
+			}
+		} else {
+			this.printError (`"${arrayName}" という1次元配列は存在しません！`);
+		}
+	}
+
+	writeOneDimensionalArray (arrayName: string, index: number, value: number) {
+		const array = this.currentOneDimensionalArrays[arrayName];
+		if (array) {
+			if (index < array.length) {
+				array[index] = value;
+				this.drawVariableView ();
+			} else {
+				this.printError (`${index} の値が1次元配列 ${arrayName} の要素数に対して大きすぎます！`);
+			}
+		} else {
+			this.printError (`"${arrayName}" という1次元配列は存在しません！`);
+		}
+	}
+
 	resetGlobalArray () {
 		// 現在値に初期値をコピー
-		this.currentOneDimensionalArrays = JSON.parse (JSON.stringify (this.initialOneDimensionalArrays));
-		this.currentTwoDimensionalArrays = JSON.parse (JSON.stringify (this.initialTwoDimensionalArrays));
+		this.currentTwoDimensionalArrays = JSON.parse (JSON.stringify (this.missionContent.initialTwoDimensionalArrays));
+		this.currentOneDimensionalArrays = JSON.parse (JSON.stringify (this.missionContent.initialOneDimensionalArrays));
 	}
 
 	addThread (threadName: string, functionStatementElement: Element) {

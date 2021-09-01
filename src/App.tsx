@@ -2,7 +2,7 @@ import React, {useEffect, useRef, useState} from 'react';
 import Blockly, {WorkspaceSvg} from "blockly";
 import * as Ja from "blockly/msg/ja";
 
-import {Mission} from "./mission";
+import {Mission, MissionContent} from "./mission";
 import * as BlockSettings from "./blockSettings";
 import * as BlockDefinitions from "./blockDefinitions";
 import * as VariableCanvas from "./variableCanvas";
@@ -22,7 +22,7 @@ function App () {
 	const editorRef = useRef<EditorView> (null);
 	const consoleRef = useRef<ConsoleView> (null);
 
-	// グローバル配列定義
+	// ミッション内容定義
 	const twoDimensionalArrays: { [key: string]: number[][] } = {};
 	twoDimensionalArrays["Array1"] = [
 		[1, 2, 3, 4],
@@ -35,8 +35,29 @@ function App () {
 	const oneDimensionalArrays: { [key: string]: number[] } = {};
 	oneDimensionalArrays["Array3"] = [2, 4, 6, 8];
 
+	const missionContent: MissionContent = {
+		missionName: "ミッション0: テストミッション",
+		missionExplanation: "テスト用のミッションです。",
+		initialTwoDimensionalArrays: twoDimensionalArrays,
+		initialOneDimensionalArrays: oneDimensionalArrays,
+		judge: (consoleOutput,
+				initialTwoDimensionalArrays,
+				initialOneDimensionalArrays,
+				twoDimensionalArraysResult,
+				oneDimensionalArraysResult) => {
+			for (const row of twoDimensionalArraysResult["Array1"]) {
+				for (const element of row) {
+					if (element !== 0) {
+						return false;
+					}
+				}
+			}
+			return true;
+		}
+	};
+
 	// ミッション定義
-	const [mission, setMission] = useState (new Mission (twoDimensionalArrays, oneDimensionalArrays,
+	const [mission, setMission] = useState (new Mission (missionContent,
 		() => {
 			variableCanvas.drawTable (mission.currentTwoDimensionalArrays, mission.currentOneDimensionalArrays);
 		},
@@ -92,7 +113,7 @@ function App () {
 		<div style={{width: "100vw", height: "100vh"}}>
 			<div id={"top-menu"}>
 				<div>名前</div>
-				<div>第1章 「OOOOOOOO」</div>
+				<div>{missionContent.missionName}</div>
 				<div>ユーザアイコン</div>
 			</div>
 			<SplitView.SplitView id={"main-view"}>
@@ -299,6 +320,7 @@ class EditorView extends React.Component {
 	}
 
 	getXml () {
+		// ワークスペース上のブロックをXML化
 		if (this.workspace) {
 			const dom = Blockly.Xml.workspaceToDom (this.workspace);
 			return Blockly.Xml.domToText (dom);
@@ -308,6 +330,7 @@ class EditorView extends React.Component {
 	}
 
 	xmlToWorkspace (xml: string) {
+		// XMLからワークスペースのブロック化
 		if (this.workspace) {
 			this.workspace.clear ();
 			const dom = Blockly.Xml.textToDom (xml);
@@ -324,17 +347,27 @@ class EditorView extends React.Component {
 	}
 
 	async executeUserProgram (variableCanvas: VariableCanvas.VariableCanvas, mission: Mission) {
+		// 作成したブロックをプログラム化し実行
 		this.isExecuting = true;
 		this.parseBlocks (variableCanvas, mission);
 		if (this.userProgram) {
+			// グローバル配列Canvasを初期化
 			mission.resetGlobalArray ();
-			variableCanvas.drawTable (mission.currentTwoDimensionalArrays, mission.currentOneDimensionalArrays); // グローバル配列Canvasを初期化
+			variableCanvas.drawTable (mission.currentTwoDimensionalArrays, mission.currentOneDimensionalArrays);
+			// 実行
 			await this.userProgram.executeUserProgram ();
+			// ミッションクリア条件判断
+			if (mission.judge ()) {
+				alert ("Mission Clear");
+			} else {
+				alert ("Mission Failed")
+			}
 		}
 		this.isExecuting = false;
 	}
 
 	stopUserProgram () {
+		// プログラム実行を停止
 		if (this.userProgram) {
 			this.userProgram.stopUserProgram ();
 			this.isExecuting = false;
@@ -342,6 +375,7 @@ class EditorView extends React.Component {
 	}
 
 	onResize () {
+		// Blocklyリサイズ処理
 		if (this.workspace) {
 			Blockly.svgResize (this.workspace);
 		}
@@ -385,12 +419,14 @@ class ConsoleView extends React.Component<{}, { outputs: { text: string, type: C
 	}
 
 	writeConsole (output: { text: string, type: ConsoleOutputType }) {
+		// コンソール書き込み
 		this.setState (state => ({
 			outputs: [...state.outputs, output]
 		}));
 	}
 
 	clearConsole () {
+		// コンソール消去
 		this.setState ({...this.state, outputs: []});
 	}
 
