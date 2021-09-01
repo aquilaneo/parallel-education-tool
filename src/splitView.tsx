@@ -16,7 +16,7 @@ export class SplitView extends React.Component<{ children: ReactNode[], id?: str
 		this.continueDragging = this.continueDragging.bind (this);
 		this.stopDragging = this.stopDragging.bind (this);
 		this.onResize = this.onResize.bind (this);
-		window.onresize = this.onResize;
+		window.addEventListener("resize", this.onResize);
 	}
 
 	componentDidMount () {
@@ -104,7 +104,6 @@ export class SplitView extends React.Component<{ children: ReactNode[], id?: str
 	render () {
 		const style = {
 			display: "flex",
-			height: "100%"
 		};
 
 		// SplitSeparatorを挿入
@@ -161,7 +160,7 @@ export class SplitSeparator extends React.Component<{ index: number, parent: Spl
 
 	render () {
 		const style = {
-			width: "2px",
+			width: "3px",
 			height: "100%",
 			backgroundColor: "lightgray",
 			cursor: "col-resize"

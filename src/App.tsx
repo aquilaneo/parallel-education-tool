@@ -58,8 +58,15 @@ function App () {
 		}
 	));
 
-	// リサイズ処理
-	function onResize () {
+	// エディタパネルリサイズ処理
+	function onEditorPanelResized () {
+		if (editorRef.current) {
+			editorRef.current.onResize ();
+		}
+	}
+
+	// 中央パネルリサイズ処理
+	function onCenterPanelResized () {
 		variableCanvas.resize ();
 		variableCanvas.drawTable (mission.currentTwoDimensionalArrays, mission.currentOneDimensionalArrays);
 	}
@@ -67,12 +74,10 @@ function App () {
 	useEffect (() => {
 		const canvas = document.getElementById ("variable-canvas") as HTMLCanvasElement;
 		variableCanvas.initialize (canvas);
-		onResize ();
+		onCenterPanelResized ();
 
 		// リサイズ処理
-		window.onresize = () => {
-			onResize ();
-		};
+		window.addEventListener ("resize", onCenterPanelResized);
 	});
 
 	// 幅の指定
@@ -91,12 +96,13 @@ function App () {
 				<div>ユーザアイコン</div>
 			</div>
 			<SplitView.SplitView id={"main-view"}>
-				<SplitView.SplitPanel id={"left-panel"} initialWidth={editorInitialWidth} minWidth={editorMinWidth}>
+				<SplitView.SplitPanel id={"left-panel"} initialWidth={editorInitialWidth} minWidth={editorMinWidth}
+									  onresize={onEditorPanelResized}>
 					<EditorView ref={editorRef}/>
 				</SplitView.SplitPanel>
 
 				<SplitView.SplitPanel id={"center-panel"} initialWidth={centerInitialWidth} minWidth={centerMinWidth}
-									  onresize={onResize}>
+									  onresize={onCenterPanelResized}>
 					<div id={"variables-panel"}>
 						<div>変数</div>
 						<canvas id={"variable-canvas"}></canvas>
@@ -332,6 +338,12 @@ class EditorView extends React.Component {
 		if (this.userProgram) {
 			this.userProgram.stopUserProgram ();
 			this.isExecuting = false;
+		}
+	}
+
+	onResize () {
+		if (this.workspace) {
+			Blockly.svgResize (this.workspace);
 		}
 	}
 
