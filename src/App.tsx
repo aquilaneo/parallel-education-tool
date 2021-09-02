@@ -2,7 +2,8 @@ import React, {useEffect, useRef, useState} from 'react';
 import Blockly, {WorkspaceSvg} from "blockly";
 import * as Ja from "blockly/msg/ja";
 
-import {Mission, MissionContent} from "./mission";
+import {Mission} from "./mission";
+import {missionContents} from "./missionContents";
 import * as BlockSettings from "./blockSettings";
 import * as BlockDefinitions from "./blockDefinitions";
 import * as VariableCanvas from "./variableCanvas";
@@ -22,48 +23,8 @@ function App () {
 	const editorRef = useRef<EditorView> (null);
 	const consoleRef = useRef<ConsoleView> (null);
 
-	// ミッション内容定義
-	const twoDimensionalArrays: { [key: string]: number[][] } = {};
-	twoDimensionalArrays["Array1"] = [
-		[1, 2, 3, 4],
-		[5, 6, 7, 8]
-	];
-	twoDimensionalArrays["Array2"] = [
-		[9, 10],
-		[11, 12]
-	];
-	const oneDimensionalArrays: { [key: string]: number[] } = {};
-	oneDimensionalArrays["Array3"] = [2, 4, 6, 8];
-
-	const missionContent: MissionContent = {
-		missionName: "ミッション0: テストミッション",
-		missionExplanation: "テスト用のミッションです。",
-		initialTwoDimensionalArrays: twoDimensionalArrays,
-		initialOneDimensionalArrays: oneDimensionalArrays,
-		judge: (consoleOutputs,
-				initialTwoDimensionalArrays,
-				initialOneDimensionalArrays,
-				twoDimensionalArraysResult,
-				oneDimensionalArraysResult) => {
-			for (const row of twoDimensionalArraysResult["Array1"]) {
-				for (const element of row) {
-					if (element !== 0) {
-						return false;
-					}
-				}
-			}
-			return true;
-		}
-		// judge: (consoleOutputs,
-		// 		initialTwoDimensionalArrays,
-		// 		initialOneDimensionalArrays,
-		// 		twoDimensionalArraysResult,
-		// 		oneDimensionalArraysResult) => {
-		// 	return consoleOutputs.length === 1 && consoleOutputs[consoleOutputs.length - 1] === "AAA";
-		// }
-	};
-
 	// ミッション定義
+	const missionContent = missionContents[1];
 	const [mission, setMission] = useState (new Mission (missionContent,
 		() => {
 			variableCanvas.drawTable (mission.currentTwoDimensionalArrays, mission.currentOneDimensionalArrays);

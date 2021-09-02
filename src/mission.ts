@@ -1,17 +1,125 @@
 import {ConsoleOutputType} from "./App";
 import Blockly from "blockly";
 
+// ミッション内容
 export interface MissionContent {
 	missionName: string, // ミッション名
 	missionExplanation: string, // ミッションの説明
-	initialTwoDimensionalArrays: { [key: string]: number[][] }; // グローバル2次元配列の初期値
-	initialOneDimensionalArrays: { [key: string]: number[] }; // グローバル1次元配列の初期値
+	twoDimensionalArrays: TwoDimensionalArrays; // グローバル2次元配列
+	oneDimensionalArrays: OneDimensionalArrays; // グローバル1次元配列の初期値
 	judge: (consoleOutputs: string[],
 			initialTwoDimensionalArrays: { [key: string]: number[][] },
 			initialOneDimensionalArrays: { [key: string]: number[] },
 			twoDimensionalArraysResult: { [key: string]: number[][] },
 			oneDimensionalArraysResult: { [key: string]: number[] },
 	) => boolean; // ミッション達成判断関数(プログラム終了時に呼び出される)
+}
+
+
+// 配列が定数かランダムかを表すenum
+export enum GlobalArrayType { constant, random}
+
+// ランダム配列の範囲
+export interface ArrayRandomRange {
+	min: number,
+	max: number
+}
+
+// 2次元配列クラス
+export class TwoDimensionalArrays {
+	arrays: { [key: string]: number[][] } = {};
+	arrayTypes: { [key: string]: GlobalArrayType } = {};
+	randomRanges: { [key: string]: ArrayRandomRange } = {};
+
+	// すべてのランダム配列の値をシャッフル
+	randomizeAll () {
+		for (const key in this.arrays) {
+			if (this.arrayTypes[key] === GlobalArrayType.random) {
+				// 長さ取得
+				const rowLength = this.arrays[key].length;
+				const colLength = this.arrays[key][0].length;
+
+				this.arrays[key] = this.getRandomArray (rowLength, colLength, this.randomRanges[key].min, this.randomRanges[key].max);
+			}
+		}
+	}
+
+	// ランダムな配列を作成
+	getRandomArray (rowLength: number, colLength: number, randomMin: number, randomMax: number) {
+		// 配列初期化
+		const array = new Array (rowLength);
+		for (let row = 0; row < rowLength; row++) {
+			array[row] = new Array (colLength);
+		}
+
+		// ランダムな値を生成
+		for (let row = 0; row < rowLength; row++) {
+			for (let col = 0; col < colLength; col++) {
+				array[row][col] = Math.floor (Math.random () * (randomMax - randomMin) + randomMin);
+			}
+		}
+
+		return array;
+	}
+
+	// 定数の2次元配列を追加
+	addConstArray (key: string, array: number[][]) {
+		this.arrays[key] = array;
+		this.arrayTypes[key] = GlobalArrayType.constant;
+		this.randomRanges[key] = {min: -1, max: -1};
+	}
+
+	// ランダムの2次元配列を追加
+	addRandomArray (key: string, rowLength: number, colLength: number, randomMin: number, randomMax: number) {
+		this.arrays[key] = this.getRandomArray (rowLength, colLength, randomMin, randomMax);
+		this.arrayTypes[key] = GlobalArrayType.random;
+		this.randomRanges[key] = {min: randomMin, max: randomMax};
+	}
+}
+
+export class OneDimensionalArrays {
+	arrays: { [key: string]: number[] } = {};
+	arrayTypes: { [key: string]: GlobalArrayType } = {};
+	randomRanges: { [key: string]: ArrayRandomRange } = {};
+
+	// すべてのランダム配列の値をシャッフル
+	randomizeAll () {
+		for (const key in this.arrays) {
+			if (this.arrayTypes[key] === GlobalArrayType.random) {
+				// 長さ取得
+				const length = this.arrays[key].length;
+
+				this.arrays[key] = this.getRandomArray (length, this.randomRanges[key].min, this.randomRanges[key].max);
+			}
+		}
+	}
+
+	// ランダムな配列を作成
+	getRandomArray (length: number, randomMin: number, randomMax: number) {
+		// 配列初期化
+		const array = new Array (length);
+
+		// ランダムな値を生成
+		for (let i = 0; i < length; i++) {
+			array[i] = Math.floor (Math.random () * (randomMax - randomMin) + randomMin);
+		}
+
+		return array;
+	}
+
+	// 定数の2次元配列を追加
+	addConstArray (key: string, array: number[]) {
+		this.arrays[key] = array;
+		this.arrayTypes[key] = GlobalArrayType.constant;
+		this.randomRanges[key] = {min: -1, max: -1};
+	}
+
+	// ランダムの2次元配列を追加
+	addRandomArray (key: string, length: number, randomMin: number, randomMax: number) {
+		this.arrays[key] = this.getRandomArray (length, randomMin, randomMax);
+		this.arrayTypes[key] = GlobalArrayType.random;
+		this.randomRanges[key] = {min: randomMin, max: randomMax};
+	}
 }
 
 export class Mission {
@@ -45,7 +153,7 @@ export class Mission {
 
 	judge () {
 		return this.missionContent.judge (this.consoleOutputs,
-			this.missionContent.initialTwoDimensionalArrays, this.missionContent.initialOneDimensionalArrays,
+			this.missionContent.twoDimensionalArrays.arrays, this.missionContent.oneDimensionalArrays.arrays,
 			this.currentTwoDimensionalArrays, this.currentOneDimensionalArrays);
 	}
 
@@ -113,9 +221,11 @@ export class Mission {
 	}
 
 	resetGlobalArray () {
-		// 現在値に初期値をコピー
-		this.currentTwoDimensionalArrays = JSON.parse (JSON.stringify (this.missionContent.initialTwoDimensionalArrays));
-		this.currentOneDimensionalArrays = JSON.parse (JSON.stringify (this.missionContent.initialOneDimensionalArrays));
+		// ランダム配列をシャッフルして現在値に初期値をコピー
+		this.missionContent.twoDimensionalArrays.randomizeAll ();
+		this.missionContent.oneDimensionalArrays.randomizeAll ();
+		this.currentTwoDimensionalArrays = JSON.parse (JSON.stringify (this.missionContent.twoDimensionalArrays.arrays));
+		this.currentOneDimensionalArrays = JSON.parse (JSON.stringify (this.missionContent.oneDimensionalArrays.arrays));
 	}
 
 	addThread (threadName: string, functionStatementElement: Element) {
