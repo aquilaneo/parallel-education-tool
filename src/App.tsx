@@ -40,7 +40,7 @@ function App () {
 		missionExplanation: "テスト用のミッションです。",
 		initialTwoDimensionalArrays: twoDimensionalArrays,
 		initialOneDimensionalArrays: oneDimensionalArrays,
-		judge: (consoleOutput,
+		judge: (consoleOutputs,
 				initialTwoDimensionalArrays,
 				initialOneDimensionalArrays,
 				twoDimensionalArraysResult,
@@ -54,6 +54,13 @@ function App () {
 			}
 			return true;
 		}
+		// judge: (consoleOutputs,
+		// 		initialTwoDimensionalArrays,
+		// 		initialOneDimensionalArrays,
+		// 		twoDimensionalArraysResult,
+		// 		oneDimensionalArraysResult) => {
+		// 	return consoleOutputs.length === 1 && consoleOutputs[consoleOutputs.length - 1] === "AAA";
+		// }
 	};
 
 	// ミッション定義

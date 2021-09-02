@@ -6,7 +6,7 @@ export interface MissionContent {
 	missionExplanation: string, // ミッションの説明
 	initialTwoDimensionalArrays: { [key: string]: number[][] }; // グローバル2次元配列の初期値
 	initialOneDimensionalArrays: { [key: string]: number[] }; // グローバル1次元配列の初期値
-	judge: (consoleOutput: string,
+	judge: (consoleOutputs: string[],
 			initialTwoDimensionalArrays: { [key: string]: number[][] },
 			initialOneDimensionalArrays: { [key: string]: number[] },
 			twoDimensionalArraysResult: { [key: string]: number[][] },
@@ -44,8 +44,7 @@ export class Mission {
 	}
 
 	judge () {
-		const lastConsoleOutput = this.consoleOutputs.length > 0 ? this.consoleOutputs[this.consoleOutputs.length] : "";
-		return this.missionContent.judge (lastConsoleOutput,
+		return this.missionContent.judge (this.consoleOutputs,
 			this.missionContent.initialTwoDimensionalArrays, this.missionContent.initialOneDimensionalArrays,
 			this.currentTwoDimensionalArrays, this.currentOneDimensionalArrays);
 	}
