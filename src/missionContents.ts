@@ -9,6 +9,7 @@ export const missionContents: Mission.MissionContent[] = [];
 	missionContents.push ({
 		missionName: "[1章 基本操作編 - 1.ブロックの並べ方とprintブロック]",
 		missionExplanation: "ブロックの操作とprintブロックの使い方を学びます。",
+		goal: `コンソールに "Hello" と出力する`,
 		twoDimensionalArrays: twoDimensionalArrays,
 		oneDimensionalArrays: oneDimensionalArrays,
 		judge: (consoleOutputs,
@@ -34,6 +35,7 @@ export const missionContents: Mission.MissionContent[] = [];
 	missionContents.push ({
 		missionName: "[1章 基本操作編 - 5.グローバル配列]",
 		missionExplanation: "グローバル配列について学びます。",
+		goal: `グローバル配列 "Array1" の値をすべて0にする`,
 		twoDimensionalArrays: twoDimensionalArrays,
 		oneDimensionalArrays: oneDimensionalArrays,
 		judge: (consoleOutputs,

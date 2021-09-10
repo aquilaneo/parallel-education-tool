@@ -5,6 +5,7 @@ import Blockly from "blockly";
 export interface MissionContent {
 	missionName: string, // ミッション名
 	missionExplanation: string, // ミッションの説明
+	goal: string, // クリア条件
 	twoDimensionalArrays: TwoDimensionalArrays; // グローバル2次元配列
 	oneDimensionalArrays: OneDimensionalArrays; // グローバル1次元配列の初期値
 	judge: (consoleOutputs: string[],

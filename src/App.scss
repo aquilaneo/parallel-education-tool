@@ -6,6 +6,22 @@ $top-menu-height: 2rem;
     height: $top-menu-height;
 }
 
+#mission-detail {
+    position: absolute;
+    z-index: 100;
+    background-color: white;
+    border: solid thin black;
+    left: 50%;
+    transform: translate(-50%, 0);
+    padding: 0.2rem 1rem;
+
+    .subtitle {
+        margin: 0 auto;
+        width: 20rem;
+        text-align: center;
+    }
+}
+
 #main-view {
     width: 100vw;
     height: calc(100vh - #{$top-menu-height});
