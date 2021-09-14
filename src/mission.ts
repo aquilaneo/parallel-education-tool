@@ -1,4 +1,4 @@
-import {ConsoleOutputType} from "./App";
+import {ConsoleOutputType} from "./playground";
 import Blockly from "blockly";
 
 // ミッション内容
