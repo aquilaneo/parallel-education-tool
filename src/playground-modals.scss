@@ -1,0 +1,29 @@
+.modal-panel {
+    position: absolute;
+    background-color: white;
+    border: solid thin black;
+    left: 50%;
+    transform: translate(-50%, 0);
+    padding: 0.2rem 1rem;
+
+    .center {
+        text-align: center;
+    }
+}
+
+#mission-detail {
+    z-index: 200;
+}
+
+#mission-clear {
+    z-index: 100;
+
+    .score-row {
+        display: flex;
+        justify-content: space-between;
+    }
+}
+
+#mission-failed {
+    z-index: 100;
+}

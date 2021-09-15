@@ -8,6 +8,7 @@ import {missionContents} from "./missionContents";
 import * as BlockSettings from "./blockSettings";
 import * as BlockDefinitions from "./blockDefinitions";
 import * as VariableCanvas from "./variableCanvas";
+import * as PlaygroundModals from "./playground-modals";
 import {UserProgram} from "./blockDefinitions";
 import * as SplitView from "./splitView";
 
@@ -16,6 +17,8 @@ import "./playground.scss";
 const Playground: React.FC<{ missionID: string }> = (props) => {
 	// state定義
 	const [isDetailVisible, setIsDetailVisible] = useState (true);
+	const [isClearVisible, setIsClearVisible] = useState (false);
+	const [isFailedVisible, setIsFailedVisible] = useState (false);
 	const [variableCanvas, setVariableCanvas] = useState (new VariableCanvas.VariableCanvas ());
 	const [threadInfos, setThreadInfos] = useState ([] as { name: string, blocksXml: string }[]);
 	const [threadCount, setThreadCount] = useState (threadInfos.length);
@@ -96,35 +99,29 @@ const Playground: React.FC<{ missionID: string }> = (props) => {
 				<div>ユーザアイコン</div>
 			</div>
 
-			<div id={"mission-detail"} style={{display: isDetailVisible ? "block" : "none"}}>
-				<div style={{display: "flex"}}>
-					<h1 style={{textAlign: "center"}}>{missionContent.missionTitle}</h1>
-					<div onClick={() => {
-						setIsDetailVisible (false);
-					}}>×
-					</div>
-				</div>
-				<div>
-					<h2 className={"subtitle"}>クリア条件</h2>
-					<div style={{margin: "0 auto", width: "30rem", textAlign: "center"}}>{missionContent.goal}</div>
-				</div>
-				<div>
-					<h2 className={"subtitle"}>ミッション説明</h2>
-					<div>{missionContent.missionExplanation}</div>
-				</div>
-			</div>
+			<PlaygroundModals.MissionDetailModal isVisible={isDetailVisible} setIsVisible={setIsDetailVisible}
+												 missionContent={missionContent}/>
+			<PlaygroundModals.MissionClearModal isVisible={isClearVisible} missionContent={missionContent}/>
+			<PlaygroundModals.MissionFailedModal isVisible={isFailedVisible} setIsVisible={setIsFailedVisible}
+												 missionContent={missionContent}/>
 
 			<SplitView.SplitView id={"main-view"}>
 				<SplitView.SplitPanel id={"left-panel"} initialWidth={editorInitialWidth} minWidth={editorMinWidth}
 									  onresize={onEditorPanelResized}>
-					<EditorView ref={editorRef}/>
+					<EditorView ref={editorRef} closeDetailModal={() => {
+						setIsDetailVisible (false);
+					}} showClearModal={() => {
+						setIsClearVisible (true);
+					}} showFailedModal={() => {
+						setIsFailedVisible (true);
+					}}/>
 				</SplitView.SplitPanel>
 
 				<SplitView.SplitPanel id={"center-panel"} initialWidth={centerInitialWidth} minWidth={centerMinWidth}
 									  onresize={onCenterPanelResized}>
 					<div id={"variables-panel"}>
 						<div>変数</div>
-						<canvas id={"variable-canvas"}></canvas>
+						<canvas id={"variable-canvas"}/>
 						<div>
 							<button onClick={() => {
 								if (editorRef.current) {
@@ -223,7 +220,7 @@ const Playground: React.FC<{ missionID: string }> = (props) => {
 	)
 }
 
-class EditorView extends React.Component {
+class EditorView extends React.Component<{ closeDetailModal: () => void, showClearModal: () => void, showFailedModal: () => void }> {
 	workspace: Blockly.WorkspaceSvg | null = null;
 	initialWorkspace = "<xml xmlns=\"https://developers.google.com/blockly/xml\"><block type=\"entry_point\" id=\"5e{JeNdzKRK}Nyg(x2Ul\" x=\"58\" y=\"59\"></block></xml>";
 	userProgram: UserProgram | null = null;
@@ -355,10 +352,11 @@ class EditorView extends React.Component {
 			// 実行
 			await this.userProgram.executeUserProgram ();
 			// ミッションクリア条件判断
+			this.props.closeDetailModal ();
 			if (mission.judge ()) {
-				alert ("Mission Clear");
+				this.props.showClearModal (); // ミッション成功
 			} else {
-				alert ("Mission Failed")
+				this.props.showFailedModal (); // ミッション失敗
 			}
 		}
 		this.isExecuting = false;
