@@ -5,10 +5,11 @@ export const missionContents: Mission.MissionContent[] = [];
 // ミッション1-1
 {
 	const twoDimensionalArrays = new Mission.TwoDimensionalArrays ();
-	const oneDimensionalArrays = new Mission.OneDimensionalArrays();
+	const oneDimensionalArrays = new Mission.OneDimensionalArrays ();
 	missionContents.push ({
-		missionName: "[1章 基本操作編 - 1.ブロックの並べ方とprintブロック]",
+		missionTitle: "[1章 基本操作編 - 1.ブロックの並べ方とprintブロック]",
 		missionExplanation: "ブロックの操作とprintブロックの使い方を学びます。",
+		missionID: "mission1-1",
 		goal: `コンソールに "Hello" と出力する`,
 		twoDimensionalArrays: twoDimensionalArrays,
 		oneDimensionalArrays: oneDimensionalArrays,
@@ -30,11 +31,12 @@ export const missionContents: Mission.MissionContent[] = [];
 		[5, 6, 7, 8]
 	]);
 	twoDimensionalArrays.addRandomArray ("Array2", 2, 2, 0, 100);
-	const oneDimensionalArrays = new Mission.OneDimensionalArrays();
-	oneDimensionalArrays.addRandomArray("Array3", 4, 0, 10);
+	const oneDimensionalArrays = new Mission.OneDimensionalArrays ();
+	oneDimensionalArrays.addRandomArray ("Array3", 4, 0, 10);
 	missionContents.push ({
-		missionName: "[1章 基本操作編 - 5.グローバル配列]",
+		missionTitle: "[1章 基本操作編 - 5.グローバル配列]",
 		missionExplanation: "グローバル配列について学びます。",
+		missionID: "mission1-5",
 		goal: `グローバル配列 "Array1" の値をすべて0にする`,
 		twoDimensionalArrays: twoDimensionalArrays,
 		oneDimensionalArrays: oneDimensionalArrays,

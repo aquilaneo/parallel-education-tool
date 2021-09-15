@@ -1,4 +1,5 @@
 import React, {useEffect, useRef, useState} from 'react';
+import {Link} from "react-router-dom";
 import Blockly, {WorkspaceSvg} from "blockly";
 import * as Ja from "blockly/msg/ja";
 
@@ -12,7 +13,7 @@ import * as SplitView from "./splitView";
 
 import "./playground.scss";
 
-function Playground () {
+const Playground: React.FC<{ missionID: string }> = (props) => {
 	// state定義
 	const [isDetailVisible, setIsDetailVisible] = useState (true);
 	const [variableCanvas, setVariableCanvas] = useState (new VariableCanvas.VariableCanvas ());
@@ -25,7 +26,10 @@ function Playground () {
 	const consoleRef = useRef<ConsoleView> (null);
 
 	// ミッション定義
-	const missionContent = missionContents[1];
+	const foundMission = missionContents.find ((missionContent) => {
+		return missionContent.missionID === props.missionID;
+	});
+	const missionContent = foundMission ? foundMission : missionContents[0];
 	const [mission, setMission] = useState (new Mission (missionContent,
 		() => {
 			variableCanvas.drawTable (mission.currentTwoDimensionalArrays, mission.currentOneDimensionalArrays);
@@ -81,11 +85,11 @@ function Playground () {
 	return (
 		<div style={{width: "100vw", height: "100vh"}}>
 			<div id={"top-menu"}>
-				<div>名前</div>
+				<Link to={"/"}>トップへ</Link>
 				<div>
-					<span>{missionContent.missionName}</span>
+					<span>{missionContent.missionTitle}</span>
 					<button onClick={() => {
-						setIsDetailVisible (true);
+						setIsDetailVisible (!isDetailVisible);
 					}}>i
 					</button>
 				</div>
@@ -94,7 +98,7 @@ function Playground () {
 
 			<div id={"mission-detail"} style={{display: isDetailVisible ? "block" : "none"}}>
 				<div style={{display: "flex"}}>
-					<h1 style={{textAlign: "center"}}>{missionContent.missionName}</h1>
+					<h1 style={{textAlign: "center"}}>{missionContent.missionTitle}</h1>
 					<div onClick={() => {
 						setIsDetailVisible (false);
 					}}>×
