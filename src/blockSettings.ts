@@ -24,8 +24,8 @@ export const initBlocks = () => {
 	Blockly.defineBlocksWithJsonArray (jsonArray);
 }
 
-// ブロック一覧に載せるブロックたち
-export const getBlockListXml = () => {
+// ブロック一覧に載せる全命令ブロックたち
+export const getAllBlockListXml = () => {
 	return `
 	<xml id="toolbox">
 		<category name="動作">

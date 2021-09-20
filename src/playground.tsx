@@ -29,10 +29,20 @@ const Playground: React.FC<{ missionID: string }> = (props) => {
 	const consoleRef = useRef<ConsoleView> (null);
 
 	// ミッション定義
-	const foundMission = missionContents.find ((missionContent) => {
-		return missionContent.missionID === props.missionID;
+	let nextMissionID: string | null = null;
+	const foundMission = missionContents.find ((missionContent, index) => {
+		if (missionContent.missionID === props.missionID) {
+			// 次のミッションIDを記録
+			if (index < missionContents.length - 1) {
+				nextMissionID = missionContents[index + 1].missionID;
+			}
+			return true;
+		} else {
+			return false;
+		}
 	});
 	const missionContent = foundMission ? foundMission : missionContents[0];
+	const blockListXml = missionContent.blockListXml;
 	const [mission, setMission] = useState (new Mission (missionContent,
 		() => {
 			variableCanvas.drawTable (mission.currentTwoDimensionalArrays, mission.currentOneDimensionalArrays);
@@ -40,6 +50,11 @@ const Playground: React.FC<{ missionID: string }> = (props) => {
 		(output: { text: string, type: ConsoleOutputType }) => {
 			if (consoleRef.current) {
 				consoleRef.current.writeConsole (output);
+			}
+		},
+		() => {
+			if (consoleRef.current) {
+				consoleRef.current.clearConsole ();
 			}
 		},
 		(threadInfo: { name: string, blocksXml: string }) => {
@@ -101,14 +116,15 @@ const Playground: React.FC<{ missionID: string }> = (props) => {
 
 			<PlaygroundModals.MissionDetailModal isVisible={isDetailVisible} setIsVisible={setIsDetailVisible}
 												 missionContent={missionContent}/>
-			<PlaygroundModals.MissionClearModal isVisible={isClearVisible} missionContent={missionContent}/>
+			<PlaygroundModals.MissionClearModal isVisible={isClearVisible} setIsVisible={setIsClearVisible}
+												missionContent={missionContent} nextMissionID={nextMissionID}/>
 			<PlaygroundModals.MissionFailedModal isVisible={isFailedVisible} setIsVisible={setIsFailedVisible}
 												 missionContent={missionContent}/>
 
 			<SplitView.SplitView id={"main-view"}>
 				<SplitView.SplitPanel id={"left-panel"} initialWidth={editorInitialWidth} minWidth={editorMinWidth}
 									  onresize={onEditorPanelResized}>
-					<EditorView ref={editorRef} closeDetailModal={() => {
+					<EditorView ref={editorRef} blockListXml={blockListXml} closeDetailModal={() => {
 						setIsDetailVisible (false);
 					}} showClearModal={() => {
 						setIsClearVisible (true);
@@ -132,7 +148,8 @@ const Playground: React.FC<{ missionID: string }> = (props) => {
 							</button>
 							<button onClick={() => {
 								if (editorRef.current && !editorRef.current.isExecuting && consoleRef.current) {
-									consoleRef.current.clearConsole ();
+									// consoleRef.current.clearConsole ();
+									mission.clearConsole ();
 									editorRef.current.executeUserProgram (variableCanvas, mission);
 								}
 							}}>
@@ -190,9 +207,7 @@ const Playground: React.FC<{ missionID: string }> = (props) => {
 							}}>コンソール追加
 							</button>
 							<button onClick={() => {
-								if (consoleRef.current) {
-									consoleRef.current.clearConsole ();
-								}
+								mission.clearConsole ();
 							}}>コンソール削除
 							</button>
 						</div>
@@ -220,7 +235,7 @@ const Playground: React.FC<{ missionID: string }> = (props) => {
 	)
 }
 
-class EditorView extends React.Component<{ closeDetailModal: () => void, showClearModal: () => void, showFailedModal: () => void }> {
+class EditorView extends React.Component<{ blockListXml: string, closeDetailModal: () => void, showClearModal: () => void, showFailedModal: () => void }> {
 	workspace: Blockly.WorkspaceSvg | null = null;
 	initialWorkspace = "<xml xmlns=\"https://developers.google.com/blockly/xml\"><block type=\"entry_point\" id=\"5e{JeNdzKRK}Nyg(x2Ul\" x=\"58\" y=\"59\"></block></xml>";
 	userProgram: UserProgram | null = null;
@@ -229,9 +244,8 @@ class EditorView extends React.Component<{ closeDetailModal: () => void, showCle
 	componentDidMount () {
 		// ブロック定義とブロックリストを読み込み
 		BlockSettings.initBlocks ();
-		const xml = BlockSettings.getBlockListXml ();
 		const xmlParser = new DOMParser ();
-		const xmlDom = xmlParser.parseFromString (xml, "text/xml");
+		const xmlDom = xmlParser.parseFromString (this.props.blockListXml, "text/xml");
 
 		// ワークスペースを生成
 		const document: HTMLElement | undefined = xmlDom.getElementById ("toolbox") || undefined; // 要素取得して型合わせ

@@ -26,7 +26,8 @@ export const MissionDetailModal: React.FC<{ isVisible: boolean, setIsVisible: (v
 };
 
 // ミッションクリアモーダル
-export const MissionClearModal: React.FC<{ isVisible: boolean, missionContent: MissionContent }> = (props) => {
+export const MissionClearModal: React.FC<{ isVisible: boolean, setIsVisible: (value: boolean) => void, missionContent: MissionContent, nextMissionID: string | null }> = (props) => {
+	const nextMissionID = props.nextMissionID ? props.nextMissionID : "";
 	return (
 		<div className={"modal-panel"} id={"mission-clear"} style={{display: props.isVisible ? "block" : "none"}}>
 			<h1 className={"center"}>Mission Clear!</h1>
@@ -47,7 +48,13 @@ export const MissionClearModal: React.FC<{ isVisible: boolean, missionContent: M
 			</div>
 
 			<div style={{margin: "0 0 1rem 0"}} className={"center"}>
-				<div><Link to={"/missions/mission1-5"}>次のミッションへ</Link></div>
+				<div style={{display: props.nextMissionID ? "block" : "none"}}><Link to={nextMissionID}>
+					次のミッションへ
+				</Link></div>
+				<button onClick={() => {
+					props.setIsVisible (false);
+				}}>ミッションに戻る
+				</button>
 				<div><Link to={"/"}>トップページへ</Link></div>
 			</div>
 		</div>
@@ -70,7 +77,7 @@ export const MissionFailedModal: React.FC<{ isVisible: boolean, setIsVisible: (v
 				<div>
 					<button onClick={() => {
 						props.setIsVisible (false);
-					}}>続ける
+					}}>ミッションに戻る
 					</button>
 				</div>
 				<div><Link to={"/"}>トップページへ</Link></div>

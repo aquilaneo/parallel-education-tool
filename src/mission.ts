@@ -7,6 +7,7 @@ export interface MissionContent {
 	missionExplanation: string, // ミッションの説明
 	missionID: string, // ミッションID
 	goal: string, // クリア条件
+	blockListXml: string, // 命令ブロック一覧
 	twoDimensionalArrays: TwoDimensionalArrays; // グローバル2次元配列
 	oneDimensionalArrays: OneDimensionalArrays; // グローバル1次元配列の初期値
 	judge: (consoleOutputs: string[],
@@ -136,17 +137,20 @@ export class Mission {
 	drawVariableView: () => void;
 	// コンソール書き込み関数
 	writeConsoleView: (output: { text: string, type: ConsoleOutputType }) => void;
+	// コンソール全消去
+	clearConsoleView: () => void;
 	// スレッド追加
 	addThreadView: (threadInfo: { name: string, blocksXml: string }) => void;
 	// スレッド削除
 	removeThreadView: (threadName: string) => void;
 
 	constructor (missionContent: MissionContent,
-				 drawVariableTable: () => void, writeConsole: (output: { text: string, type: ConsoleOutputType }) => void,
+				 drawVariableTable: () => void, writeConsole: (output: { text: string, type: ConsoleOutputType }) => void, clearConsole: () => void,
 				 addThread: (threadInfo: { name: string, blocksXml: string }) => void, removeThread: (threadName: string) => void) {
 		this.missionContent = missionContent;
 		this.drawVariableView = drawVariableTable;
 		this.writeConsoleView = writeConsole;
+		this.clearConsoleView = clearConsole;
 		this.addThreadView = addThread;
 		this.removeThreadView = removeThread;
 
@@ -166,6 +170,11 @@ export class Mission {
 
 	printError (text: string) {
 		this.writeConsoleView ({text: text, type: ConsoleOutputType.Error});
+	}
+
+	clearConsole () {
+		this.consoleOutputs = [];
+		this.clearConsoleView ();
 	}
 
 	readTwoDimensionalArray (arrayName: string, row: number, col: number) {
