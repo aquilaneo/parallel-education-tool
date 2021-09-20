@@ -4,7 +4,7 @@ import Blockly, {WorkspaceSvg} from "blockly";
 import * as Ja from "blockly/msg/ja";
 
 import {Mission} from "./mission";
-import {missionContents} from "./missionContents";
+import {missionContents, missionScores} from "./missionContents";
 import * as BlockSettings from "./blockSettings";
 import * as BlockDefinitions from "./blockDefinitions";
 import * as VariableCanvas from "./variableCanvas";
@@ -363,11 +363,25 @@ class EditorView extends React.Component<{ blockListXml: string, closeDetailModa
 			// グローバル配列Canvasを初期化
 			mission.resetGlobalArray ();
 			variableCanvas.drawTable (mission.currentTwoDimensionalArrays, mission.currentOneDimensionalArrays);
-			// 実行
+
+			// タイム計測し実行
+			const startTime = Date.now ();
 			await this.userProgram.executeUserProgram ();
+			const endTime = Date.now ();
+
 			// ミッションクリア条件判断
 			this.props.closeDetailModal ();
 			if (mission.judge ()) {
+				// スコア記録
+				const missionScore = missionScores.find ((item) => {
+					return item.missionID === mission.missionContent.missionID;
+				});
+				if (missionScore) {
+					missionScore.cleared = true;
+					missionScore.time = endTime - startTime;
+					missionScore.blocks = this.workspace ? this.workspace.getAllBlocks (false).length : -1;
+				}
+
 				this.props.showClearModal (); // ミッション成功
 			} else {
 				this.props.showFailedModal (); // ミッション失敗

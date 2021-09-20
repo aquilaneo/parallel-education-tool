@@ -1,15 +1,18 @@
 import React from "react";
 import {BrowserRouter, Route, Link} from "react-router-dom";
-import {missionContents} from "./missionContents";
+import {missionContents, missionScores} from "./missionContents";
 
 import Playground from "./playground";
 
 function Top () {
-	const missionLinks = missionContents.map ((missionContent) => {
+	const missionLinks = missionContents.map ((missionContent, index) => {
 		return (
-			<li key={missionContent.missionID}><Link to={`./missions/${missionContent.missionID}`}>
-				{missionContent.missionTitle}
-			</Link></li>
+			<li key={missionContent.missionID}>
+				<Link to={`./missions/${missionContent.missionID}`}>
+					{missionContent.missionTitle}
+				</Link>
+				<span style={{display: missionScores[index].cleared ? "inline" : "none"}}> [Clear!]</span>
+			</li>
 		);
 	});
 
