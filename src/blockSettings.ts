@@ -9,14 +9,14 @@ export const initBlocks = () => {
 
 	// コマンドブロック
 	for (const commandBlock of commandBlockDefinitions) {
-		if (commandBlock.blocklyJson) {
+		if (commandBlock.blocklyJson && !Blockly.Blocks[commandBlock.type]) {
 			jsonArray.push (commandBlock.blocklyJson);
 		}
 	}
 
 	// 値ブロック
 	for (const valueBlock of valueBlockDefinitions) {
-		if (valueBlock.blocklyJson) {
+		if (valueBlock.blocklyJson && !Blockly.Blocks[valueBlock.type]) {
 			jsonArray.push (valueBlock.blocklyJson);
 		}
 	}
