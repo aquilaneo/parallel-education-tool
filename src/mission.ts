@@ -125,6 +125,35 @@ export class OneDimensionalArrays {
 	}
 }
 
+export class MissionScore {
+	missionID: string;
+	cleared: boolean = false;
+	time: number = -1;
+	blockCount: number = -1;
+
+	constructor (missionID: string) {
+		this.missionID = missionID;
+	}
+
+	setClear (time: number, blockCount: number) {
+		this.cleared = true;
+		this.time = time;
+		this.blockCount = blockCount;
+	}
+
+	isClear () {
+		return this.cleared;
+	}
+
+	getTimeSecond () {
+		return this.time / 1000;
+	}
+
+	getBlockCount () {
+		return this.blockCount;
+	}
+}
+
 export class Mission {
 	// 現在のミッション内容
 	missionContent: MissionContent;

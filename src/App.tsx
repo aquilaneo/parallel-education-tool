@@ -11,7 +11,7 @@ function Top () {
 				<Link to={`./missions/${missionContent.missionID}`}>
 					{missionContent.missionTitle}
 				</Link>
-				<span style={{display: missionScores[index].cleared ? "inline" : "none"}}> [Clear!]</span>
+				<span style={{display: missionScores[index].isClear() ? "inline" : "none"}}> [Clear!]</span>
 			</li>
 		);
 	});

@@ -2,7 +2,7 @@ import * as Mission from "./mission";
 import * as BlockSettings from "./blockSettings";
 
 export const missionContents: Mission.MissionContent[] = [];
-export let missionScores: { missionID: string, cleared: boolean, time: number, blocks: number }[] = [];
+export let missionScores: Mission.MissionScore[] = [];
 
 // 浮動小数点誤差も考えてコンソール出力と計算結果が正しいか比較する関数
 function isEqual (consoleOutputs: string, correctValue: number) {
@@ -1944,6 +1944,6 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 // ミッションスコア
 if (missionScores.length === 0) {
 	missionScores = missionContents.map ((missionContent) => {
-		return {missionID: missionContent.missionID, cleared: false, time: -1, blocks: -1};
+		return new Mission.MissionScore(missionContent.missionID);
 	});
 }

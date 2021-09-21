@@ -377,9 +377,7 @@ class EditorView extends React.Component<{ blockListXml: string, closeDetailModa
 					return item.missionID === mission.missionContent.missionID;
 				});
 				if (missionScore) {
-					missionScore.cleared = true;
-					missionScore.time = endTime - startTime;
-					missionScore.blocks = this.workspace ? this.workspace.getAllBlocks (false).length : -1;
+					missionScore.setClear(endTime - startTime, this.workspace ? this.workspace.getAllBlocks (false).length : -1);
 				}
 
 				this.props.showClearModal (); // ミッション成功
