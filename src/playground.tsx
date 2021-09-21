@@ -4,7 +4,7 @@ import Blockly, {WorkspaceSvg} from "blockly";
 import * as Ja from "blockly/msg/ja";
 
 import {Mission} from "./mission";
-import {missionContents, missionScores} from "./missionContents";
+import {missionContents} from "./missionContents";
 import * as BlockSettings from "./blockSettings";
 import * as BlockDefinitions from "./blockDefinitions";
 import * as VariableCanvas from "./variableCanvas";
@@ -373,12 +373,7 @@ class EditorView extends React.Component<{ blockListXml: string, closeDetailModa
 			this.props.closeDetailModal ();
 			if (mission.judge ()) {
 				// スコア記録
-				const missionScore = missionScores.find ((item) => {
-					return item.missionID === mission.missionContent.missionID;
-				});
-				if (missionScore) {
-					missionScore.setClear(endTime - startTime, this.workspace ? this.workspace.getAllBlocks (false).length : -1);
-				}
+				mission.missionContent.score.setClear(endTime - startTime, this.workspace ? this.workspace.getAllBlocks (false).length : -1);
 
 				this.props.showClearModal (); // ミッション成功
 			} else {

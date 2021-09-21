@@ -1,6 +1,6 @@
 import React from "react";
 import {BrowserRouter, Route, Link} from "react-router-dom";
-import {missionContents, missionScores} from "./missionContents";
+import {missionContents} from "./missionContents";
 
 import Playground from "./playground";
 
@@ -11,7 +11,7 @@ function Top () {
 				<Link to={`./missions/${missionContent.missionID}`}>
 					{missionContent.missionTitle}
 				</Link>
-				<span style={{display: missionScores[index].isClear() ? "inline" : "none"}}> [Clear!]</span>
+				<span style={{display: missionContent.score.isClear () ? "inline" : "none"}}> [Clear!]</span>
 			</li>
 		);
 	});

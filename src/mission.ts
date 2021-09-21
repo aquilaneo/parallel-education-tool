@@ -3,9 +3,11 @@ import Blockly from "blockly";
 
 // ミッション内容
 export interface MissionContent {
+	chapterName: string; // チャプター名
 	missionTitle: string, // ミッション名
 	missionExplanation: string, // ミッションの説明
 	missionID: string, // ミッションID
+	score: MissionScore, // スコア
 	goal: string, // クリア条件
 	blockListXml: string, // 命令ブロック一覧
 	twoDimensionalArrays: TwoDimensionalArrays; // グローバル2次元配列
@@ -126,14 +128,9 @@ export class OneDimensionalArrays {
 }
 
 export class MissionScore {
-	missionID: string;
 	cleared: boolean = false;
 	time: number = -1;
 	blockCount: number = -1;
-
-	constructor (missionID: string) {
-		this.missionID = missionID;
-	}
 
 	setClear (time: number, blockCount: number) {
 		this.cleared = true;

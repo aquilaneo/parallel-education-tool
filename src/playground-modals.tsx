@@ -1,7 +1,6 @@
 import React from "react";
 import {Link} from "react-router-dom";
 import {MissionContent} from "./mission";
-import {missionScores} from "./missionContents";
 
 import "./playground-modals.scss";
 
@@ -29,9 +28,6 @@ export const MissionDetailModal: React.FC<{ isVisible: boolean, setIsVisible: (v
 // ミッションクリアモーダル
 export const MissionClearModal: React.FC<{ isVisible: boolean, setIsVisible: (value: boolean) => void, missionContent: MissionContent, nextMissionID: string | null }> = (props) => {
 	const nextMissionID = props.nextMissionID ? props.nextMissionID : "";
-	const missionScore = missionScores.find ((item) => {
-		return item.missionID === props.missionContent.missionID;
-	});
 	return (
 		<div className={"modal-panel"} id={"mission-clear"} style={{display: props.isVisible ? "block" : "none"}}>
 			<h1 className={"center"}>Mission Clear!</h1>
@@ -43,11 +39,11 @@ export const MissionClearModal: React.FC<{ isVisible: boolean, setIsVisible: (va
 				<h2 className={"center"}>スコア</h2>
 				<div className={"score-row"}>
 					<div>実行時間:</div>
-					<div>{missionScore ? missionScore.getTimeSecond() : "[Error!]"} 秒</div>
+					<div>{props.missionContent.score.getTimeSecond ()} 秒</div>
 				</div>
 				<div className={"score-row"}>
 					<div>ブロック数:</div>
-					<div>{missionScore ? missionScore.getBlockCount() : "[Error!]"} 個</div>
+					<div>{props.missionContent.score.getBlockCount ()} 個</div>
 				</div>
 			</div>
 
