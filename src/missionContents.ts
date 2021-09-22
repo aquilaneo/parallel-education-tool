@@ -1,7 +1,7 @@
 import * as Mission from "./mission";
 import * as BlockSettings from "./blockSettings";
 
-export const missionContents: Mission.MissionContent[] = [];
+export const missionContents = new Mission.MissionList ();
 
 // 浮動小数点誤差も考えてコンソール出力と計算結果が正しいか比較する関数
 function isEqual (consoleOutputs: string, correctValue: number) {
@@ -13,11 +13,12 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 {
 	const twoDimensionalArrays = new Mission.TwoDimensionalArrays ();
 	const oneDimensionalArrays = new Mission.OneDimensionalArrays ();
-	missionContents.push ({
+	missionContents.addMissionContent ({
+		chapterName: "1章",
 		missionTitle: "[1章 基本操作編 - 1.プログラムの作り方]",
 		missionExplanation: "printブロックを使ってプログラムの作り方を学びます。",
 		missionID: "mission1-01",
-		score: new Mission.MissionScore(),
+		score: new Mission.MissionScore (),
 		goal: `コンソールに "Hello" と出力する`,
 		blockListXml: `
 			<xml id="toolbox">
@@ -62,11 +63,12 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 {
 	const twoDimensionalArrays = new Mission.TwoDimensionalArrays ();
 	const oneDimensionalArrays = new Mission.OneDimensionalArrays ();
-	missionContents.push ({
+	missionContents.addMissionContent ({
+		chapterName: "1章",
 		missionTitle: "[1章 基本操作編 - 2.複数のブロック]",
 		missionExplanation: "複数のブロックの並べ方を学びます。",
 		missionID: "mission1-02",
-		score: new Mission.MissionScore(),
+		score: new Mission.MissionScore (),
 		goal: `コンソールに3回 "Hello" と出力する`,
 		blockListXml: `
 			<xml id="toolbox">
@@ -119,11 +121,12 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 {
 	const twoDimensionalArrays = new Mission.TwoDimensionalArrays ();
 	const oneDimensionalArrays = new Mission.OneDimensionalArrays ();
-	missionContents.push ({
+	missionContents.addMissionContent ({
+		chapterName: "1章",
 		missionTitle: "[1章 基本操作編 - 3.繰り返し]",
 		missionExplanation: "繰り返しブロックの使い方を学びます。",
 		missionID: "mission1-03",
-		score: new Mission.MissionScore(),
+		score: new Mission.MissionScore (),
 		goal: `コンソールに50回 "Hello" と出力する`,
 		blockListXml: `
 			<xml id="toolbox">
@@ -203,11 +206,12 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 {
 	const twoDimensionalArrays = new Mission.TwoDimensionalArrays ();
 	const oneDimensionalArrays = new Mission.OneDimensionalArrays ();
-	missionContents.push ({
+	missionContents.addMissionContent ({
+		chapterName: "1章",
 		missionTitle: "[1章 基本操作編 - 4.数値ブロックと計算]",
 		missionExplanation: "数値ブロックと計算ブロックの使い方を学びます。",
 		missionID: "mission1-04",
-		score: new Mission.MissionScore(),
+		score: new Mission.MissionScore (),
 		goal: `数値ブロックや計算ブロックを使用し、 63×87 の答えをコンソールに表示する`,
 		blockListXml: `
 			<xml id="toolbox">
@@ -298,11 +302,12 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 {
 	const twoDimensionalArrays = new Mission.TwoDimensionalArrays ();
 	const oneDimensionalArrays = new Mission.OneDimensionalArrays ();
-	missionContents.push ({
+	missionContents.addMissionContent ({
+		chapterName: "1章",
 		missionTitle: "[1章 基本操作編 - 5.変数の使い方]",
 		missionExplanation: "変数の作り方、値の書き込み/読み込み/加算の方法を学びます。",
 		missionID: "mission1-05",
-		score: new Mission.MissionScore(),
+		score: new Mission.MissionScore (),
 		goal: `変数ブロックを使用し、 1+2+3+4+5 の計算結果をコンソールに表示する`,
 		blockListXml: `
 			<xml id="toolbox">
@@ -396,11 +401,12 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 {
 	const twoDimensionalArrays = new Mission.TwoDimensionalArrays ();
 	const oneDimensionalArrays = new Mission.OneDimensionalArrays ();
-	missionContents.push ({
+	missionContents.addMissionContent ({
+		chapterName: "1章",
 		missionTitle: "[1章 基本操作編 - 6.関数の作り方と使い方]",
 		missionExplanation: "関数(サブルーチン)の作り方と使い方を学びます。",
 		missionID: "mission1-06",
-		score: new Mission.MissionScore(),
+		score: new Mission.MissionScore (),
 		goal: `29+76 を計算しコンソールに表示する関数を作成する。`,
 		blockListXml: `
 			<xml id="toolbox">
@@ -516,11 +522,12 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 {
 	const twoDimensionalArrays = new Mission.TwoDimensionalArrays ();
 	const oneDimensionalArrays = new Mission.OneDimensionalArrays ();
-	missionContents.push ({
+	missionContents.addMissionContent ({
+		chapterName: "1章",
 		missionTitle: "[1章 基本操作編 - 7.関数の引数]",
 		missionExplanation: "関数に値を渡す「引数(ひきすう)」の使い方を学びます。",
 		missionID: "mission1-07",
-		score: new Mission.MissionScore(),
+		score: new Mission.MissionScore (),
 		goal: `引数で渡された3つの数値の平均を求める関数を作成し、12 65 83の平均をコンソールに表示する`,
 		blockListXml: `
 			<xml id="toolbox">
@@ -637,11 +644,12 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 {
 	const twoDimensionalArrays = new Mission.TwoDimensionalArrays ();
 	const oneDimensionalArrays = new Mission.OneDimensionalArrays ();
-	missionContents.push ({
+	missionContents.addMissionContent ({
+		chapterName: "1章",
 		missionTitle: "[1章 基本操作編 - 8.処理時間計測]",
 		missionExplanation: "ストップウォッチ機能を使い、処理にかかった時間の計測を行います。",
 		missionID: "mission1-08",
-		score: new Mission.MissionScore(),
+		score: new Mission.MissionScore (),
 		goal: `Helloと50回コンソールに表示し、最後にその処理にかかった時間を表示する`,
 		blockListXml: `
 			<xml id="toolbox">
@@ -806,11 +814,12 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 	const twoDimensionalArrays = new Mission.TwoDimensionalArrays ();
 	const oneDimensionalArrays = new Mission.OneDimensionalArrays ();
 	oneDimensionalArrays.addConstArray ("Data", [2, 4, 6, 8]);
-	missionContents.push ({
+	missionContents.addMissionContent ({
+		chapterName: "1章",
 		missionTitle: "[1章 基本操作編 - 9.グローバル1次元配列1]",
 		missionExplanation: "グローバル1次元配列の読み込み方を学習します。",
 		missionID: "mission1-09",
-		score: new Mission.MissionScore(),
+		score: new Mission.MissionScore (),
 		goal: `配列「Data」の2番目の要素を読み取り、その内容をコンソールに表示する`,
 		blockListXml: `
 			<xml id="toolbox">
@@ -973,11 +982,12 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 	const twoDimensionalArrays = new Mission.TwoDimensionalArrays ();
 	const oneDimensionalArrays = new Mission.OneDimensionalArrays ();
 	oneDimensionalArrays.addConstArray ("Data", [2, 4, 6, 8]);
-	missionContents.push ({
+	missionContents.addMissionContent ({
+		chapterName: "1章",
 		missionTitle: "[1章 基本操作編 - 10.グローバル1次元配列2]",
 		missionExplanation: "グローバル1次元配列の書き込み方を学習します。",
 		missionID: "mission1-10",
-		score: new Mission.MissionScore(),
+		score: new Mission.MissionScore (),
 		goal: `配列「Data」の全ての要素を0にする`,
 		blockListXml: `
 			<xml id="toolbox">
@@ -1162,11 +1172,12 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 	const twoDimensionalArrays = new Mission.TwoDimensionalArrays ();
 	const oneDimensionalArrays = new Mission.OneDimensionalArrays ();
 	twoDimensionalArrays.addConstArray ("Data", [[1, 2, 3], [4, 5, 6]]);
-	missionContents.push ({
+	missionContents.addMissionContent ({
+		chapterName: "1章",
 		missionTitle: "[1章 基本操作編 - 11.グローバル2次元配列]",
 		missionExplanation: "グローバル2次元配列の使い方を学習します。",
 		missionID: "mission1-11",
-		score: new Mission.MissionScore(),
+		score: new Mission.MissionScore (),
 		goal: `配列「Data」の全ての要素を0にする`,
 		blockListXml: `
 			<xml id="toolbox">
@@ -1384,11 +1395,12 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 	const twoDimensionalArrays = new Mission.TwoDimensionalArrays ();
 	const oneDimensionalArrays = new Mission.OneDimensionalArrays ();
 	twoDimensionalArrays.addRandomArray ("Data", 2, 3, 0, 99);
-	missionContents.push ({
+	missionContents.addMissionContent ({
+		chapterName: "1章",
 		missionTitle: "[1章 基本操作編 - 12.ランダムな配列]",
 		missionExplanation: "グローバル2次元配列を使った計算です。今回は要素の値がランダムで決まります。",
 		missionID: "mission1-12",
-		score: new Mission.MissionScore(),
+		score: new Mission.MissionScore (),
 		goal: `配列「Data」の全要素の平均をコンソールに出力する`,
 		blockListXml: `
 			<xml id="toolbox">
@@ -1603,11 +1615,12 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 	const twoDimensionalArrays = new Mission.TwoDimensionalArrays ();
 	const oneDimensionalArrays = new Mission.OneDimensionalArrays ();
 	twoDimensionalArrays.addRandomArray ("Data", 2, 3, 0, 99);
-	missionContents.push ({
+	missionContents.addMissionContent ({
+		chapterName: "1章",
 		missionTitle: "[1章 基本操作編 - 13.分岐]",
 		missionExplanation: "分岐の使い方を学習します。",
 		missionID: "mission1-13",
-		score: new Mission.MissionScore(),
+		score: new Mission.MissionScore (),
 		goal: `配列「Data」の全要素の平均を計算し、結果が50以上だったら「High」、それ以外の場合は「Low」とコンソールに出力する`,
 		blockListXml: `
 			<xml id="toolbox">
@@ -1927,11 +1940,12 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 	twoDimensionalArrays.addRandomArray ("Array2", 2, 2, 0, 100);
 	const oneDimensionalArrays = new Mission.OneDimensionalArrays ();
 	oneDimensionalArrays.addRandomArray ("Array3", 4, 0, 10);
-	missionContents.push ({
+	missionContents.addMissionContent ({
+		chapterName: "1章",
 		missionTitle: "[サンプルミッション - グローバル配列]",
 		missionExplanation: "グローバル配列について学びます。",
 		missionID: "sample",
-		score: new Mission.MissionScore(),
+		score: new Mission.MissionScore (),
 		goal: `グローバル配列 "Array1" の値をすべて0にする`,
 		blockListXml: BlockSettings.getAllBlockListXml (),
 		twoDimensionalArrays: twoDimensionalArrays,

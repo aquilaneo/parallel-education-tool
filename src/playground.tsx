@@ -29,19 +29,29 @@ const Playground: React.FC<{ missionID: string }> = (props) => {
 	const consoleRef = useRef<ConsoleView> (null);
 
 	// ミッション定義
-	let nextMissionID: string | null = null;
-	const foundMission = missionContents.find ((missionContent, index) => {
-		if (missionContent.missionID === props.missionID) {
-			// 次のミッションIDを記録
-			if (index < missionContents.length - 1) {
-				nextMissionID = missionContents[index + 1].missionID;
-			}
-			return true;
-		} else {
-			return false;
-		}
-	});
-	const missionContent = foundMission ? foundMission : missionContents[0];
+	// let nextMissionID: string | null = null;
+	// const foundMission = missionContents.find ((missionContent, index) => {
+	// 	if (missionContent.missionID === props.missionID) {
+	// 		// 次のミッションIDを記録
+	// 		if (index < missionContents.length - 1) {
+	// 			nextMissionID = missionContents[index + 1].missionID;
+	// 		}
+	// 		return true;
+	// 	} else {
+	// 		return false;
+	// 	}
+	// });
+	// const missionContent = foundMission ? foundMission : missionContents[0];
+
+	const foundMission = missionContents.findMissionByID (props.missionID);
+	let missionContent;
+	if (foundMission) {
+		missionContent = foundMission;
+	} else {
+		missionContent = missionContents.missionContents[0].contents[0];
+	}
+	const nextMissionID = missionContents.findNextMission (missionContent.missionID);
+
 	const blockListXml = missionContent.blockListXml;
 	const [mission, setMission] = useState (new Mission (missionContent,
 		() => {
@@ -133,7 +143,8 @@ const Playground: React.FC<{ missionID: string }> = (props) => {
 					}}/>
 				</SplitView.SplitPanel>
 
-				<SplitView.SplitPanel id={"center-panel"} initialWidth={centerInitialWidth} minWidth={centerMinWidth}
+				<SplitView.SplitPanel id={"center-panel"} initialWidth={centerInitialWidth}
+									  minWidth={centerMinWidth}
 									  onresize={onCenterPanelResized}>
 					<div id={"variables-panel"}>
 						<div>変数</div>
@@ -226,7 +237,8 @@ const Playground: React.FC<{ missionID: string }> = (props) => {
 					</div>
 				</SplitView.SplitPanel>
 
-				<SplitView.SplitPanel id={"right-panel"} initialWidth={consoleInitialWidth} minWidth={consoleMinWidth}>
+				<SplitView.SplitPanel id={"right-panel"} initialWidth={consoleInitialWidth}
+									  minWidth={consoleMinWidth}>
 					<div>コンソール</div>
 					<ConsoleView ref={consoleRef}/>
 				</SplitView.SplitPanel>
@@ -373,7 +385,7 @@ class EditorView extends React.Component<{ blockListXml: string, closeDetailModa
 			this.props.closeDetailModal ();
 			if (mission.judge ()) {
 				// スコア記録
-				mission.missionContent.score.setClear(endTime - startTime, this.workspace ? this.workspace.getAllBlocks (false).length : -1);
+				mission.missionContent.score.setClear (endTime - startTime, this.workspace ? this.workspace.getAllBlocks (false).length : -1);
 
 				this.props.showClearModal (); // ミッション成功
 			} else {

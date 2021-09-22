@@ -1,5 +1,58 @@
 import {ConsoleOutputType} from "./playground";
 import Blockly from "blockly";
+import {missionContents} from "./missionContents";
+
+// ミッション一覧
+export class MissionList {
+	missionContents: { chapterName: string, contents: MissionContent[] }[] = [];
+
+	addMissionContent (missionContent: MissionContent) {
+		const chapter = this.missionContents.find ((item) => {
+			return item.chapterName === missionContent.chapterName;
+		});
+		if (chapter) {
+			// すでにチャプターあったらそこに追加
+			chapter.contents.push (missionContent);
+		} else {
+			// なかったら新しいチャプター追加
+			this.missionContents.push ({chapterName: missionContent.chapterName, contents: [missionContent]});
+		}
+	}
+
+	findMissionByID (missionID: string) {
+		for (const chapter of this.missionContents) {
+			for (const missionContent of chapter.contents) {
+				if (missionContent.missionID === missionID) {
+					return missionContent;
+				}
+			}
+		}
+		return undefined;
+	}
+
+	findChapter (chapterName: string) {
+		const chapter = this.missionContents.find ((missionContent) => {
+			return missionContent.chapterName === chapterName;
+		});
+		return chapter ? chapter.contents : undefined;
+	}
+
+	findNextMission (currentMissionID: string) {
+		for (let chapterIndex = 0; chapterIndex < this.missionContents.length; chapterIndex++) {
+			for (let missionIndex = 0; missionIndex < this.missionContents[chapterIndex].contents.length; missionIndex++) {
+				if (this.missionContents[chapterIndex].contents[missionIndex].missionID === currentMissionID) {
+					if (missionIndex + 1 < this.missionContents[chapterIndex].contents.length) {
+						return this.missionContents[chapterIndex].contents[missionIndex + 1].missionID;
+					} else if (chapterIndex + 1 < this.missionContents.length && this.missionContents[chapterIndex + 1].contents.length > 0) {
+						return this.missionContents[chapterIndex + 1].contents[0].missionID;
+					} else {
+						return undefined;
+					}
+				}
+			}
+		}
+	}
+}
 
 // ミッション内容
 export interface MissionContent {

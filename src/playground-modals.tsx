@@ -26,7 +26,7 @@ export const MissionDetailModal: React.FC<{ isVisible: boolean, setIsVisible: (v
 };
 
 // ミッションクリアモーダル
-export const MissionClearModal: React.FC<{ isVisible: boolean, setIsVisible: (value: boolean) => void, missionContent: MissionContent, nextMissionID: string | null }> = (props) => {
+export const MissionClearModal: React.FC<{ isVisible: boolean, setIsVisible: (value: boolean) => void, missionContent: MissionContent, nextMissionID: string | undefined }> = (props) => {
 	const nextMissionID = props.nextMissionID ? props.nextMissionID : "";
 	return (
 		<div className={"modal-panel"} id={"mission-clear"} style={{display: props.isVisible ? "block" : "none"}}>
