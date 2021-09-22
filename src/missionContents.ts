@@ -19,6 +19,7 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 		missionExplanation: "printブロックを使ってプログラムの作り方を学びます。",
 		missionID: "mission1-01",
 		score: new Mission.MissionScore (),
+		program: "",
 		goal: `コンソールに "Hello" と出力する`,
 		blockListXml: `
 			<xml id="toolbox">
@@ -69,6 +70,7 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 		missionExplanation: "複数のブロックの並べ方を学びます。",
 		missionID: "mission1-02",
 		score: new Mission.MissionScore (),
+		program: "",
 		goal: `コンソールに3回 "Hello" と出力する`,
 		blockListXml: `
 			<xml id="toolbox">
@@ -127,6 +129,7 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 		missionExplanation: "繰り返しブロックの使い方を学びます。",
 		missionID: "mission1-03",
 		score: new Mission.MissionScore (),
+		program: "",
 		goal: `コンソールに50回 "Hello" と出力する`,
 		blockListXml: `
 			<xml id="toolbox">
@@ -212,6 +215,7 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 		missionExplanation: "数値ブロックと計算ブロックの使い方を学びます。",
 		missionID: "mission1-04",
 		score: new Mission.MissionScore (),
+		program: "",
 		goal: `数値ブロックや計算ブロックを使用し、 63×87 の答えをコンソールに表示する`,
 		blockListXml: `
 			<xml id="toolbox">
@@ -308,6 +312,7 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 		missionExplanation: "変数の作り方、値の書き込み/読み込み/加算の方法を学びます。",
 		missionID: "mission1-05",
 		score: new Mission.MissionScore (),
+		program: "",
 		goal: `変数ブロックを使用し、 1+2+3+4+5 の計算結果をコンソールに表示する`,
 		blockListXml: `
 			<xml id="toolbox">
@@ -407,6 +412,7 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 		missionExplanation: "関数(サブルーチン)の作り方と使い方を学びます。",
 		missionID: "mission1-06",
 		score: new Mission.MissionScore (),
+		program: "",
 		goal: `29+76 を計算しコンソールに表示する関数を作成する。`,
 		blockListXml: `
 			<xml id="toolbox">
@@ -528,6 +534,7 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 		missionExplanation: "関数に値を渡す「引数(ひきすう)」の使い方を学びます。",
 		missionID: "mission1-07",
 		score: new Mission.MissionScore (),
+		program: "",
 		goal: `引数で渡された3つの数値の平均を求める関数を作成し、12 65 83の平均をコンソールに表示する`,
 		blockListXml: `
 			<xml id="toolbox">
@@ -650,6 +657,7 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 		missionExplanation: "ストップウォッチ機能を使い、処理にかかった時間の計測を行います。",
 		missionID: "mission1-08",
 		score: new Mission.MissionScore (),
+		program: "",
 		goal: `Helloと50回コンソールに表示し、最後にその処理にかかった時間を表示する`,
 		blockListXml: `
 			<xml id="toolbox">
@@ -820,6 +828,7 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 		missionExplanation: "グローバル1次元配列の読み込み方を学習します。",
 		missionID: "mission1-09",
 		score: new Mission.MissionScore (),
+		program: "",
 		goal: `配列「Data」の2番目の要素を読み取り、その内容をコンソールに表示する`,
 		blockListXml: `
 			<xml id="toolbox">
@@ -988,6 +997,7 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 		missionExplanation: "グローバル1次元配列の書き込み方を学習します。",
 		missionID: "mission1-10",
 		score: new Mission.MissionScore (),
+		program: "",
 		goal: `配列「Data」の全ての要素を0にする`,
 		blockListXml: `
 			<xml id="toolbox">
@@ -1178,6 +1188,7 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 		missionExplanation: "グローバル2次元配列の使い方を学習します。",
 		missionID: "mission1-11",
 		score: new Mission.MissionScore (),
+		program: "",
 		goal: `配列「Data」の全ての要素を0にする`,
 		blockListXml: `
 			<xml id="toolbox">
@@ -1401,6 +1412,7 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 		missionExplanation: "グローバル2次元配列を使った計算です。今回は要素の値がランダムで決まります。",
 		missionID: "mission1-12",
 		score: new Mission.MissionScore (),
+		program: "",
 		goal: `配列「Data」の全要素の平均をコンソールに出力する`,
 		blockListXml: `
 			<xml id="toolbox">
@@ -1621,6 +1633,7 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 		missionExplanation: "分岐の使い方を学習します。",
 		missionID: "mission1-13",
 		score: new Mission.MissionScore (),
+		program: "",
 		goal: `配列「Data」の全要素の平均を計算し、結果が50以上だったら「High」、それ以外の場合は「Low」とコンソールに出力する`,
 		blockListXml: `
 			<xml id="toolbox">
@@ -1946,6 +1959,7 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 		missionExplanation: "グローバル配列について学びます。",
 		missionID: "sample",
 		score: new Mission.MissionScore (),
+		program: "",
 		goal: `グローバル配列 "Array1" の値をすべて0にする`,
 		blockListXml: BlockSettings.getAllBlockListXml (),
 		twoDimensionalArrays: twoDimensionalArrays,

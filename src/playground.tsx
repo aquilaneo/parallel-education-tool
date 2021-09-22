@@ -3,7 +3,7 @@ import {Link} from "react-router-dom";
 import Blockly, {WorkspaceSvg} from "blockly";
 import * as Ja from "blockly/msg/ja";
 
-import {Mission} from "./mission";
+import {Mission, MissionContent} from "./mission";
 import {missionContents} from "./missionContents";
 import * as BlockSettings from "./blockSettings";
 import * as BlockDefinitions from "./blockDefinitions";
@@ -29,22 +29,8 @@ const Playground: React.FC<{ missionID: string }> = (props) => {
 	const consoleRef = useRef<ConsoleView> (null);
 
 	// ミッション定義
-	// let nextMissionID: string | null = null;
-	// const foundMission = missionContents.find ((missionContent, index) => {
-	// 	if (missionContent.missionID === props.missionID) {
-	// 		// 次のミッションIDを記録
-	// 		if (index < missionContents.length - 1) {
-	// 			nextMissionID = missionContents[index + 1].missionID;
-	// 		}
-	// 		return true;
-	// 	} else {
-	// 		return false;
-	// 	}
-	// });
-	// const missionContent = foundMission ? foundMission : missionContents[0];
-
 	const foundMission = missionContents.findMissionByID (props.missionID);
-	let missionContent;
+	let missionContent: MissionContent;
 	if (foundMission) {
 		missionContent = foundMission;
 	} else {
@@ -94,6 +80,7 @@ const Playground: React.FC<{ missionID: string }> = (props) => {
 	}
 
 	useEffect (() => {
+		// 変数パネル
 		const canvas = document.getElementById ("variable-canvas") as HTMLCanvasElement;
 		variableCanvas.initialize (canvas);
 		onCenterPanelResized ();
@@ -134,7 +121,7 @@ const Playground: React.FC<{ missionID: string }> = (props) => {
 			<SplitView.SplitView id={"main-view"}>
 				<SplitView.SplitPanel id={"left-panel"} initialWidth={editorInitialWidth} minWidth={editorMinWidth}
 									  onresize={onEditorPanelResized}>
-					<EditorView ref={editorRef} blockListXml={blockListXml} closeDetailModal={() => {
+					<EditorView ref={editorRef} missionContent={missionContent} closeDetailModal={() => {
 						setIsDetailVisible (false);
 					}} showClearModal={() => {
 						setIsClearVisible (true);
@@ -247,7 +234,7 @@ const Playground: React.FC<{ missionID: string }> = (props) => {
 	)
 }
 
-class EditorView extends React.Component<{ blockListXml: string, closeDetailModal: () => void, showClearModal: () => void, showFailedModal: () => void }> {
+class EditorView extends React.Component<{ missionContent: MissionContent, closeDetailModal: () => void, showClearModal: () => void, showFailedModal: () => void }> {
 	workspace: Blockly.WorkspaceSvg | null = null;
 	initialWorkspace = "<xml xmlns=\"https://developers.google.com/blockly/xml\"><block type=\"entry_point\" id=\"5e{JeNdzKRK}Nyg(x2Ul\" x=\"58\" y=\"59\"></block></xml>";
 	userProgram: UserProgram | null = null;
@@ -257,7 +244,7 @@ class EditorView extends React.Component<{ blockListXml: string, closeDetailModa
 		// ブロック定義とブロックリストを読み込み
 		BlockSettings.initBlocks ();
 		const xmlParser = new DOMParser ();
-		const xmlDom = xmlParser.parseFromString (this.props.blockListXml, "text/xml");
+		const xmlDom = xmlParser.parseFromString (this.props.missionContent.blockListXml, "text/xml");
 
 		// ワークスペースを生成
 		const document: HTMLElement | undefined = xmlDom.getElementById ("toolbox") || undefined; // 要素取得して型合わせ
@@ -335,9 +322,19 @@ class EditorView extends React.Component<{ blockListXml: string, closeDetailModa
 		});
 		// ================================
 
-		// 最初のワークスペースを読み込み
-		const initialWorkspaceDom = Blockly.Xml.textToDom (this.initialWorkspace);
-		Blockly.Xml.domToWorkspace (initialWorkspaceDom, this.workspace);
+		// ワークスペースにプログラム読み込み
+		if (this.props.missionContent.program === "") {
+			// デフォルトプログラム
+			this.xmlToWorkspace (this.initialWorkspace);
+		} else {
+			// 保存されたプログラム
+			this.xmlToWorkspace (this.props.missionContent.program);
+		}
+	}
+
+	componentWillUnmount () {
+		// プログラムを保存
+		this.props.missionContent.program = this.getXml ();
 	}
 
 	getXml () {

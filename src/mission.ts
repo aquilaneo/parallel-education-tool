@@ -61,6 +61,7 @@ export interface MissionContent {
 	missionExplanation: string, // ミッションの説明
 	missionID: string, // ミッションID
 	score: MissionScore, // スコア
+	program: string, // 作成途中のプログラム保持
 	goal: string, // クリア条件
 	blockListXml: string, // 命令ブロック一覧
 	twoDimensionalArrays: TwoDimensionalArrays; // グローバル2次元配列
