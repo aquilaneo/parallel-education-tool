@@ -360,7 +360,7 @@ class EditorView extends React.Component<{ missionContent: MissionContent, close
 		// ワークスペース上のブロックをプログラム化
 		if (this.workspace) {
 			const xml = Blockly.Xml.workspaceToDom (this.workspace);
-			this.userProgram = new BlockDefinitions.UserProgram (xml, mission);
+			this.userProgram = new BlockDefinitions.UserProgram (xml, mission, this.workspace);
 		}
 	}
 

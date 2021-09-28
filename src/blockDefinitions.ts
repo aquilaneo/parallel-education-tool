@@ -4,6 +4,7 @@ import * as CommandBlockBehaviors from "./commandBlockBehavior";
 import * as ValueBlockBehaviors from "./valueBlockBehaviors";
 import {assertIsDefined} from "./common";
 import {Mission} from "./mission";
+import * as Blockly from "blockly";
 
 export class UserProgram {
 	stopFlg: boolean = false;
@@ -15,7 +16,7 @@ export class UserProgram {
 	globalVariables: NumberVariable[] = [];
 	stopwatches: { key: number, sw: Stopwatch } [] = []; // ストップウォッチ一覧
 
-	constructor (xml: Element, mission: Mission) {
+	constructor (xml: Element, mission: Mission, workspace: Blockly.Workspace | null) {
 		console.log (xml);
 
 		// ミッションを保持
@@ -33,12 +34,12 @@ export class UserProgram {
 		// エントリポイントと関数ブロックのXMLをパース
 		if (entryFunctionXml) {
 			this.entryFunction = new Function ("スタート", null, entryFunctionXml);
-			const entryFunctionBlock = CommandBlockBehaviors.EntryPointBlock.constructBlock (entryFunctionXml, this, this.entryFunction)[0];
+			const entryFunctionBlock = CommandBlockBehaviors.EntryPointBlock.constructBlock (entryFunctionXml, workspace, this, this.entryFunction)[0];
 			this.entryFunction.setDefinitionBlock (entryFunctionBlock);
 		}
 		for (const functionXml of functionsXml) {
 			const func = new Function ("", null, functionXml);
-			const functionBlock = CommandBlockBehaviors.FunctionDefinitionBlock.constructBlock (functionXml, this, func)[0];
+			const functionBlock = CommandBlockBehaviors.FunctionDefinitionBlock.constructBlock (functionXml, workspace, this, func)[0];
 			func.setDefinitionBlock (functionBlock);
 			func.setFunctionName (functionBlock.functionName);
 			this.functions.push (func);
@@ -52,6 +53,8 @@ export class UserProgram {
 	async executeBlockList (blockList: CommandBlockBehaviors.CommandBlock[]) {
 		for (const block of blockList) {
 			if (!this.stopFlg) {
+				block.setBlockColorToExecuting (); // 色を変える
+
 				await block.executeBlock ();
 
 				// 各ブロックの待機時間
@@ -65,6 +68,8 @@ export class UserProgram {
 				while (block.isWaiting () && !this.stopFlg) {
 					await sleep1ms ();
 				}
+
+				block.setBlockColorToBase (); // 色を戻す
 			} else {
 				return;
 			}
@@ -164,7 +169,7 @@ export class UserProgram {
 	addThread (routineName: string, threadID: string, functionStatementElement: Element,
 			   argument1: number, argument2: number, argument3: number) {
 		const thread = new Thread (routineName, threadID, null, this, functionStatementElement, argument1, argument2, argument3);
-		const functionInstance = CommandBlockBehaviors.FunctionDefinitionBlock.constructBlock (functionStatementElement, this, thread)[0];
+		const functionInstance = CommandBlockBehaviors.FunctionDefinitionBlock.constructBlock (functionStatementElement, null, this, thread)[0];
 		thread.setDefinitionBlock (functionInstance);
 		this.threads.push (thread);
 	}
@@ -396,8 +401,8 @@ export const commandBlockDefinitions = [
 	{
 		type: "text_print",
 		wait: 100,
-		instantiate: (blockXml: Element, userProgram: UserProgram, myRoutine: Routine, wait: number): CommandBlockBehaviors.CommandBlock => {
-			return new CommandBlockBehaviors.PrintBlock (blockXml, userProgram, myRoutine, wait);
+		instantiate: (blockXml: Element, workspace: Blockly.Workspace | null, userProgram: UserProgram, myRoutine: Routine, wait: number): CommandBlockBehaviors.CommandBlock => {
+			return new CommandBlockBehaviors.PrintBlock (blockXml, workspace, userProgram, myRoutine, wait);
 		}
 	},
 
@@ -405,8 +410,8 @@ export const commandBlockDefinitions = [
 	{
 		type: "wait_ms",
 		wait: 0,
-		instantiate: (blockXml: Element, userProgram: UserProgram, myRoutine: Routine, wait: number): CommandBlockBehaviors.CommandBlock => {
-			return new CommandBlockBehaviors.MilliSecondsWaitBlock (blockXml, userProgram, myRoutine, wait);
+		instantiate: (blockXml: Element, workspace: Blockly.Workspace | null, userProgram: UserProgram, myRoutine: Routine, wait: number): CommandBlockBehaviors.CommandBlock => {
+			return new CommandBlockBehaviors.MilliSecondsWaitBlock (blockXml, workspace, userProgram, myRoutine, wait);
 		},
 		blocklyJson: {
 			"type": "wait_ms",
@@ -431,8 +436,8 @@ export const commandBlockDefinitions = [
 	{
 		type: "wait_s",
 		wait: 0,
-		instantiate: (blockXml: Element, userProgram: UserProgram, myRoutine: Routine, wait: number): CommandBlockBehaviors.CommandBlock => {
-			return new CommandBlockBehaviors.SecondsWaitBlock (blockXml, userProgram, myRoutine, wait);
+		instantiate: (blockXml: Element, workspace: Blockly.Workspace | null, userProgram: UserProgram, myRoutine: Routine, wait: number): CommandBlockBehaviors.CommandBlock => {
+			return new CommandBlockBehaviors.SecondsWaitBlock (blockXml, workspace, userProgram, myRoutine, wait);
 		},
 		blocklyJson: {
 			"type": "wait_s",
@@ -457,8 +462,8 @@ export const commandBlockDefinitions = [
 	{
 		type: "controls_if",
 		wait: 100,
-		instantiate: (blockXml: Element, userProgram: UserProgram, myRoutine: Routine, wait: number): CommandBlockBehaviors.CommandBlock => {
-			return new CommandBlockBehaviors.IfBlock (blockXml, userProgram, myRoutine, wait);
+		instantiate: (blockXml: Element, workspace: Blockly.Workspace | null, userProgram: UserProgram, myRoutine: Routine, wait: number): CommandBlockBehaviors.CommandBlock => {
+			return new CommandBlockBehaviors.IfBlock (blockXml, workspace, userProgram, myRoutine, wait);
 		}
 	},
 
@@ -466,8 +471,8 @@ export const commandBlockDefinitions = [
 	{
 		type: "controls_ifelse",
 		wait: 100,
-		instantiate: (blockXml: Element, userProgram: UserProgram, myRoutine: Routine, wait: number): CommandBlockBehaviors.CommandBlock => {
-			return new CommandBlockBehaviors.IfElseBlock (blockXml, userProgram, myRoutine, wait);
+		instantiate: (blockXml: Element, workspace: Blockly.Workspace | null, userProgram: UserProgram, myRoutine: Routine, wait: number): CommandBlockBehaviors.CommandBlock => {
+			return new CommandBlockBehaviors.IfElseBlock (blockXml, workspace, userProgram, myRoutine, wait);
 		}
 	},
 
@@ -475,8 +480,8 @@ export const commandBlockDefinitions = [
 	{
 		type: "controls_repeat_ext",
 		wait: 100,
-		instantiate: (blockXml: Element, userProgram: UserProgram, myRoutine: Routine, wait: number): CommandBlockBehaviors.CommandBlock => {
-			return new CommandBlockBehaviors.ForBlock (blockXml, userProgram, myRoutine, wait);
+		instantiate: (blockXml: Element, workspace: Blockly.Workspace | null, userProgram: UserProgram, myRoutine: Routine, wait: number): CommandBlockBehaviors.CommandBlock => {
+			return new CommandBlockBehaviors.ForBlock (blockXml, workspace, userProgram, myRoutine, wait);
 		}
 	},
 
@@ -484,8 +489,8 @@ export const commandBlockDefinitions = [
 	{
 		type: "controls_whileUntil",
 		wait: 100,
-		instantiate: (blockXml: Element, userProgram: UserProgram, myRoutine: Routine, wait: number): CommandBlockBehaviors.CommandBlock => {
-			return new CommandBlockBehaviors.WhileBlock (blockXml, userProgram, myRoutine, wait);
+		instantiate: (blockXml: Element, workspace: Blockly.Workspace | null, userProgram: UserProgram, myRoutine: Routine, wait: number): CommandBlockBehaviors.CommandBlock => {
+			return new CommandBlockBehaviors.WhileBlock (blockXml, workspace, userProgram, myRoutine, wait);
 		}
 	},
 
@@ -493,8 +498,8 @@ export const commandBlockDefinitions = [
 	{
 		type: "variables_set_number",
 		wait: 100,
-		instantiate: (blockXml: Element, userProgram: UserProgram, myRoutine: Routine, wait: number): CommandBlockBehaviors.CommandBlock => {
-			return new CommandBlockBehaviors.VariablesSetNumber (blockXml, userProgram, myRoutine, wait);
+		instantiate: (blockXml: Element, workspace: Blockly.Workspace | null, userProgram: UserProgram, myRoutine: Routine, wait: number): CommandBlockBehaviors.CommandBlock => {
+			return new CommandBlockBehaviors.VariablesSetNumber (blockXml, workspace, userProgram, myRoutine, wait);
 		},
 		blocklyJson: {
 			"type": "variables_set_number",
@@ -526,8 +531,8 @@ export const commandBlockDefinitions = [
 	{
 		type: "variables_add_number",
 		wait: 100,
-		instantiate: (blockXml: Element, userProgram: UserProgram, myRoutine: Routine, wait: number): CommandBlockBehaviors.CommandBlock => {
-			return new CommandBlockBehaviors.VariablesAddNumber (blockXml, userProgram, myRoutine, wait);
+		instantiate: (blockXml: Element, workspace: Blockly.Workspace | null, userProgram: UserProgram, myRoutine: Routine, wait: number): CommandBlockBehaviors.CommandBlock => {
+			return new CommandBlockBehaviors.VariablesAddNumber (blockXml, workspace, userProgram, myRoutine, wait);
 		},
 		blocklyJson: {
 			"type": "variables_add_number",
@@ -559,8 +564,8 @@ export const commandBlockDefinitions = [
 	{
 		type: "variables_set_string",
 		wait: 100,
-		instantiate: (blockXml: Element, userProgram: UserProgram, myRoutine: Routine, wait: number): CommandBlockBehaviors.CommandBlock => {
-			return new CommandBlockBehaviors.VariablesSetString (blockXml, userProgram, myRoutine, wait);
+		instantiate: (blockXml: Element, workspace: Blockly.Workspace | null, userProgram: UserProgram, myRoutine: Routine, wait: number): CommandBlockBehaviors.CommandBlock => {
+			return new CommandBlockBehaviors.VariablesSetString (blockXml, workspace, userProgram, myRoutine, wait);
 		},
 		blocklyJson: {
 			"type": "variables_set_string",
@@ -592,8 +597,8 @@ export const commandBlockDefinitions = [
 	{
 		type: "global_variable_write",
 		wait: 100,
-		instantiate: (blockXml: Element, userProgram: UserProgram, myRoutine: Routine, wait: number): CommandBlockBehaviors.CommandBlock => {
-			return new CommandBlockBehaviors.GlobalVariableWriteBlock (blockXml, userProgram, myRoutine, wait);
+		instantiate: (blockXml: Element, workspace: Blockly.Workspace | null, userProgram: UserProgram, myRoutine: Routine, wait: number): CommandBlockBehaviors.CommandBlock => {
+			return new CommandBlockBehaviors.GlobalVariableWriteBlock (blockXml, workspace, userProgram, myRoutine, wait);
 		},
 		blocklyJson: {
 			"type": "global_variable_write",
@@ -626,8 +631,8 @@ export const commandBlockDefinitions = [
 	{
 		type: "global_one_dimensional_array_write",
 		wait: 100,
-		instantiate: (blockXml: Element, userProgram: UserProgram, myRoutine: Routine, wait: number): CommandBlockBehaviors.CommandBlock => {
-			return new CommandBlockBehaviors.GlobalOneDimensionalArrayWrite (blockXml, userProgram, myRoutine, wait);
+		instantiate: (blockXml: Element, workspace: Blockly.Workspace | null, userProgram: UserProgram, myRoutine: Routine, wait: number): CommandBlockBehaviors.CommandBlock => {
+			return new CommandBlockBehaviors.GlobalOneDimensionalArrayWrite (blockXml, workspace, userProgram, myRoutine, wait);
 		},
 		blocklyJson: {
 			"type": "global_one_dimensional_array_write",
@@ -665,8 +670,8 @@ export const commandBlockDefinitions = [
 	{
 		type: "global_two_dimensional_array_write",
 		wait: 100,
-		instantiate: (blockXml: Element, userProgram: UserProgram, myRoutine: Routine, wait: number): CommandBlockBehaviors.CommandBlock => {
-			return new CommandBlockBehaviors.GlobalTwoDimensionalArrayWrite (blockXml, userProgram, myRoutine, wait);
+		instantiate: (blockXml: Element, workspace: Blockly.Workspace | null, userProgram: UserProgram, myRoutine: Routine, wait: number): CommandBlockBehaviors.CommandBlock => {
+			return new CommandBlockBehaviors.GlobalTwoDimensionalArrayWrite (blockXml, workspace, userProgram, myRoutine, wait);
 		},
 		blocklyJson: {
 			"type": "global_two_dimensional_array_write",
@@ -709,8 +714,8 @@ export const commandBlockDefinitions = [
 	{
 		type: "function_definition",
 		wait: 100,
-		instantiate: (blockXml: Element, userProgram: UserProgram, myRoutine: Routine, wait: number): CommandBlockBehaviors.CommandBlock => {
-			return new CommandBlockBehaviors.FunctionDefinitionBlock (blockXml, userProgram, myRoutine, wait);
+		instantiate: (blockXml: Element, workspace: Blockly.Workspace | null, userProgram: UserProgram, myRoutine: Routine, wait: number): CommandBlockBehaviors.CommandBlock => {
+			return new CommandBlockBehaviors.FunctionDefinitionBlock (blockXml, workspace, userProgram, myRoutine, wait);
 		},
 		blocklyJson: {
 			"type": "function_definition",
@@ -740,8 +745,8 @@ export const commandBlockDefinitions = [
 	{
 		type: "function_call",
 		wait: 100,
-		instantiate: (blockXml: Element, userProgram: UserProgram, myRoutine: Routine, wait: number): CommandBlockBehaviors.CommandBlock => {
-			return new CommandBlockBehaviors.FunctionCallBlock (blockXml, userProgram, myRoutine, wait);
+		instantiate: (blockXml: Element, workspace: Blockly.Workspace | null, userProgram: UserProgram, myRoutine: Routine, wait: number): CommandBlockBehaviors.CommandBlock => {
+			return new CommandBlockBehaviors.FunctionCallBlock (blockXml, workspace, userProgram, myRoutine, wait);
 		},
 		blocklyJson: {
 			"type": "function_call",
@@ -784,8 +789,8 @@ export const commandBlockDefinitions = [
 	{
 		type: "entry_point",
 		wait: 100,
-		instantiate: (blockXml: Element, userProgram: UserProgram, myRoutine: Routine, wait: number): CommandBlockBehaviors.CommandBlock => {
-			return new CommandBlockBehaviors.EntryPointBlock (blockXml, userProgram, myRoutine, wait);
+		instantiate: (blockXml: Element, workspace: Blockly.Workspace | null, userProgram: UserProgram, myRoutine: Routine, wait: number): CommandBlockBehaviors.CommandBlock => {
+			return new CommandBlockBehaviors.EntryPointBlock (blockXml, workspace, userProgram, myRoutine, wait);
 		},
 		blocklyJson: {
 			"type": "entry_point",
@@ -810,8 +815,8 @@ export const commandBlockDefinitions = [
 	{
 		type: "stopwatch_start",
 		wait: 100,
-		instantiate: (blockXml: Element, userProgram: UserProgram, myRoutine: Routine, wait: number): CommandBlockBehaviors.CommandBlock => {
-			return new CommandBlockBehaviors.StopwatchStartBlock (blockXml, userProgram, myRoutine, wait);
+		instantiate: (blockXml: Element, workspace: Blockly.Workspace | null, userProgram: UserProgram, myRoutine: Routine, wait: number): CommandBlockBehaviors.CommandBlock => {
+			return new CommandBlockBehaviors.StopwatchStartBlock (blockXml, workspace, userProgram, myRoutine, wait);
 		},
 		blocklyJson: {
 			"type": "stopwatch_start",
@@ -836,8 +841,8 @@ export const commandBlockDefinitions = [
 	{
 		type: "stopwatch_stop",
 		wait: 100,
-		instantiate: (blockXml: Element, userProgram: UserProgram, myRoutine: Routine, wait: number): CommandBlockBehaviors.CommandBlock => {
-			return new CommandBlockBehaviors.StopwatchStopBlock (blockXml, userProgram, myRoutine, wait);
+		instantiate: (blockXml: Element, workspace: Blockly.Workspace | null, userProgram: UserProgram, myRoutine: Routine, wait: number): CommandBlockBehaviors.CommandBlock => {
+			return new CommandBlockBehaviors.StopwatchStopBlock (blockXml, workspace, userProgram, myRoutine, wait);
 		},
 		blocklyJson: {
 			"type": "stopwatch_stop",
@@ -862,8 +867,8 @@ export const commandBlockDefinitions = [
 	{
 		type: "stopwatch_reset",
 		wait: 100,
-		instantiate: (blockXml: Element, userProgram: UserProgram, myRoutine: Routine, wait: number): CommandBlockBehaviors.CommandBlock => {
-			return new CommandBlockBehaviors.StopwatchResetBlock (blockXml, userProgram, myRoutine, wait);
+		instantiate: (blockXml: Element, workspace: Blockly.Workspace | null, userProgram: UserProgram, myRoutine: Routine, wait: number): CommandBlockBehaviors.CommandBlock => {
+			return new CommandBlockBehaviors.StopwatchResetBlock (blockXml, workspace, userProgram, myRoutine, wait);
 		},
 		blocklyJson: {
 			"type": "stopwatch_reset",
@@ -888,8 +893,8 @@ export const commandBlockDefinitions = [
 	{
 		type: "thread_create",
 		wait: 100,
-		instantiate: (blockXml: Element, userProgram: UserProgram, myRoutine: Routine, wait: number): CommandBlockBehaviors.CommandBlock => {
-			return new CommandBlockBehaviors.ThreadCreateBlock (blockXml, userProgram, myRoutine, wait);
+		instantiate: (blockXml: Element, workspace: Blockly.Workspace | null, userProgram: UserProgram, myRoutine: Routine, wait: number): CommandBlockBehaviors.CommandBlock => {
+			return new CommandBlockBehaviors.ThreadCreateBlock (blockXml, workspace, userProgram, myRoutine, wait);
 		},
 		blocklyJson: {
 			"type": "thread_create",
@@ -934,8 +939,8 @@ export const commandBlockDefinitions = [
 	{
 		type: "thread_join",
 		wait: 100,
-		instantiate: (blockXml: Element, userProgram: UserProgram, myRoutine: Routine, wait: number): CommandBlockBehaviors.CommandBlock => {
-			return new CommandBlockBehaviors.ThreadJoinBlock (blockXml, userProgram, myRoutine, wait);
+		instantiate: (blockXml: Element, workspace: Blockly.Workspace | null, userProgram: UserProgram, myRoutine: Routine, wait: number): CommandBlockBehaviors.CommandBlock => {
+			return new CommandBlockBehaviors.ThreadJoinBlock (blockXml, workspace, userProgram, myRoutine, wait);
 		},
 		blocklyJson: {
 			"type": "thread_join",

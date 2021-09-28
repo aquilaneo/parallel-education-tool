@@ -1,24 +1,52 @@
 import * as BlockDefinitions from "./blockDefinitions";
 import * as ValueBlockBehaviors from "./valueBlockBehaviors";
 import {assertIsDefined, assertIsNumber, assertIsString} from "./common";
+import * as Blockly from "blockly";
 
 export class CommandBlock {
 	blockType: string;
-	id: string;
 	blockXml: Element;
+	blocklyBlock: Blockly.Block | null = null;
+	baseBlockColor: string = "";
+	executingBlockColor: string = "";
+	workspace: Blockly.Workspace | null;
 	userProgram: BlockDefinitions.UserProgram;
 	myRoutine: BlockDefinitions.Routine;
 	wait: number;
 
-	constructor (blockXml: Element, userProgram: BlockDefinitions.UserProgram, myRoutine: BlockDefinitions.Routine, wait: number) {
+	constructor (blockXml: Element, workspace: Blockly.Workspace | null, userProgram: BlockDefinitions.UserProgram, myRoutine: BlockDefinitions.Routine, wait: number) {
 		// ブロックのxmlからブロックタイプを取得
 		const blockType = blockXml.getAttribute ("type");
 		this.blockType = blockType ? blockType : "";
-		// ブロックのxmlからブロックIDを取得
-		const id = blockXml.getAttribute ("id");
-		this.id = id ? id : "";
 		// ブロックのxmlを取得
 		this.blockXml = blockXml;
+		const id = this.blockXml.getAttribute ("id");
+		if (id && workspace) {
+			this.blocklyBlock = workspace.getBlockById (id);
+		}
+		// Workspace上のブロックを取得
+		if (this.blocklyBlock) {
+			this.baseBlockColor = this.blocklyBlock.getColour ();
+			// executingBlockColorを求める
+			const rgbString = this.baseBlockColor.replace ("#", "");
+			let rNumber = parseInt (rgbString[0] + rgbString[1], 16);
+			let gNumber = parseInt (rgbString[2] + rgbString[3], 16);
+			let bNumber = parseInt (rgbString[4] + rgbString[5], 16);
+			rNumber += 48;
+			gNumber += 48;
+			bNumber += 48;
+			if (rNumber > 255) {
+				rNumber = 255;
+			}
+			if (gNumber > 255) {
+				gNumber = 255;
+			}
+			if (bNumber > 255) {
+				bNumber = 255;
+			}
+			this.executingBlockColor = `#${rNumber.toString (16)}${gNumber.toString (16)}${bNumber.toString (16)}`;
+		}
+		this.workspace = workspace;
 
 		this.userProgram = userProgram;
 		this.myRoutine = myRoutine;
@@ -27,6 +55,20 @@ export class CommandBlock {
 
 	async executeBlock () {
 		console.log (this.blockType);
+	}
+
+	// ワークスペース上のブロックを実行中色に変える
+	setBlockColorToExecuting () {
+		if (this.blocklyBlock) {
+			this.blocklyBlock.setColour (this.executingBlockColor);
+		}
+	}
+
+	// ワークスペース上のブロックをベース色に戻す
+	setBlockColorToBase () {
+		if (this.blocklyBlock) {
+			this.blocklyBlock.setColour (this.baseBlockColor);
+		}
 	}
 
 	// 動的時間待機するかどうかのフラグを返す
@@ -66,7 +108,7 @@ export class CommandBlock {
 	}
 
 	// nextタグでつながっているコマンドブロックをオブジェクト化し配列化
-	static constructBlock (blockXml: Element, userProgram: BlockDefinitions.UserProgram, myRoutine: BlockDefinitions.Routine) {
+	static constructBlock (blockXml: Element, workspace: Blockly.Workspace | null, userProgram: BlockDefinitions.UserProgram, myRoutine: BlockDefinitions.Routine) {
 		const constructedBlocks = [];
 		let block = blockXml;
 		while (true) {
@@ -74,7 +116,7 @@ export class CommandBlock {
 			for (const commandBlockDefinition of BlockDefinitions.commandBlockDefinitions) {
 				if (commandBlockDefinition.type === block.getAttribute ("type")) {
 					const wait = commandBlockDefinition.wait;
-					constructedBlocks.push (commandBlockDefinition.instantiate (block, userProgram, myRoutine, wait));
+					constructedBlocks.push (commandBlockDefinition.instantiate (block, workspace, userProgram, myRoutine, wait));
 					break;
 				}
 			}
@@ -97,9 +139,8 @@ export class CommandBlock {
 export class PrintBlock extends CommandBlock {
 	text: ValueBlockBehaviors.ValueBlock | null;
 
-	constructor (blockXml: Element, userProgram: BlockDefinitions.UserProgram, myRoutine: BlockDefinitions.Routine, wait: number) {
-		super (blockXml, userProgram, myRoutine, wait);
-
+	constructor (blockXml: Element, workspace: Blockly.Workspace | null, userProgram: BlockDefinitions.UserProgram, myRoutine: BlockDefinitions.Routine, wait: number) {
+		super (blockXml, workspace, userProgram, myRoutine, wait);
 		const text = super.getValue ("TEXT");
 		this.text = text ? ValueBlockBehaviors.ValueBlock.constructBlock (text, userProgram, myRoutine) : null;
 	}
@@ -115,9 +156,8 @@ export class PrintBlock extends CommandBlock {
 export class SecondsWaitBlock extends CommandBlock {
 	second: ValueBlockBehaviors.ValueBlock | null;
 
-	constructor (blockXml: Element, userProgram: BlockDefinitions.UserProgram, myRoutine: BlockDefinitions.Routine, wait: number) {
-		super (blockXml, userProgram, myRoutine, wait);
-
+	constructor (blockXml: Element, workspace: Blockly.Workspace | null, userProgram: BlockDefinitions.UserProgram, myRoutine: BlockDefinitions.Routine, wait: number) {
+		super (blockXml, workspace, userProgram, myRoutine, wait);
 		const second = super.getValue ("second");
 		this.second = second ? ValueBlockBehaviors.ValueBlock.constructBlock (second, userProgram, myRoutine) : null;
 	}
@@ -134,9 +174,8 @@ export class SecondsWaitBlock extends CommandBlock {
 export class MilliSecondsWaitBlock extends CommandBlock {
 	millisecond: ValueBlockBehaviors.ValueBlock | null;
 
-	constructor (blockXml: Element, userProgram: BlockDefinitions.UserProgram, myRoutine: BlockDefinitions.Routine, wait: number) {
-		super (blockXml, userProgram, myRoutine, wait);
-
+	constructor (blockXml: Element, workspace: Blockly.Workspace | null, userProgram: BlockDefinitions.UserProgram, myRoutine: BlockDefinitions.Routine, wait: number) {
+		super (blockXml, workspace, userProgram, myRoutine, wait);
 		const second = super.getValue ("millisecond");
 		this.millisecond = second ? ValueBlockBehaviors.ValueBlock.constructBlock (second, userProgram, myRoutine) : null;
 	}
@@ -154,12 +193,12 @@ export class IfBlock extends CommandBlock {
 	condition: ValueBlockBehaviors.ValueBlock | null;
 	statement: CommandBlock[];
 
-	constructor (blockXml: Element, userProgram: BlockDefinitions.UserProgram, myRoutine: BlockDefinitions.Routine, wait: number) {
-		super (blockXml, userProgram, myRoutine, wait);
+	constructor (blockXml: Element, workspace: Blockly.Workspace | null, userProgram: BlockDefinitions.UserProgram, myRoutine: BlockDefinitions.Routine, wait: number) {
+		super (blockXml, workspace, userProgram, myRoutine, wait);
 		const condition = super.getValue ("IF0");
 		this.condition = condition ? ValueBlockBehaviors.ValueBlock.constructBlock (condition, userProgram, myRoutine) : null;
 		const statement = super.getStatement ("DO0");
-		this.statement = statement ? CommandBlock.constructBlock (statement, userProgram, myRoutine) : [];
+		this.statement = statement ? CommandBlock.constructBlock (statement, workspace, userProgram, myRoutine) : [];
 	}
 
 	async executeBlock () {
@@ -176,14 +215,14 @@ export class IfElseBlock extends CommandBlock {
 	statement1: CommandBlock[];
 	statement2: CommandBlock[];
 
-	constructor (blockXml: Element, userProgram: BlockDefinitions.UserProgram, myRoutine: BlockDefinitions.Routine, wait: number) {
-		super (blockXml, userProgram, myRoutine, wait);
+	constructor (blockXml: Element, workspace: Blockly.Workspace | null, userProgram: BlockDefinitions.UserProgram, myRoutine: BlockDefinitions.Routine, wait: number) {
+		super (blockXml, workspace, userProgram, myRoutine, wait);
 		const condition = super.getValue ("IF0");
 		this.condition = condition ? ValueBlockBehaviors.ValueBlock.constructBlock (condition, userProgram, myRoutine) : null;
 		const statement1 = super.getStatement ("DO0");
-		this.statement1 = statement1 ? CommandBlock.constructBlock (statement1, userProgram, myRoutine) : [];
+		this.statement1 = statement1 ? CommandBlock.constructBlock (statement1, workspace, userProgram, myRoutine) : [];
 		const statement2 = super.getStatement ("ELSE");
-		this.statement2 = statement2 ? CommandBlock.constructBlock (statement2, userProgram, myRoutine) : [];
+		this.statement2 = statement2 ? CommandBlock.constructBlock (statement2, workspace, userProgram, myRoutine) : [];
 	}
 
 	async executeBlock () {
@@ -201,12 +240,12 @@ export class ForBlock extends CommandBlock {
 	count: ValueBlockBehaviors.ValueBlock | null;
 	statement: CommandBlock [];
 
-	constructor (blockXml: Element, userProgram: BlockDefinitions.UserProgram, myRoutine: BlockDefinitions.Routine, wait: number) {
-		super (blockXml, userProgram, myRoutine, wait);
+	constructor (blockXml: Element, workspace: Blockly.Workspace | null, userProgram: BlockDefinitions.UserProgram, myRoutine: BlockDefinitions.Routine, wait: number) {
+		super (blockXml, workspace, userProgram, myRoutine, wait);
 		const count = super.getValue ("TIMES");
 		this.count = count ? ValueBlockBehaviors.ValueBlock.constructBlock (count, userProgram, myRoutine) : null;
 		const statement = super.getStatement ("DO");
-		this.statement = statement ? CommandBlock.constructBlock (statement, userProgram, myRoutine) : [];
+		this.statement = statement ? CommandBlock.constructBlock (statement, workspace, userProgram, myRoutine) : [];
 	}
 
 	async executeBlock () {
@@ -228,14 +267,14 @@ export class WhileBlock extends CommandBlock {
 	condition: ValueBlockBehaviors.ValueBlock | null;
 	statement: CommandBlock[];
 
-	constructor (blockXml: Element, userProgram: BlockDefinitions.UserProgram, myRoutine: BlockDefinitions.Routine, wait: number) {
-		super (blockXml, userProgram, myRoutine, wait);
+	constructor (blockXml: Element, workspace: Blockly.Workspace | null, userProgram: BlockDefinitions.UserProgram, myRoutine: BlockDefinitions.Routine, wait: number) {
+		super (blockXml, workspace, userProgram, myRoutine, wait);
 		const mode = super.getField ("MODE");
 		this.mode = mode ? mode : "";
 		const condition = super.getValue ("BOOL");
 		this.condition = condition ? ValueBlockBehaviors.ValueBlock.constructBlock (condition, userProgram, myRoutine) : null;
 		const statement = super.getStatement ("DO");
-		this.statement = statement ? CommandBlock.constructBlock (statement, userProgram, myRoutine) : [];
+		this.statement = statement ? CommandBlock.constructBlock (statement, workspace, userProgram, myRoutine) : [];
 	}
 
 	async executeBlock () {
@@ -268,9 +307,8 @@ export class VariablesSetNumber extends CommandBlock {
 	variable: string;
 	value: ValueBlockBehaviors.ValueBlock | null;
 
-	constructor (blockXml: Element, userProgram: BlockDefinitions.UserProgram, myRoutine: BlockDefinitions.Routine, wait: number) {
-		super (blockXml, userProgram, myRoutine, wait);
-
+	constructor (blockXml: Element, workspace: Blockly.Workspace | null, userProgram: BlockDefinitions.UserProgram, myRoutine: BlockDefinitions.Routine, wait: number) {
+		super (blockXml, workspace, userProgram, myRoutine, wait);
 		const variable = super.getField ("variable");
 		this.variable = variable ? variable : "";
 		const value = super.getValue ("value");
@@ -290,9 +328,8 @@ export class VariablesAddNumber extends CommandBlock {
 	variable: string;
 	value: ValueBlockBehaviors.ValueBlock | null;
 
-	constructor (blockXml: Element, userProgram: BlockDefinitions.UserProgram, myRoutine: BlockDefinitions.Routine, wait: number) {
-		super (blockXml, userProgram, myRoutine, wait);
-
+	constructor (blockXml: Element, workspace: Blockly.Workspace | null, userProgram: BlockDefinitions.UserProgram, myRoutine: BlockDefinitions.Routine, wait: number) {
+		super (blockXml, workspace, userProgram, myRoutine, wait);
 		const variable = super.getField ("variable");
 		this.variable = variable ? variable : "";
 		const value = super.getValue ("value");
@@ -313,9 +350,8 @@ export class VariablesSetString extends CommandBlock {
 	variable: string;
 	value: ValueBlockBehaviors.ValueBlock | null;
 
-	constructor (blockXml: Element, userProgram: BlockDefinitions.UserProgram, myRoutine: BlockDefinitions.Routine, wait: number) {
-		super (blockXml, userProgram, myRoutine, wait);
-
+	constructor (blockXml: Element, workspace: Blockly.Workspace | null, userProgram: BlockDefinitions.UserProgram, myRoutine: BlockDefinitions.Routine, wait: number) {
+		super (blockXml, workspace, userProgram, myRoutine, wait);
 		const variable = super.getField ("variable");
 		this.variable = variable ? variable : "";
 		const value = super.getValue ("value");
@@ -335,9 +371,8 @@ export class GlobalVariableWriteBlock extends CommandBlock {
 	name: string;
 	value: ValueBlockBehaviors.ValueBlock | null;
 
-	constructor (blockXml: Element, userProgram: BlockDefinitions.UserProgram, myRoutine: BlockDefinitions.Routine, wait: number) {
-		super (blockXml, userProgram, myRoutine, wait);
-
+	constructor (blockXml: Element, workspace: Blockly.Workspace | null, userProgram: BlockDefinitions.UserProgram, myRoutine: BlockDefinitions.Routine, wait: number) {
+		super (blockXml, workspace, userProgram, myRoutine, wait);
 		const name = super.getField ("name");
 		this.name = name ? name : "";
 		const value = super.getValue ("value");
@@ -358,9 +393,8 @@ export class GlobalOneDimensionalArrayWrite extends CommandBlock {
 	index: ValueBlockBehaviors.ValueBlock | null;
 	value: ValueBlockBehaviors.ValueBlock | null;
 
-	constructor (blocklyXml: Element, userProgram: BlockDefinitions.UserProgram, myRoutine: BlockDefinitions.Routine, wait: number) {
-		super (blocklyXml, userProgram, myRoutine, wait);
-
+	constructor (blockXml: Element, workspace: Blockly.Workspace | null, userProgram: BlockDefinitions.UserProgram, myRoutine: BlockDefinitions.Routine, wait: number) {
+		super (blockXml, workspace, userProgram, myRoutine, wait);
 		const name = super.getField ("name");
 		this.name = name ? name : "";
 		const index = super.getValue ("index");
@@ -387,9 +421,8 @@ export class GlobalTwoDimensionalArrayWrite extends CommandBlock {
 	col: ValueBlockBehaviors.ValueBlock | null;
 	value: ValueBlockBehaviors.ValueBlock | null;
 
-	constructor (blocklyXml: Element, userProgram: BlockDefinitions.UserProgram, myRoutine: BlockDefinitions.Routine, wait: number) {
-		super (blocklyXml, userProgram, myRoutine, wait);
-
+	constructor (blockXml: Element, workspace: Blockly.Workspace | null, userProgram: BlockDefinitions.UserProgram, myRoutine: BlockDefinitions.Routine, wait: number) {
+		super (blockXml, workspace, userProgram, myRoutine, wait);
 		const name = super.getField ("name");
 		this.name = name ? name : "";
 		const row = super.getValue ("row");
@@ -420,14 +453,13 @@ export class FunctionDefinitionBlock extends CommandBlock {
 	functionName: string;
 	statement: CommandBlock[];
 
-	constructor (blockXml: Element, userProgram: BlockDefinitions.UserProgram, myRoutine: BlockDefinitions.Routine, wait: number) {
-		super (blockXml, userProgram, myRoutine, wait);
-
+	constructor (blockXml: Element, workspace: Blockly.Workspace | null, userProgram: BlockDefinitions.UserProgram, myRoutine: BlockDefinitions.Routine, wait: number) {
+		super (blockXml, workspace, userProgram, myRoutine, wait);
 		const functionName = super.getField ("name");
 		this.functionName = functionName ? functionName : "";
 		const statement = blockXml.getElementsByTagName ("statement");
 		if (statement.length > 0 && statement[0].getAttribute ("name") === "routine") {
-			this.statement = CommandBlock.constructBlock (statement[0].getElementsByTagName ("block")[0], userProgram, myRoutine);
+			this.statement = CommandBlock.constructBlock (statement[0].getElementsByTagName ("block")[0], workspace, userProgram, myRoutine);
 		} else {
 			this.statement = [];
 		}
@@ -439,7 +471,7 @@ export class FunctionDefinitionBlock extends CommandBlock {
 		await this.userProgram.executeBlockList (this.statement);
 	}
 
-	static constructBlock (blockXml: Element, userProgram: BlockDefinitions.UserProgram, myRoutine: BlockDefinitions.Routine) {
+	static constructBlock (blockXml: Element, workspace: Blockly.Workspace | null, userProgram: BlockDefinitions.UserProgram, myRoutine: BlockDefinitions.Routine) {
 		const blockType = "function_definition";
 		if (blockXml.getAttribute ("type") === blockType) {
 			const functionBlockDefinition = BlockDefinitions.commandBlockDefinitions.find ((definition) => {
@@ -447,7 +479,7 @@ export class FunctionDefinitionBlock extends CommandBlock {
 			});
 
 			if (functionBlockDefinition) {
-				return [new FunctionDefinitionBlock (blockXml, userProgram, myRoutine, functionBlockDefinition.wait)];
+				return [new FunctionDefinitionBlock (blockXml, workspace, userProgram, myRoutine, functionBlockDefinition.wait)];
 			}
 		}
 		return [];
@@ -460,9 +492,8 @@ export class FunctionCallBlock extends CommandBlock {
 	argument2: ValueBlockBehaviors.ValueBlock | null;
 	argument3: ValueBlockBehaviors.ValueBlock | null;
 
-	constructor (blockXml: Element, userProgram: BlockDefinitions.UserProgram, myRoutine: BlockDefinitions.Routine, wait: number) {
-		super (blockXml, userProgram, myRoutine, wait);
-
+	constructor (blockXml: Element, workspace: Blockly.Workspace | null, userProgram: BlockDefinitions.UserProgram, myRoutine: BlockDefinitions.Routine, wait: number) {
+		super (blockXml, workspace, userProgram, myRoutine, wait);
 		const name = super.getField ("name");
 		this.name = name ? name : "";
 
@@ -492,12 +523,11 @@ export class FunctionCallBlock extends CommandBlock {
 export class EntryPointBlock extends CommandBlock {
 	statement: CommandBlock[];
 
-	constructor (blockXml: Element, userProgram: BlockDefinitions.UserProgram, myRoutine: BlockDefinitions.Routine, wait: number) {
-		super (blockXml, userProgram, myRoutine, wait);
-
+	constructor (blockXml: Element, workspace: Blockly.Workspace | null, userProgram: BlockDefinitions.UserProgram, myRoutine: BlockDefinitions.Routine, wait: number) {
+		super (blockXml, workspace, userProgram, myRoutine, wait);
 		const statement = blockXml.getElementsByTagName ("statement");
 		if (statement.length > 0 && statement[0].getAttribute ("name") === "routine") {
-			this.statement = CommandBlock.constructBlock (statement[0].getElementsByTagName ("block")[0], userProgram, myRoutine);
+			this.statement = CommandBlock.constructBlock (statement[0].getElementsByTagName ("block")[0], workspace, userProgram, myRoutine);
 		} else {
 			this.statement = [];
 		}
@@ -509,7 +539,7 @@ export class EntryPointBlock extends CommandBlock {
 		await this.userProgram.executeBlockList (this.statement);
 	}
 
-	static constructBlock (blockXml: Element, userProgram: BlockDefinitions.UserProgram, myRoutine: BlockDefinitions.Routine) {
+	static constructBlock (blockXml: Element, workspace: Blockly.Workspace | null, userProgram: BlockDefinitions.UserProgram, myRoutine: BlockDefinitions.Routine) {
 		const blockType = "entry_point";
 		if (blockXml.getAttribute ("type") === blockType) {
 			const functionBlockDefinition = BlockDefinitions.commandBlockDefinitions.find ((definition) => {
@@ -517,7 +547,7 @@ export class EntryPointBlock extends CommandBlock {
 			});
 
 			if (functionBlockDefinition) {
-				return [new EntryPointBlock (blockXml, userProgram, myRoutine, functionBlockDefinition.wait)];
+				return [new EntryPointBlock (blockXml, workspace, userProgram, myRoutine, functionBlockDefinition.wait)];
 			}
 		}
 		return [];
@@ -527,9 +557,8 @@ export class EntryPointBlock extends CommandBlock {
 export class StopwatchStartBlock extends CommandBlock {
 	swNumber: ValueBlockBehaviors.ValueBlock | null;
 
-	constructor (blockXml: Element, userProgram: BlockDefinitions.UserProgram, myRoutine: BlockDefinitions.Routine, wait: number) {
-		super (blockXml, userProgram, myRoutine, wait);
-
+	constructor (blockXml: Element, workspace: Blockly.Workspace | null, userProgram: BlockDefinitions.UserProgram, myRoutine: BlockDefinitions.Routine, wait: number) {
+		super (blockXml, workspace, userProgram, myRoutine, wait);
 		const swNumber = super.getValue ("number");
 		this.swNumber = swNumber ? ValueBlockBehaviors.ValueBlock.constructBlock (swNumber, userProgram, myRoutine) : null;
 	}
@@ -546,9 +575,8 @@ export class StopwatchStartBlock extends CommandBlock {
 export class StopwatchStopBlock extends CommandBlock {
 	swNumber: ValueBlockBehaviors.ValueBlock | null;
 
-	constructor (blockXml: Element, userProgram: BlockDefinitions.UserProgram, myRoutine: BlockDefinitions.Routine, wait: number) {
-		super (blockXml, userProgram, myRoutine, wait);
-
+	constructor (blockXml: Element, workspace: Blockly.Workspace | null, userProgram: BlockDefinitions.UserProgram, myRoutine: BlockDefinitions.Routine, wait: number) {
+		super (blockXml, workspace, userProgram, myRoutine, wait);
 		const swNumber = super.getValue ("number");
 		this.swNumber = swNumber ? ValueBlockBehaviors.ValueBlock.constructBlock (swNumber, userProgram, myRoutine) : null;
 	}
@@ -565,9 +593,8 @@ export class StopwatchStopBlock extends CommandBlock {
 export class StopwatchResetBlock extends CommandBlock {
 	swNumber: ValueBlockBehaviors.ValueBlock | null;
 
-	constructor (blockXml: Element, userProgram: BlockDefinitions.UserProgram, myRoutine: BlockDefinitions.Routine, wait: number) {
-		super (blockXml, userProgram, myRoutine, wait);
-
+	constructor (blockXml: Element, workspace: Blockly.Workspace | null, userProgram: BlockDefinitions.UserProgram, myRoutine: BlockDefinitions.Routine, wait: number) {
+		super (blockXml, workspace, userProgram, myRoutine, wait);
 		const swNumber = super.getValue ("number");
 		this.swNumber = swNumber ? ValueBlockBehaviors.ValueBlock.constructBlock (swNumber, userProgram, myRoutine) : null;
 	}
@@ -588,9 +615,8 @@ export class ThreadCreateBlock extends CommandBlock {
 	argument2: ValueBlockBehaviors.ValueBlock | null;
 	argument3: ValueBlockBehaviors.ValueBlock | null;
 
-	constructor (blockXml: Element, userProgram: BlockDefinitions.UserProgram, myRoutine: BlockDefinitions.Routine, wait: number) {
-		super (blockXml, userProgram, myRoutine, wait);
-
+	constructor (blockXml: Element, workspace: Blockly.Workspace | null, userProgram: BlockDefinitions.UserProgram, myRoutine: BlockDefinitions.Routine, wait: number) {
+		super (blockXml, workspace, userProgram, myRoutine, wait);
 		const threadFunctionName = super.getField ("thread_function_name");
 		this.routineName = threadFunctionName ? threadFunctionName : "";
 		const threadID = super.getValue ("thread_name");
@@ -631,9 +657,8 @@ export class ThreadJoinBlock extends CommandBlock {
 	threadID: ValueBlockBehaviors.ValueBlock | null;
 	threadIDStr: string;
 
-	constructor (blockXml: Element, userProgram: BlockDefinitions.UserProgram, myRoutine: BlockDefinitions.Routine, wait: number) {
-		super (blockXml, userProgram, myRoutine, wait);
-
+	constructor (blockXml: Element, workspace: Blockly.Workspace | null, userProgram: BlockDefinitions.UserProgram, myRoutine: BlockDefinitions.Routine, wait: number) {
+		super (blockXml, workspace, userProgram, myRoutine, wait);
 		const threadID = super.getValue ("thread_name");
 		this.threadID = threadID ? ValueBlockBehaviors.ValueBlock.constructBlock (threadID, userProgram, myRoutine) : null;
 		this.threadIDStr = "";
