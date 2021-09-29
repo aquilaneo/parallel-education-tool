@@ -4485,6 +4485,368 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 	});
 }
 
+// ミッション2-8
+{
+	const twoDimensionalArrays = new Mission.TwoDimensionalArrays ();
+	const oneDimensionalArrays = new Mission.OneDimensionalArrays ();
+	const rowCount = 4;
+	const colCount = 8;
+	twoDimensionalArrays.addRandomArray ("A", rowCount, colCount, 0, 10);
+	twoDimensionalArrays.addRandomArray ("B", rowCount, colCount, 0, 10);
+	const array: number[][] = Array (4);
+	const row = Array (8);
+	row.fill (0);
+	array.fill (row);
+	twoDimensionalArrays.addConstArray ("A+B", array);
+	missionContents.addMissionContent ({
+		chapterName: "2章",
+		missionTitle: "[2章 並列プログラミング入門編 - 8.行列計算1]",
+		missionExplanation: "並列処理を使って行列計算をしてみましょう",
+		missionID: "mission2-8",
+		score: new Mission.MissionScore (),
+		program: "",
+		goal: `グローバル2次元配列を行列に見立て、「A」の行列と「B」の行列を加算した結果を「A+B」の行列に代入する`,
+		blockListXml: `
+			<xml id="toolbox">
+				<category name="動作">
+					<block type="text_print">
+						<value name="TEXT">
+							<shadow type="text"></shadow>
+						</value>
+					</block>
+								
+					<block type="wait_ms">
+						<value name="millisecond">
+							<shadow type="math_number">
+								<field name="NUM">1000</field>
+							</shadow>
+						</value>
+					</block>
+					
+					<block type="wait_s">
+						<value name="second">
+							<shadow type="math_number">
+								<field name="NUM">1</field>
+							</shadow>
+						</value>
+					</block>
+				</category>				
+				
+				<category name="分岐/論理" colour="%{BKY_LOGIC_HUE}">
+					<block type="controls_if">
+						<value name="IF0">
+							<shadow type="logic_compare">
+								<value name="A">
+									<shadow type="math_number">
+										<field name="NUM">0</field>
+									</shadow>
+								</value>
+								<value name="B">
+									<shadow type="math_number">
+										<field name="NUM">0</field>
+									</shadow>
+								</value>
+							</shadow>
+						</value>
+					</block>
+					
+					<block type="controls_ifelse">
+						<value name="IF0">
+							<shadow type="logic_compare">
+								<value name="A">
+									<shadow type="math_number">
+										<field name="NUM">0</field>
+									</shadow>
+								</value>
+								<value name="B">
+									<shadow type="math_number">
+										<field name="NUM">0</field>
+									</shadow>
+								</value>
+							</shadow>
+						</value>
+					</block>
+					
+					<block type="logic_compare">
+						<value name="A">
+							<shadow type="math_number">
+								<field name="NUM">0</field>
+							</shadow>
+						</value>
+						<value name="B">
+							<shadow type="math_number">
+								<field name="NUM">0</field>
+							</shadow>
+						</value>
+					</block>
+					
+					<block type="logic_operation">
+						<value name="A">
+							<shadow type="logic_compare">
+								<value name="A">
+									<shadow type="math_number">
+										<field name="NUM">0</field>
+									</shadow>
+								</value>
+								<value name="B">
+									<shadow type="math_number">
+										<field name="NUM">0</field>
+									</shadow>
+								</value>
+							</shadow>
+						</value>
+						<value name="B">
+							<shadow type="logic_compare">
+								<value name="A">
+									<shadow type="math_number">
+										<field name="NUM">0</field>
+									</shadow>
+								</value>
+								<value name="B">
+									<shadow type="math_number">
+										<field name="NUM">0</field>
+									</shadow>
+								</value>
+							</shadow>
+						</value>
+					</block>
+					
+					<block type="logic_negate">
+						<value name="BOOL">
+							<shadow type="logic_compare">
+								<value name="A">
+									<shadow type="math_number">
+										<field name="NUM">0</field>
+									</shadow>
+								</value>
+								<value name="B">
+									<shadow type="math_number">
+										<field name="NUM">0</field>
+									</shadow>
+								</value>
+							</shadow>
+						</value>
+					</block>
+				</category>				
+				
+				<category name="ループ" colour="%{BKY_LOOPS_HUE}">
+					<block type="controls_repeat_ext">
+						<value name="TIMES">
+							<shadow type="math_number">
+								<field name="NUM">10</field>
+							</shadow>
+						</value>
+					</block>
+					
+					<block type="controls_whileUntil">
+						<value name="BOOL">
+							<shadow type="logic_compare">
+								<value name="A">
+									<shadow type="math_number">
+										<field name="NUM">0</field>
+									</shadow>
+								</value>
+								<value name="B">
+									<shadow type="math_number">
+										<field name="NUM">0</field>
+									</shadow>
+								</value>
+							</shadow>
+						</value>
+					</block>
+ 		       </category>
+ 		       
+ 		       <category name="数学" colour="%{BKY_MATH_HUE}">
+					<block type="math_number">
+						<field name="NUM">123</field>
+					</block>
+					
+					<block type="math_arithmetic">
+						<value name="A">
+							<shadow type="math_number">
+								<field name="NUM">0</field>
+							</shadow>
+						</value>
+						<value name="B">
+							<shadow type="math_number">
+								<field name="NUM">0</field>
+							</shadow>
+						</value>
+					</block>
+				</category>
+				
+				<category name="テキスト" colour="%{BKY_TEXTS_HUE}">
+					<block type="text"></block>
+					<block type="str_arithmetic">
+						<value name="A">
+							<shadow type="text"></shadow>
+						</value>
+						<value name="B">
+							<shadow type="text"></shadow>
+						</value>				
+					</block>
+				</category>
+								
+				<category name="ローカル変数" colour="330" custom="TYPED_VARIABLE"></category>
+								
+				<category name="グローバル配列">	
+					<block type="global_one_dimensional_array_read">
+						<value name="index">
+							<shadow type="math_number">
+								<field name="NUM">0</field>
+							</shadow>
+						</value>
+					</block>
+					
+					<block type="global_one_dimensional_array_write">
+						<value name="index">
+							<shadow type="math_number">
+								<field name="NUM">0</field>
+							</shadow>
+						</value>
+						<value name="value">
+							<shadow type="math_number">
+								<field name="NUM">0</field>
+							</shadow>
+						</value>
+					</block>
+					
+					<block type="global_two_dimensional_array_read">
+						<value name="row">
+							<shadow type="math_number">
+								<field name="NUM">0</field>
+							</shadow>
+						</value>
+						<value name="col">
+							<shadow type="math_number">
+								<field name="NUM">0</field>
+							</shadow>
+						</value>
+					</block>
+					
+					<block type="global_two_dimensional_array_write">
+						<value name="row">
+							<shadow type="math_number">
+								<field name="NUM">0</field>
+							</shadow>
+						</value>
+						<value name="col">
+							<shadow type="math_number">
+								<field name="NUM">0</field>
+							</shadow>
+						</value>
+						<value name="value">
+							<shadow type="math_number">
+								<field name="NUM">0</field>
+							</shadow>
+						</value>
+					</block>
+				</category>
+								
+				<category name="関数">
+					<block type="function_definition"></block>
+					<block type="function_call">
+						<value name="argument1">
+							<shadow type="math_number">
+								<field name="NUM">0</field>
+							</shadow>
+						</value>
+						<value name="argument2">
+							<shadow type="math_number">
+								<field name="NUM">0</field>
+							</shadow>
+						</value>
+						<value name="argument3">
+							<shadow type="math_number">
+								<field name="NUM">0</field>
+							</shadow>
+						</value>
+					</block>
+					<block type="entry_point"></block>
+					<block type="get_argument"></block>
+				</category>				
+				
+				<category name="計測">
+					<block type="stopwatch_start">
+						<value name="number">
+							<shadow type="math_number">
+								<field name="NUM">0</field>
+							</shadow>
+						</value>
+					</block>
+					
+					<block type="stopwatch_stop">
+						<value name="number">
+							<shadow type="math_number">
+								<field name="NUM">0</field>
+							</shadow>
+						</value>
+					</block>
+					<block type="stopwatch_reset">
+						<value name="number">
+							<shadow type="math_number">
+								<field name="NUM">0</field>
+							</shadow>
+						</value>
+					</block>
+					<block type="stopwatch_read">
+						<value name="number">
+							<shadow type="math_number">
+								<field name="NUM">0</field>
+							</shadow>
+						</value>
+					</block>
+				</category>				
+				
+				<category name="並列処理">
+					<block type="thread_create">
+						<value name="thread_name">
+							<shadow type="text"></shadow>
+						</value>
+						<value name="argument1">
+							<shadow type="math_number">
+								<field name="NUM">0</field>
+							</shadow>
+						</value>
+						<value name="argument2">
+							<shadow type="math_number">
+								<field name="NUM">0</field>
+							</shadow>
+						</value>
+						<value name="argument3">
+							<shadow type="math_number">
+								<field name="NUM">0</field>
+							</shadow>
+						</value>
+					</block>
+					<block type="thread_join">
+						<value name="thread_name">
+							<shadow type="text"></shadow>
+						</value>
+					</block>
+				</category>
+			</xml>
+		`,
+		twoDimensionalArrays: twoDimensionalArrays,
+		oneDimensionalArrays: oneDimensionalArrays,
+		judge: (consoleOutputs,
+				initialTwoDimensionalArrays,
+				initialOneDimensionalArrays,
+				twoDimensionalArraysResult,
+				oneDimensionalArraysResult) => {
+			for (let row = 0; row < initialTwoDimensionalArrays["A+B"].length; row++) {
+				for (let col = 0; col < initialTwoDimensionalArrays["A+B"][0].length; col++) {
+					const correct = initialTwoDimensionalArrays["A"][row][col] + initialTwoDimensionalArrays["B"][row][col];
+					if (twoDimensionalArraysResult["A+B"][row][col] !== correct) {
+						return false;
+					}
+				}
+			}
+			return true;
+		}
+	});
+}
+
 // サンプルミッション
 {
 	const twoDimensionalArrays = new Mission.TwoDimensionalArrays ();
