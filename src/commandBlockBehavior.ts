@@ -9,7 +9,7 @@ export class CommandBlock {
 	blocklyBlock: Blockly.Block | null = null;
 	baseBlockColor: string = "";
 	executingBlockColor: string = "";
-	workspace: Blockly.Workspace | null;
+	workspace: Blockly.Workspace | null = null;
 	userProgram: BlockDefinitions.UserProgram;
 	myRoutine: BlockDefinitions.Routine;
 	wait: number;
@@ -20,11 +20,18 @@ export class CommandBlock {
 		this.blockType = blockType ? blockType : "";
 		// ブロックのxmlを取得
 		this.blockXml = blockXml;
-		const id = this.blockXml.getAttribute ("id");
-		if (id && workspace) {
-			this.blocklyBlock = workspace.getBlockById (id);
-		}
-		// Workspace上のブロックを取得
+
+		this.userProgram = userProgram;
+		this.myRoutine = myRoutine;
+		this.wait = wait;
+	}
+
+	async executeBlock () {
+		console.log (this.blockType);
+	}
+
+	// 色を計算
+	calcBlockColor () {
 		if (this.blocklyBlock) {
 			this.baseBlockColor = this.blocklyBlock.getColour ();
 			// executingBlockColorを求める
@@ -46,15 +53,6 @@ export class CommandBlock {
 			}
 			this.executingBlockColor = `#${rNumber.toString (16)}${gNumber.toString (16)}${bNumber.toString (16)}`;
 		}
-		this.workspace = workspace;
-
-		this.userProgram = userProgram;
-		this.myRoutine = myRoutine;
-		this.wait = wait;
-	}
-
-	async executeBlock () {
-		console.log (this.blockType);
 	}
 
 	// ワークスペース上のブロックを実行中色に変える
@@ -105,6 +103,16 @@ export class CommandBlock {
 			return child.tagName === "statement" && child.getAttribute ("name") === type;
 		});
 		return statement ? statement.children[0] : null;
+	}
+
+	// ブロックのワークスペースを設定
+	setWorkspace (workspace: Blockly.Workspace | null) {
+		this.workspace = workspace;
+		const id = this.blockXml.getAttribute ("id");
+		if (id && workspace) {
+			this.blocklyBlock = workspace.getBlockById (id);
+		}
+		this.calcBlockColor ();
 	}
 
 	// nextタグでつながっているコマンドブロックをオブジェクト化し配列化
@@ -199,6 +207,7 @@ export class IfBlock extends CommandBlock {
 		this.condition = condition ? ValueBlockBehaviors.ValueBlock.constructBlock (condition, userProgram, myRoutine) : null;
 		const statement = super.getStatement ("DO0");
 		this.statement = statement ? CommandBlock.constructBlock (statement, workspace, userProgram, myRoutine) : [];
+		this.setWorkspace (workspace);
 	}
 
 	async executeBlock () {
@@ -206,6 +215,13 @@ export class IfBlock extends CommandBlock {
 
 		if (this.condition.executeBlock ()) {
 			await this.userProgram.executeBlockList (this.statement);
+		}
+	}
+
+	setWorkspace (workspace: Blockly.Workspace | null) {
+		super.setWorkspace (workspace);
+		for (const commandBlock of this.statement) {
+			commandBlock.setWorkspace (workspace);
 		}
 	}
 }
@@ -223,6 +239,7 @@ export class IfElseBlock extends CommandBlock {
 		this.statement1 = statement1 ? CommandBlock.constructBlock (statement1, workspace, userProgram, myRoutine) : [];
 		const statement2 = super.getStatement ("ELSE");
 		this.statement2 = statement2 ? CommandBlock.constructBlock (statement2, workspace, userProgram, myRoutine) : [];
+		this.setWorkspace (workspace);
 	}
 
 	async executeBlock () {
@@ -232,6 +249,16 @@ export class IfElseBlock extends CommandBlock {
 			await this.userProgram.executeBlockList (this.statement1);
 		} else {
 			await this.userProgram.executeBlockList (this.statement2);
+		}
+	}
+
+	setWorkspace (workspace: Blockly.Workspace | null) {
+		super.setWorkspace (workspace);
+		for (const commandBlock of this.statement1) {
+			commandBlock.setWorkspace (workspace);
+		}
+		for (const commandBlock of this.statement2) {
+			commandBlock.setWorkspace (workspace);
 		}
 	}
 }
@@ -246,6 +273,7 @@ export class ForBlock extends CommandBlock {
 		this.count = count ? ValueBlockBehaviors.ValueBlock.constructBlock (count, userProgram, myRoutine) : null;
 		const statement = super.getStatement ("DO");
 		this.statement = statement ? CommandBlock.constructBlock (statement, workspace, userProgram, myRoutine) : [];
+		this.setWorkspace (workspace);
 	}
 
 	async executeBlock () {
@@ -258,6 +286,13 @@ export class ForBlock extends CommandBlock {
 			} else {
 				return;
 			}
+		}
+	}
+
+	setWorkspace (workspace: Blockly.Workspace | null) {
+		super.setWorkspace (workspace);
+		for (const commandBlock of this.statement) {
+			commandBlock.setWorkspace (workspace);
 		}
 	}
 }
@@ -275,6 +310,7 @@ export class WhileBlock extends CommandBlock {
 		this.condition = condition ? ValueBlockBehaviors.ValueBlock.constructBlock (condition, userProgram, myRoutine) : null;
 		const statement = super.getStatement ("DO");
 		this.statement = statement ? CommandBlock.constructBlock (statement, workspace, userProgram, myRoutine) : [];
+		this.setWorkspace (workspace);
 	}
 
 	async executeBlock () {
@@ -299,6 +335,13 @@ export class WhileBlock extends CommandBlock {
 					}
 				}
 				break;
+		}
+	}
+
+	setWorkspace (workspace: Blockly.Workspace | null) {
+		super.setWorkspace (workspace);
+		for (const commandBlock of this.statement) {
+			commandBlock.setWorkspace (workspace);
 		}
 	}
 }
@@ -463,12 +506,20 @@ export class FunctionDefinitionBlock extends CommandBlock {
 		} else {
 			this.statement = [];
 		}
+		this.setWorkspace (workspace);
 	}
 
 	async executeBlock () {
 		assertIsDefined (this.statement);
 
 		await this.userProgram.executeBlockList (this.statement);
+	}
+
+	setWorkspace (workspace: Blockly.Workspace | null) {
+		super.setWorkspace (workspace);
+		for (const commandBlock of this.statement) {
+			commandBlock.setWorkspace (workspace);
+		}
 	}
 
 	static constructBlock (blockXml: Element, workspace: Blockly.Workspace | null, userProgram: BlockDefinitions.UserProgram, myRoutine: BlockDefinitions.Routine) {
@@ -531,12 +582,20 @@ export class EntryPointBlock extends CommandBlock {
 		} else {
 			this.statement = [];
 		}
+		this.setWorkspace (workspace);
 	}
 
 	async executeBlock () {
 		assertIsDefined (this.statement);
 
 		await this.userProgram.executeBlockList (this.statement);
+	}
+
+	setWorkspace (workspace: Blockly.Workspace | null) {
+		super.setWorkspace (workspace);
+		for (const commandBlock of this.statement) {
+			commandBlock.setWorkspace (workspace);
+		}
 	}
 
 	static constructBlock (blockXml: Element, workspace: Blockly.Workspace | null, userProgram: BlockDefinitions.UserProgram, myRoutine: BlockDefinitions.Routine) {

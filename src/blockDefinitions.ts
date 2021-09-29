@@ -180,6 +180,12 @@ export class UserProgram {
 		});
 	}
 
+	setWorkspaceToThread (threadIndex: number, workspace: Blockly.Workspace) {
+		if (this.threads.length > threadIndex) {
+			this.threads[threadIndex].setWorkspace (workspace);
+		}
+	}
+
 	async executeThread (threadID: string) {
 		const thread = this.getThread (threadID);
 		if (thread) {
@@ -385,6 +391,12 @@ export class Thread extends Routine {
 		this.argument1 = argument1;
 		this.argument2 = argument2;
 		this.argument3 = argument3;
+	}
+
+	setWorkspace (workspace: Blockly.Workspace) {
+		if (this.definitionBlock) {
+			this.definitionBlock.setWorkspace (workspace);
+		}
 	}
 
 	async executeBlock () {

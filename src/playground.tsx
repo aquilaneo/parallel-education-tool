@@ -214,10 +214,16 @@ const Playground: React.FC<{ missionID: string }> = (props) => {
 						<div>スレッド</div>
 						<div id={"threads-container"}>
 							{
-								threadInfos.map ((threadInfo) => {
+								threadInfos.map ((threadInfo, index) => {
 									return <ThreadView key={threadInfo.name}
 													   threadNames={threadInfo.name} threadCount={threadCount}
-													   blocks={threadInfo.blocksXml}/>
+													   blocks={threadInfo.blocksXml}
+													   onDidMount={(workspace) => {
+														   if (editorRef.current && editorRef.current.userProgram) {
+															   editorRef.current.userProgram.setWorkspaceToThread (index, workspace);
+														   }
+													   }}
+									/>
 								})
 							}
 						</div>
@@ -412,7 +418,7 @@ class EditorView extends React.Component<{ missionContent: MissionContent, close
 	}
 }
 
-class ThreadView extends React.Component<{ threadNames: string, threadCount: number, blocks: string }, { workspace: WorkspaceSvg }> {
+class ThreadView extends React.Component<{ threadNames: string, threadCount: number, blocks: string, onDidMount: (workspace: Blockly.Workspace) => void }, { workspace: WorkspaceSvg }> {
 	workspace: WorkspaceSvg | null = null;
 
 	componentDidMount () {
@@ -420,6 +426,7 @@ class ThreadView extends React.Component<{ threadNames: string, threadCount: num
 		const xml = `<xml xmlns="https://developers.google.com/blockly/xml">${this.props.blocks}</xml>`;
 		const dom = Blockly.Xml.textToDom (xml);
 		Blockly.Xml.domToWorkspace (dom, this.workspace);
+		this.props.onDidMount (this.workspace);
 	}
 
 	render () {
