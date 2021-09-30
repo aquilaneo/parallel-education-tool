@@ -38,7 +38,7 @@ const Playground: React.FC<{ missionID: string }> = (props) => {
 	}
 	const nextMissionID = missionContents.findNextMission (missionContent.missionID);
 
-	const blockListXml = missionContent.blockListXml;
+	const blockListXml = missionContent.blockList;
 	const [mission, setMission] = useState (new Mission (missionContent,
 		() => {
 			variableCanvas.drawTable (mission.currentTwoDimensionalArrays, mission.currentOneDimensionalArrays);
@@ -250,7 +250,7 @@ class EditorView extends React.Component<{ missionContent: MissionContent, close
 		// ブロック定義とブロックリストを読み込み
 		BlockSettings.initBlocks ();
 		const xmlParser = new DOMParser ();
-		const xmlDom = xmlParser.parseFromString (this.props.missionContent.blockListXml, "text/xml");
+		const xmlDom = xmlParser.parseFromString (BlockSettings.blockListToXml (this.props.missionContent.blockList), "text/xml");
 
 		// ワークスペースを生成
 		const document: HTMLElement | undefined = xmlDom.getElementById ("toolbox") || undefined; // 要素取得して型合わせ

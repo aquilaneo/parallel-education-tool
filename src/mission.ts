@@ -1,6 +1,7 @@
 import {ConsoleOutputType} from "./playground";
 import Blockly from "blockly";
 import {missionContents} from "./missionContents";
+import * as BlockSettings from "./blockSettings";
 
 // ミッション一覧
 export class MissionList {
@@ -63,7 +64,7 @@ export interface MissionContent {
 	score: MissionScore, // スコア
 	program: string, // 作成途中のプログラム保持
 	goal: string, // クリア条件
-	blockListXml: string, // 命令ブロック一覧
+	blockList: BlockSettings.BlockList, // 命令ブロック一覧
 	twoDimensionalArrays: TwoDimensionalArrays; // グローバル2次元配列
 	oneDimensionalArrays: OneDimensionalArrays; // グローバル1次元配列の初期値
 	judge: (consoleOutputs: string[],
