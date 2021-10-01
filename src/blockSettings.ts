@@ -238,6 +238,7 @@ export enum BlockType {
 				<shadow type="text"></shadow>
 			</value>				
 		</block>`,
+	LOCAL_VARIABLE_AVAILABLE = "",
 	GLOBAL_ONE_DIMENSIONAL_ARRAY_READ = `
 		<block type="global_one_dimensional_array_read">
 			<value name="index">
