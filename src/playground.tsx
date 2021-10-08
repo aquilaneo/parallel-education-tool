@@ -22,6 +22,7 @@ const Playground: React.FC<{ missionID: string }> = (props) => {
 	const [variableCanvas, setVariableCanvas] = useState (new VariableCanvas.VariableCanvas ());
 	const [threadInfos, setThreadInfos] = useState ([] as { name: string, blocksXml: string }[]);
 	const [threadCount, setThreadCount] = useState (threadInfos.length);
+	const [programSpeed, setProgramSpeed] = useState ("1");
 	const [stopwatch, setStopwatch] = useState (new BlockDefinitions.Stopwatch ());
 
 	// 参照の取得
@@ -177,6 +178,14 @@ const Playground: React.FC<{ missionID: string }> = (props) => {
 							}}>
 								XML入力
 							</button>
+							<input type={"range"} name={"speed"} min={"0.2"} max={"4"} value={programSpeed} step={"0.1"}
+								   onChange={(event) => {
+									   if (editorRef.current) {
+										   setProgramSpeed (event.target.value);
+										   editorRef.current.setProgramSpeed (parseFloat (event.target.value));
+									   }
+								   }}/>
+							<span>x{programSpeed}</span>
 						</div>
 						<div>
 							<button onClick={() => {
@@ -403,6 +412,12 @@ class EditorView extends React.Component<{ missionContent: MissionContent, close
 		if (this.userProgram) {
 			this.userProgram.stopUserProgram ();
 			this.isExecuting = false;
+		}
+	}
+
+	setProgramSpeed (speed: number) {
+		if (this.userProgram) {
+			this.userProgram.setProgramSpeed (speed);
 		}
 	}
 

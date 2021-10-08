@@ -384,7 +384,7 @@ export const getAllBlockListXml = () => {
 		loops: [BlockType.CONTROLS_REPEAT_EXT, BlockType.CONTROLS_WHILEUNTIL],
 		math: [BlockType.MATH_NUMBER, BlockType.MATH_ARITHMETIC],
 		text: [BlockType.TEXT, BlockType.STR_ARITHMETIC],
-		localVariables: [],
+		localVariables: [BlockType.LOCAL_VARIABLE_AVAILABLE],
 		globalArrays: [BlockType.GLOBAL_ONE_DIMENSIONAL_ARRAY_READ, BlockType.GLOBAL_ONE_DIMENSIONAL_ARRAY_WRITE, BlockType.GLOBAL_TWO_DIMENSIONAL_ARRAY_READ, BlockType.GLOBAL_TWO_DIMENSIONAL_ARRAY_WRITE],
 		functions: [BlockType.FUNCTION_DEFINITION, BlockType.FUNCTION_CALL, BlockType.ENTRY_POINT, BlockType.GET_ARGUMENT],
 		measurement: [BlockType.STOPWATCH_START, BlockType.STOPWATCH_STOP, BlockType.STOPWATCH_RESET, BlockType.STOPWATCH_READ],

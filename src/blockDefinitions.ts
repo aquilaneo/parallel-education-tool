@@ -8,6 +8,7 @@ import * as Blockly from "blockly";
 
 export class UserProgram {
 	stopFlg: boolean = false;
+	programSpeed: number = 4;
 	mission: Mission;
 	entryFunction: Function | null = null; // エントリポイント
 	functions: Function[] = []; // 関数一覧
@@ -60,7 +61,8 @@ export class UserProgram {
 				// 各ブロックの待機時間
 				const start = new Date ();
 				let time = 0;
-				const wait = block.wait * (Math.random () * (1.15 - 0.85) + 0.85);
+				const random = Math.random () * (1.15 - 0.85) + 0.85;
+				const wait = block.wait * (1 / this.programSpeed) * random;
 				while (time < wait && !this.stopFlg) {
 					await sleep1ms ();
 					time = new Date ().getTime () - start.getTime ();
@@ -90,6 +92,10 @@ export class UserProgram {
 
 	stopUserProgram () {
 		this.stopFlg = true;
+	}
+
+	setProgramSpeed (speed: number) {
+		this.programSpeed = speed;
 	}
 
 	async executeFunction (functionName: string, argument1: number, argument2: number, argument3: number) {
