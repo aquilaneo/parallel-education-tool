@@ -198,7 +198,8 @@ export class MissionScore {
 	}
 
 	getTimeSecond () {
-		return this.time / 1000;
+		const second = this.time / 1000;
+		return Math.round (second * 100) / 100;
 	}
 
 	getBlockCount () {

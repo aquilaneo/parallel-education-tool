@@ -23,7 +23,6 @@ const Playground: React.FC<{ missionID: string }> = (props) => {
 	const [threadInfos, setThreadInfos] = useState ([] as { name: string, blocksXml: string }[]);
 	const [threadCount, setThreadCount] = useState (threadInfos.length);
 	const [programSpeed, setProgramSpeed] = useState ("1");
-	const [stopwatch, setStopwatch] = useState (new BlockDefinitions.Stopwatch ());
 
 	// 参照の取得
 	const editorRef = useRef<EditorView> (null);
@@ -147,9 +146,10 @@ const Playground: React.FC<{ missionID: string }> = (props) => {
 							</button>
 							<button onClick={() => {
 								if (editorRef.current && !editorRef.current.isExecuting && consoleRef.current) {
-									// consoleRef.current.clearConsole ();
 									mission.clearConsole ();
+									console.log (programSpeed);
 									editorRef.current.executeUserProgram (variableCanvas, mission);
+									editorRef.current.setProgramSpeed (parseFloat (programSpeed));
 								}
 							}}>
 								ブロックを実行
@@ -182,29 +182,10 @@ const Playground: React.FC<{ missionID: string }> = (props) => {
 								   onChange={(event) => {
 									   if (editorRef.current) {
 										   setProgramSpeed (event.target.value);
-										   editorRef.current.setProgramSpeed (parseFloat (event.target.value));
+										   editorRef.current.setProgramSpeed (parseFloat (programSpeed));
 									   }
 								   }}/>
 							<span>x{programSpeed}</span>
-						</div>
-						<div>
-							<button onClick={() => {
-								stopwatch.start ();
-							}}>SW開始
-							</button>
-							<button onClick={() => {
-								stopwatch.stop ();
-							}}>
-								SW停止
-							</button>
-							<button onClick={() => {
-								stopwatch.reset ();
-							}}>SWリセット
-							</button>
-							<button onClick={() => {
-								console.log (stopwatch.read ());
-							}}>SW読み取り
-							</button>
 						</div>
 						<div>
 							<button onClick={() => {
@@ -389,15 +370,16 @@ class EditorView extends React.Component<{ missionContent: MissionContent, close
 			variableCanvas.drawTable (mission.currentTwoDimensionalArrays, mission.currentOneDimensionalArrays);
 
 			// タイム計測し実行
-			const startTime = Date.now ();
+			// const startTime = Date.now ();
 			await this.userProgram.executeUserProgram ();
-			const endTime = Date.now ();
+			// const endTime = Date.now ();
+			const time = this.userProgram.getCurrentMilliSecond();
 
 			// ミッションクリア条件判断
 			this.props.closeDetailModal ();
 			if (mission.judge ()) {
 				// スコア記録
-				mission.missionContent.score.setClear (endTime - startTime, this.workspace ? this.workspace.getAllBlocks (false).length : -1);
+				mission.missionContent.score.setClear (time, this.workspace ? this.workspace.getAllBlocks (false).length : -1);
 
 				this.props.showClearModal (); // ミッション成功
 			} else {

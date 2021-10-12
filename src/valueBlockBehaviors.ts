@@ -405,6 +405,6 @@ export class StopwatchReadBlock extends ValueBlock {
 
 		const swNumber = this.swNumber.executeBlock ();
 		assertIsNumber (swNumber);
-		return this.userProgram.getStopwatch (swNumber).read ();
+		return Math.round (this.userProgram.getStopwatch (swNumber).read ());
 	}
 }

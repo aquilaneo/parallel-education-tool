@@ -8,13 +8,15 @@ import * as Blockly from "blockly";
 
 export class UserProgram {
 	stopFlg: boolean = false;
-	programSpeed: number = 4;
+	programSpeed: number = 1;
 	mission: Mission;
 	entryFunction: Function | null = null; // エントリポイント
 	functions: Function[] = []; // 関数一覧
 	threads: Thread[] = []; // スレッド一覧
 	functionStatementElements: { name: string, element: Element }[] = [];
 	globalVariables: NumberVariable[] = [];
+	currentMilliSecond: number = 0;
+	oldTime: number = 0;
 	stopwatches: { key: number, sw: Stopwatch } [] = []; // ストップウォッチ一覧
 
 	constructor (xml: Element, mission: Mission, workspace: Blockly.Workspace | null) {
@@ -86,6 +88,10 @@ export class UserProgram {
 	async executeUserProgram () {
 		assertIsDefined (this.entryFunction);
 
+		this.oldTime = Date.now ();
+		setTimeout (() => {
+			this.tick ();
+		}, 1);
 		await this.entryFunction.executeBlock ();
 		this.stopUserProgram ();
 	}
@@ -154,9 +160,9 @@ export class UserProgram {
 		});
 
 		if (searchedIndex === -1) {
-			this.stopwatches.push ({key: swNumber, sw: new Stopwatch ()});
+			this.stopwatches.push ({key: swNumber, sw: new Stopwatch (this)});
 		} else {
-			this.stopwatches[searchedIndex] = {key: swNumber, sw: new Stopwatch ()};
+			this.stopwatches[searchedIndex] = {key: swNumber, sw: new Stopwatch (this)};
 		}
 	}
 
@@ -205,6 +211,20 @@ export class UserProgram {
 			return thread.threadID === threadID;
 		});
 	}
+
+	getCurrentMilliSecond () {
+		return this.currentMilliSecond;
+	}
+
+	tick () {
+		if (!this.stopFlg) {
+			this.currentMilliSecond += (Date.now () - this.oldTime) * this.programSpeed;
+			this.oldTime = Date.now ();
+			setTimeout (() => {
+				this.tick ();
+			}, 1);
+		}
+	}
 }
 
 export class NumberVariable {
@@ -246,23 +266,28 @@ export class StringVariable {
 export class Stopwatch {
 	startTime: number | null = null;
 	count = 0;
+	userProgram: UserProgram;
+
+	constructor (userProgram: UserProgram) {
+		this.userProgram = userProgram;
+	}
 
 	start () {
 		// 開始時間を記録
-		this.startTime = Date.now ();
+		this.startTime = this.userProgram.getCurrentMilliSecond ();
 	}
 
 	stop () {
 		// 経過時間を加算し、開始時間をリセット
-		if (this.startTime) {
-			this.count += Date.now () - this.startTime;
+		if (this.startTime !== null) {
+			this.count += this.userProgram.getCurrentMilliSecond () - this.startTime;
 		}
 		this.startTime = null;
 	}
 
 	read () {
 		// SWカウント中だったら停止→読み取り→再開
-		if (this.startTime) {
+		if (this.startTime !== null) {
 			this.stop ();
 			const count = this.count;
 			this.start ();
