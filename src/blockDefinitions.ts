@@ -63,7 +63,7 @@ export class UserProgram {
 				// 各ブロックの待機時間
 				const start = new Date ();
 				let time = 0;
-				const random = Math.random () * (1.15 - 0.85) + 0.85;
+				const random = block.randomSpeed ? Math.random () * (1.15 - 0.85) + 0.85 : 1;
 				const wait = block.wait * (1 / this.programSpeed) * random;
 				while (time < wait && !this.stopFlg) {
 					await sleep1ms ();
@@ -445,8 +445,9 @@ export const commandBlockDefinitions = [
 	{
 		type: "text_print",
 		wait: 100,
-		instantiate: (blockXml: Element, workspace: Blockly.Workspace | null, userProgram: UserProgram, myRoutine: Routine, wait: number): CommandBlockBehaviors.CommandBlock => {
-			return new CommandBlockBehaviors.PrintBlock (blockXml, workspace, userProgram, myRoutine, wait);
+		randomSpeed: true,
+		instantiate: (blockXml: Element, workspace: Blockly.Workspace | null, userProgram: UserProgram, myRoutine: Routine, wait: number, randomSpeed: boolean): CommandBlockBehaviors.CommandBlock => {
+			return new CommandBlockBehaviors.PrintBlock (blockXml, workspace, userProgram, myRoutine, wait, randomSpeed);
 		}
 	},
 
@@ -454,8 +455,9 @@ export const commandBlockDefinitions = [
 	{
 		type: "wait_ms",
 		wait: 0,
-		instantiate: (blockXml: Element, workspace: Blockly.Workspace | null, userProgram: UserProgram, myRoutine: Routine, wait: number): CommandBlockBehaviors.CommandBlock => {
-			return new CommandBlockBehaviors.MilliSecondsWaitBlock (blockXml, workspace, userProgram, myRoutine, wait);
+		randomSpeed: false,
+		instantiate: (blockXml: Element, workspace: Blockly.Workspace | null, userProgram: UserProgram, myRoutine: Routine, wait: number, randomSpeed: boolean): CommandBlockBehaviors.CommandBlock => {
+			return new CommandBlockBehaviors.MilliSecondsWaitBlock (blockXml, workspace, userProgram, myRoutine, wait, randomSpeed);
 		},
 		blocklyJson: {
 			"type": "wait_ms",
@@ -480,8 +482,9 @@ export const commandBlockDefinitions = [
 	{
 		type: "wait_s",
 		wait: 0,
-		instantiate: (blockXml: Element, workspace: Blockly.Workspace | null, userProgram: UserProgram, myRoutine: Routine, wait: number): CommandBlockBehaviors.CommandBlock => {
-			return new CommandBlockBehaviors.SecondsWaitBlock (blockXml, workspace, userProgram, myRoutine, wait);
+		randomSpeed: false,
+		instantiate: (blockXml: Element, workspace: Blockly.Workspace | null, userProgram: UserProgram, myRoutine: Routine, wait: number, randomSpeed: boolean): CommandBlockBehaviors.CommandBlock => {
+			return new CommandBlockBehaviors.SecondsWaitBlock (blockXml, workspace, userProgram, myRoutine, wait, randomSpeed);
 		},
 		blocklyJson: {
 			"type": "wait_s",
@@ -506,8 +509,9 @@ export const commandBlockDefinitions = [
 	{
 		type: "controls_if",
 		wait: 100,
-		instantiate: (blockXml: Element, workspace: Blockly.Workspace | null, userProgram: UserProgram, myRoutine: Routine, wait: number): CommandBlockBehaviors.CommandBlock => {
-			return new CommandBlockBehaviors.IfBlock (blockXml, workspace, userProgram, myRoutine, wait);
+		randomSpeed: true,
+		instantiate: (blockXml: Element, workspace: Blockly.Workspace | null, userProgram: UserProgram, myRoutine: Routine, wait: number, randomSpeed: boolean): CommandBlockBehaviors.CommandBlock => {
+			return new CommandBlockBehaviors.IfBlock (blockXml, workspace, userProgram, myRoutine, wait, randomSpeed);
 		}
 	},
 
@@ -515,8 +519,9 @@ export const commandBlockDefinitions = [
 	{
 		type: "controls_ifelse",
 		wait: 100,
-		instantiate: (blockXml: Element, workspace: Blockly.Workspace | null, userProgram: UserProgram, myRoutine: Routine, wait: number): CommandBlockBehaviors.CommandBlock => {
-			return new CommandBlockBehaviors.IfElseBlock (blockXml, workspace, userProgram, myRoutine, wait);
+		randomSpeed: true,
+		instantiate: (blockXml: Element, workspace: Blockly.Workspace | null, userProgram: UserProgram, myRoutine: Routine, wait: number, randomSpeed: boolean): CommandBlockBehaviors.CommandBlock => {
+			return new CommandBlockBehaviors.IfElseBlock (blockXml, workspace, userProgram, myRoutine, wait, randomSpeed);
 		}
 	},
 
@@ -524,8 +529,9 @@ export const commandBlockDefinitions = [
 	{
 		type: "controls_repeat_ext",
 		wait: 100,
-		instantiate: (blockXml: Element, workspace: Blockly.Workspace | null, userProgram: UserProgram, myRoutine: Routine, wait: number): CommandBlockBehaviors.CommandBlock => {
-			return new CommandBlockBehaviors.ForBlock (blockXml, workspace, userProgram, myRoutine, wait);
+		randomSpeed: true,
+		instantiate: (blockXml: Element, workspace: Blockly.Workspace | null, userProgram: UserProgram, myRoutine: Routine, wait: number, randomSpeed: boolean): CommandBlockBehaviors.CommandBlock => {
+			return new CommandBlockBehaviors.ForBlock (blockXml, workspace, userProgram, myRoutine, wait, randomSpeed);
 		}
 	},
 
@@ -533,8 +539,9 @@ export const commandBlockDefinitions = [
 	{
 		type: "controls_whileUntil",
 		wait: 100,
-		instantiate: (blockXml: Element, workspace: Blockly.Workspace | null, userProgram: UserProgram, myRoutine: Routine, wait: number): CommandBlockBehaviors.CommandBlock => {
-			return new CommandBlockBehaviors.WhileBlock (blockXml, workspace, userProgram, myRoutine, wait);
+		randomSpeed: true,
+		instantiate: (blockXml: Element, workspace: Blockly.Workspace | null, userProgram: UserProgram, myRoutine: Routine, wait: number, randomSpeed: boolean): CommandBlockBehaviors.CommandBlock => {
+			return new CommandBlockBehaviors.WhileBlock (blockXml, workspace, userProgram, myRoutine, wait, randomSpeed);
 		}
 	},
 
@@ -542,8 +549,9 @@ export const commandBlockDefinitions = [
 	{
 		type: "variables_set_number",
 		wait: 100,
-		instantiate: (blockXml: Element, workspace: Blockly.Workspace | null, userProgram: UserProgram, myRoutine: Routine, wait: number): CommandBlockBehaviors.CommandBlock => {
-			return new CommandBlockBehaviors.VariablesSetNumber (blockXml, workspace, userProgram, myRoutine, wait);
+		randomSpeed: true,
+		instantiate: (blockXml: Element, workspace: Blockly.Workspace | null, userProgram: UserProgram, myRoutine: Routine, wait: number, randomSpeed: boolean): CommandBlockBehaviors.CommandBlock => {
+			return new CommandBlockBehaviors.VariablesSetNumber (blockXml, workspace, userProgram, myRoutine, wait, randomSpeed);
 		},
 		blocklyJson: {
 			"type": "variables_set_number",
@@ -575,8 +583,9 @@ export const commandBlockDefinitions = [
 	{
 		type: "variables_add_number",
 		wait: 100,
-		instantiate: (blockXml: Element, workspace: Blockly.Workspace | null, userProgram: UserProgram, myRoutine: Routine, wait: number): CommandBlockBehaviors.CommandBlock => {
-			return new CommandBlockBehaviors.VariablesAddNumber (blockXml, workspace, userProgram, myRoutine, wait);
+		randomSpeed: true,
+		instantiate: (blockXml: Element, workspace: Blockly.Workspace | null, userProgram: UserProgram, myRoutine: Routine, wait: number, randomSpeed: boolean): CommandBlockBehaviors.CommandBlock => {
+			return new CommandBlockBehaviors.VariablesAddNumber (blockXml, workspace, userProgram, myRoutine, wait, randomSpeed);
 		},
 		blocklyJson: {
 			"type": "variables_add_number",
@@ -608,8 +617,9 @@ export const commandBlockDefinitions = [
 	{
 		type: "variables_set_string",
 		wait: 100,
-		instantiate: (blockXml: Element, workspace: Blockly.Workspace | null, userProgram: UserProgram, myRoutine: Routine, wait: number): CommandBlockBehaviors.CommandBlock => {
-			return new CommandBlockBehaviors.VariablesSetString (blockXml, workspace, userProgram, myRoutine, wait);
+		randomSpeed: true,
+		instantiate: (blockXml: Element, workspace: Blockly.Workspace | null, userProgram: UserProgram, myRoutine: Routine, wait: number, randomSpeed: boolean): CommandBlockBehaviors.CommandBlock => {
+			return new CommandBlockBehaviors.VariablesSetString (blockXml, workspace, userProgram, myRoutine, wait, randomSpeed);
 		},
 		blocklyJson: {
 			"type": "variables_set_string",
@@ -641,8 +651,9 @@ export const commandBlockDefinitions = [
 	{
 		type: "global_variable_write",
 		wait: 100,
-		instantiate: (blockXml: Element, workspace: Blockly.Workspace | null, userProgram: UserProgram, myRoutine: Routine, wait: number): CommandBlockBehaviors.CommandBlock => {
-			return new CommandBlockBehaviors.GlobalVariableWriteBlock (blockXml, workspace, userProgram, myRoutine, wait);
+		randomSpeed: true,
+		instantiate: (blockXml: Element, workspace: Blockly.Workspace | null, userProgram: UserProgram, myRoutine: Routine, wait: number, randomSpeed: boolean): CommandBlockBehaviors.CommandBlock => {
+			return new CommandBlockBehaviors.GlobalVariableWriteBlock (blockXml, workspace, userProgram, myRoutine, wait, randomSpeed);
 		},
 		blocklyJson: {
 			"type": "global_variable_write",
@@ -675,8 +686,9 @@ export const commandBlockDefinitions = [
 	{
 		type: "global_one_dimensional_array_write",
 		wait: 100,
-		instantiate: (blockXml: Element, workspace: Blockly.Workspace | null, userProgram: UserProgram, myRoutine: Routine, wait: number): CommandBlockBehaviors.CommandBlock => {
-			return new CommandBlockBehaviors.GlobalOneDimensionalArrayWrite (blockXml, workspace, userProgram, myRoutine, wait);
+		randomSpeed: true,
+		instantiate: (blockXml: Element, workspace: Blockly.Workspace | null, userProgram: UserProgram, myRoutine: Routine, wait: number, randomSpeed: boolean): CommandBlockBehaviors.CommandBlock => {
+			return new CommandBlockBehaviors.GlobalOneDimensionalArrayWrite (blockXml, workspace, userProgram, myRoutine, wait, randomSpeed);
 		},
 		blocklyJson: {
 			"type": "global_one_dimensional_array_write",
@@ -714,8 +726,9 @@ export const commandBlockDefinitions = [
 	{
 		type: "global_two_dimensional_array_write",
 		wait: 100,
-		instantiate: (blockXml: Element, workspace: Blockly.Workspace | null, userProgram: UserProgram, myRoutine: Routine, wait: number): CommandBlockBehaviors.CommandBlock => {
-			return new CommandBlockBehaviors.GlobalTwoDimensionalArrayWrite (blockXml, workspace, userProgram, myRoutine, wait);
+		randomSpeed: true,
+		instantiate: (blockXml: Element, workspace: Blockly.Workspace | null, userProgram: UserProgram, myRoutine: Routine, wait: number, randomSpeed: boolean): CommandBlockBehaviors.CommandBlock => {
+			return new CommandBlockBehaviors.GlobalTwoDimensionalArrayWrite (blockXml, workspace, userProgram, myRoutine, wait, randomSpeed);
 		},
 		blocklyJson: {
 			"type": "global_two_dimensional_array_write",
@@ -758,8 +771,9 @@ export const commandBlockDefinitions = [
 	{
 		type: "function_definition",
 		wait: 100,
-		instantiate: (blockXml: Element, workspace: Blockly.Workspace | null, userProgram: UserProgram, myRoutine: Routine, wait: number): CommandBlockBehaviors.CommandBlock => {
-			return new CommandBlockBehaviors.FunctionDefinitionBlock (blockXml, workspace, userProgram, myRoutine, wait);
+		randomSpeed: true,
+		instantiate: (blockXml: Element, workspace: Blockly.Workspace | null, userProgram: UserProgram, myRoutine: Routine, wait: number, randomSpeed: boolean): CommandBlockBehaviors.CommandBlock => {
+			return new CommandBlockBehaviors.FunctionDefinitionBlock (blockXml, workspace, userProgram, myRoutine, wait, randomSpeed);
 		},
 		blocklyJson: {
 			"type": "function_definition",
@@ -789,8 +803,9 @@ export const commandBlockDefinitions = [
 	{
 		type: "function_call",
 		wait: 100,
-		instantiate: (blockXml: Element, workspace: Blockly.Workspace | null, userProgram: UserProgram, myRoutine: Routine, wait: number): CommandBlockBehaviors.CommandBlock => {
-			return new CommandBlockBehaviors.FunctionCallBlock (blockXml, workspace, userProgram, myRoutine, wait);
+		randomSpeed: true,
+		instantiate: (blockXml: Element, workspace: Blockly.Workspace | null, userProgram: UserProgram, myRoutine: Routine, wait: number, randomSpeed: boolean): CommandBlockBehaviors.CommandBlock => {
+			return new CommandBlockBehaviors.FunctionCallBlock (blockXml, workspace, userProgram, myRoutine, wait, randomSpeed);
 		},
 		blocklyJson: {
 			"type": "function_call",
@@ -833,8 +848,9 @@ export const commandBlockDefinitions = [
 	{
 		type: "entry_point",
 		wait: 100,
-		instantiate: (blockXml: Element, workspace: Blockly.Workspace | null, userProgram: UserProgram, myRoutine: Routine, wait: number): CommandBlockBehaviors.CommandBlock => {
-			return new CommandBlockBehaviors.EntryPointBlock (blockXml, workspace, userProgram, myRoutine, wait);
+		randomSpeed: true,
+		instantiate: (blockXml: Element, workspace: Blockly.Workspace | null, userProgram: UserProgram, myRoutine: Routine, wait: number, randomSpeed: boolean): CommandBlockBehaviors.CommandBlock => {
+			return new CommandBlockBehaviors.EntryPointBlock (blockXml, workspace, userProgram, myRoutine, wait, randomSpeed);
 		},
 		blocklyJson: {
 			"type": "entry_point",
@@ -859,8 +875,9 @@ export const commandBlockDefinitions = [
 	{
 		type: "stopwatch_start",
 		wait: 100,
-		instantiate: (blockXml: Element, workspace: Blockly.Workspace | null, userProgram: UserProgram, myRoutine: Routine, wait: number): CommandBlockBehaviors.CommandBlock => {
-			return new CommandBlockBehaviors.StopwatchStartBlock (blockXml, workspace, userProgram, myRoutine, wait);
+		randomSpeed: true,
+		instantiate: (blockXml: Element, workspace: Blockly.Workspace | null, userProgram: UserProgram, myRoutine: Routine, wait: number, randomSpeed: boolean): CommandBlockBehaviors.CommandBlock => {
+			return new CommandBlockBehaviors.StopwatchStartBlock (blockXml, workspace, userProgram, myRoutine, wait, randomSpeed);
 		},
 		blocklyJson: {
 			"type": "stopwatch_start",
@@ -885,8 +902,9 @@ export const commandBlockDefinitions = [
 	{
 		type: "stopwatch_stop",
 		wait: 100,
-		instantiate: (blockXml: Element, workspace: Blockly.Workspace | null, userProgram: UserProgram, myRoutine: Routine, wait: number): CommandBlockBehaviors.CommandBlock => {
-			return new CommandBlockBehaviors.StopwatchStopBlock (blockXml, workspace, userProgram, myRoutine, wait);
+		randomSpeed: true,
+		instantiate: (blockXml: Element, workspace: Blockly.Workspace | null, userProgram: UserProgram, myRoutine: Routine, wait: number, randomSpeed: boolean): CommandBlockBehaviors.CommandBlock => {
+			return new CommandBlockBehaviors.StopwatchStopBlock (blockXml, workspace, userProgram, myRoutine, wait, randomSpeed);
 		},
 		blocklyJson: {
 			"type": "stopwatch_stop",
@@ -911,8 +929,9 @@ export const commandBlockDefinitions = [
 	{
 		type: "stopwatch_reset",
 		wait: 100,
-		instantiate: (blockXml: Element, workspace: Blockly.Workspace | null, userProgram: UserProgram, myRoutine: Routine, wait: number): CommandBlockBehaviors.CommandBlock => {
-			return new CommandBlockBehaviors.StopwatchResetBlock (blockXml, workspace, userProgram, myRoutine, wait);
+		randomSpeed: true,
+		instantiate: (blockXml: Element, workspace: Blockly.Workspace | null, userProgram: UserProgram, myRoutine: Routine, wait: number, randomSpeed: boolean): CommandBlockBehaviors.CommandBlock => {
+			return new CommandBlockBehaviors.StopwatchResetBlock (blockXml, workspace, userProgram, myRoutine, wait, randomSpeed);
 		},
 		blocklyJson: {
 			"type": "stopwatch_reset",
@@ -937,8 +956,9 @@ export const commandBlockDefinitions = [
 	{
 		type: "thread_create",
 		wait: 100,
-		instantiate: (blockXml: Element, workspace: Blockly.Workspace | null, userProgram: UserProgram, myRoutine: Routine, wait: number): CommandBlockBehaviors.CommandBlock => {
-			return new CommandBlockBehaviors.ThreadCreateBlock (blockXml, workspace, userProgram, myRoutine, wait);
+		randomSpeed: true,
+		instantiate: (blockXml: Element, workspace: Blockly.Workspace | null, userProgram: UserProgram, myRoutine: Routine, wait: number, randomSpeed: boolean): CommandBlockBehaviors.CommandBlock => {
+			return new CommandBlockBehaviors.ThreadCreateBlock (blockXml, workspace, userProgram, myRoutine, wait, randomSpeed);
 		},
 		blocklyJson: {
 			"type": "thread_create",
@@ -983,8 +1003,9 @@ export const commandBlockDefinitions = [
 	{
 		type: "thread_join",
 		wait: 100,
-		instantiate: (blockXml: Element, workspace: Blockly.Workspace | null, userProgram: UserProgram, myRoutine: Routine, wait: number): CommandBlockBehaviors.CommandBlock => {
-			return new CommandBlockBehaviors.ThreadJoinBlock (blockXml, workspace, userProgram, myRoutine, wait);
+		randomSpeed: true,
+		instantiate: (blockXml: Element, workspace: Blockly.Workspace | null, userProgram: UserProgram, myRoutine: Routine, wait: number, randomSpeed: boolean): CommandBlockBehaviors.CommandBlock => {
+			return new CommandBlockBehaviors.ThreadJoinBlock (blockXml, workspace, userProgram, myRoutine, wait, randomSpeed);
 		},
 		blocklyJson: {
 			"type": "thread_join",
