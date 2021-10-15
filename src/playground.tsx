@@ -147,9 +147,7 @@ const Playground: React.FC<{ missionID: string }> = (props) => {
 							<button onClick={() => {
 								if (editorRef.current && !editorRef.current.isExecuting && consoleRef.current) {
 									mission.clearConsole ();
-									console.log (programSpeed);
-									editorRef.current.executeUserProgram (variableCanvas, mission);
-									editorRef.current.setProgramSpeed (parseFloat (programSpeed));
+									editorRef.current.executeUserProgram (variableCanvas, mission, parseFloat(programSpeed));
 								}
 							}}>
 								ブロックを実行
@@ -360,7 +358,7 @@ class EditorView extends React.Component<{ missionContent: MissionContent, close
 		}
 	}
 
-	async executeUserProgram (variableCanvas: VariableCanvas.VariableCanvas, mission: Mission) {
+	async executeUserProgram (variableCanvas: VariableCanvas.VariableCanvas, mission: Mission, initialProgramSpeed: number) {
 		// 作成したブロックをプログラム化し実行
 		this.isExecuting = true;
 		this.parseBlocks (variableCanvas, mission);
@@ -369,11 +367,12 @@ class EditorView extends React.Component<{ missionContent: MissionContent, close
 			mission.resetGlobalArray ();
 			variableCanvas.drawTable (mission.currentTwoDimensionalArrays, mission.currentOneDimensionalArrays);
 
+			// プログラム速度の初期値
+			this.userProgram.setProgramSpeed (initialProgramSpeed);
+
 			// タイム計測し実行
-			// const startTime = Date.now ();
 			await this.userProgram.executeUserProgram ();
-			// const endTime = Date.now ();
-			const time = this.userProgram.getCurrentMilliSecond();
+			const time = this.userProgram.getCurrentMilliSecond ();
 
 			// ミッションクリア条件判断
 			this.props.closeDetailModal ();

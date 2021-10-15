@@ -159,7 +159,7 @@ export class PrintBlock extends CommandBlock {
 	async executeBlock () {
 		assertIsDefined (this.text);
 
-		const text = this.text.executeBlock ();
+		const text = await this.userProgram.executeValueBlock (this.text);
 		this.userProgram.mission.printLog (text.toString ());
 	}
 }
@@ -176,7 +176,7 @@ export class SecondsWaitBlock extends CommandBlock {
 	async executeBlock () {
 		assertIsDefined (this.second);
 
-		const wait = this.second.executeBlock ();
+		const wait = await this.userProgram.executeValueBlock (this.second);
 		assertIsNumber (wait);
 		this.wait = wait * 1000;
 	}
@@ -194,7 +194,7 @@ export class MilliSecondsWaitBlock extends CommandBlock {
 	async executeBlock () {
 		assertIsDefined (this.millisecond);
 
-		const wait = this.millisecond.executeBlock ();
+		const wait = await this.userProgram.executeValueBlock (this.millisecond);
 		assertIsNumber (wait);
 		this.wait = wait;
 	}
@@ -216,7 +216,7 @@ export class IfBlock extends CommandBlock {
 	async executeBlock () {
 		assertIsDefined (this.condition);
 
-		if (this.condition.executeBlock ()) {
+		if (await this.userProgram.executeValueBlock (this.condition)) {
 			await this.userProgram.executeBlockList (this.statement);
 		}
 	}
@@ -248,7 +248,7 @@ export class IfElseBlock extends CommandBlock {
 	async executeBlock () {
 		assertIsDefined (this.condition);
 
-		if (this.condition.executeBlock ()) {
+		if (await this.userProgram.executeValueBlock (this.condition)) {
 			await this.userProgram.executeBlockList (this.statement1);
 		} else {
 			await this.userProgram.executeBlockList (this.statement2);
@@ -282,7 +282,7 @@ export class ForBlock extends CommandBlock {
 	async executeBlock () {
 		assertIsDefined (this.count);
 
-		const count = this.count.executeBlock ();
+		const count = await this.userProgram.executeValueBlock (this.count);
 		for (let i = 0; i < count; i++) {
 			if (!this.userProgram.stopFlg) {
 				await this.userProgram.executeBlockList (this.statement);
@@ -321,7 +321,7 @@ export class WhileBlock extends CommandBlock {
 
 		switch (this.mode) {
 			case "WHILE":
-				while (this.condition.executeBlock ()) {
+				while (await this.userProgram.executeValueBlock (this.condition)) {
 					if (!this.userProgram.stopFlg) {
 						await this.userProgram.executeBlockList (this.statement);
 					} else {
@@ -330,7 +330,7 @@ export class WhileBlock extends CommandBlock {
 				}
 				break;
 			case "UNTIL":
-				while (!this.condition.executeBlock ()) {
+				while (!await this.userProgram.executeValueBlock (this.condition)) {
 					if (!this.userProgram.stopFlg) {
 						await this.userProgram.executeBlockList (this.statement);
 					} else {
@@ -364,7 +364,7 @@ export class VariablesSetNumber extends CommandBlock {
 	async executeBlock () {
 		assertIsDefined (this.value);
 
-		const value = this.value.executeBlock ();
+		const value = await this.userProgram.executeValueBlock (this.value);
 		assertIsNumber (value);
 		this.myRoutine?.writeLocalNumberVariable (this.variable, value);
 	}
@@ -386,7 +386,7 @@ export class VariablesAddNumber extends CommandBlock {
 		assertIsDefined (this.value);
 
 		const operand = this.myRoutine?.readLocalNumberVariable (this.variable);
-		const value = this.value.executeBlock ();
+		const value = await this.userProgram.executeValueBlock (this.value);
 		assertIsNumber (value);
 		this.myRoutine?.writeLocalNumberVariable (this.variable, operand + value);
 	}
@@ -407,7 +407,7 @@ export class VariablesSetString extends CommandBlock {
 	async executeBlock () {
 		assertIsDefined (this.value);
 
-		const value = this.value.executeBlock ();
+		const value = await this.userProgram.executeValueBlock (this.value);
 		assertIsString (value);
 		this.myRoutine?.writeLocalStringVariable (this.variable, value);
 	}
@@ -428,7 +428,7 @@ export class GlobalVariableWriteBlock extends CommandBlock {
 	async executeBlock () {
 		assertIsDefined (this.value);
 
-		const value = this.value.executeBlock ();
+		const value = await this.userProgram.executeValueBlock (this.value);
 		assertIsNumber (value);
 		this.userProgram.writeGlobalVariable (this.name, value);
 	}
@@ -453,8 +453,8 @@ export class GlobalOneDimensionalArrayWrite extends CommandBlock {
 		assertIsDefined (this.index);
 		assertIsDefined (this.value);
 
-		const index = this.index.executeBlock ();
-		const value = this.value.executeBlock ();
+		const index = await this.userProgram.executeValueBlock (this.index);
+		const value = await this.userProgram.executeValueBlock (this.value);
 		assertIsNumber (index);
 		assertIsNumber (value);
 		this.userProgram.mission.writeOneDimensionalArray (this.name, index, value);
@@ -484,9 +484,9 @@ export class GlobalTwoDimensionalArrayWrite extends CommandBlock {
 		assertIsDefined (this.col);
 		assertIsDefined (this.value);
 
-		const row = this.row.executeBlock ();
-		const col = this.col.executeBlock ();
-		const value = this.value.executeBlock ();
+		const row = await this.userProgram.executeValueBlock (this.row);
+		const col = await this.userProgram.executeValueBlock (this.col);
+		const value = await this.userProgram.executeValueBlock (this.value);
 		assertIsNumber (row);
 		assertIsNumber (col);
 		assertIsNumber (value);
@@ -563,9 +563,9 @@ export class FunctionCallBlock extends CommandBlock {
 		assertIsDefined (this.argument1);
 		assertIsDefined (this.argument2);
 		assertIsDefined (this.argument3);
-		const argument1 = this.argument1.executeBlock ();
-		const argument2 = this.argument2.executeBlock ();
-		const argument3 = this.argument3.executeBlock ();
+		const argument1 = await this.userProgram.executeValueBlock (this.argument1);
+		const argument2 = await this.userProgram.executeValueBlock (this.argument2);
+		const argument3 = await this.userProgram.executeValueBlock (this.argument3);
 		assertIsNumber (argument1);
 		assertIsNumber (argument2);
 		assertIsNumber (argument3);
@@ -628,7 +628,7 @@ export class StopwatchStartBlock extends CommandBlock {
 	async executeBlock () {
 		assertIsDefined (this.swNumber);
 
-		const swNumber = this.swNumber.executeBlock ();
+		const swNumber = await this.userProgram.executeValueBlock (this.swNumber);
 		assertIsNumber (swNumber);
 		this.userProgram.getStopwatch (swNumber).start ();
 	}
@@ -646,7 +646,7 @@ export class StopwatchStopBlock extends CommandBlock {
 	async executeBlock () {
 		assertIsDefined (this.swNumber);
 
-		const swNumber = this.swNumber.executeBlock ();
+		const swNumber = await this.userProgram.executeValueBlock (this.swNumber);
 		assertIsNumber (swNumber);
 		this.userProgram.getStopwatch (swNumber).stop ();
 	}
@@ -664,7 +664,7 @@ export class StopwatchResetBlock extends CommandBlock {
 	async executeBlock () {
 		assertIsDefined (this.swNumber);
 
-		const swNumber = this.swNumber.executeBlock ();
+		const swNumber = await this.userProgram.executeValueBlock (this.swNumber);
 		assertIsNumber (swNumber);
 		this.userProgram.getStopwatch (swNumber).reset ();
 	}
@@ -694,15 +694,15 @@ export class ThreadCreateBlock extends CommandBlock {
 	async executeBlock () {
 		assertIsDefined (this.threadID);
 
-		const threadID = this.threadID.executeBlock ();
+		const threadID = await this.userProgram.executeValueBlock (this.threadID);
 		assertIsString (threadID);
 
 		assertIsDefined (this.argument1);
 		assertIsDefined (this.argument2);
 		assertIsDefined (this.argument3);
-		const argument1 = this.argument1.executeBlock ();
-		const argument2 = this.argument2.executeBlock ();
-		const argument3 = this.argument3.executeBlock ();
+		const argument1 = await this.userProgram.executeValueBlock (this.argument1);
+		const argument2 = await this.userProgram.executeValueBlock (this.argument2);
+		const argument3 = await this.userProgram.executeValueBlock (this.argument3);
 		assertIsNumber (argument1);
 		assertIsNumber (argument2);
 		assertIsNumber (argument3);
@@ -729,7 +729,7 @@ export class ThreadJoinBlock extends CommandBlock {
 	async executeBlock () {
 		assertIsDefined (this.threadID);
 
-		const threadName = this.threadID.executeBlock ();
+		const threadName = await this.userProgram.executeValueBlock (this.threadID);
 		assertIsString (threadName);
 		this.threadIDStr = threadName;
 	}
