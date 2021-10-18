@@ -147,7 +147,7 @@ const Playground: React.FC<{ missionID: string }> = (props) => {
 							<button onClick={() => {
 								if (editorRef.current && !editorRef.current.isExecuting && consoleRef.current) {
 									mission.clearConsole ();
-									editorRef.current.executeUserProgram (variableCanvas, mission, parseFloat(programSpeed));
+									editorRef.current.executeUserProgram (variableCanvas, mission, parseFloat (programSpeed));
 								}
 							}}>
 								ブロックを実行
@@ -228,7 +228,7 @@ const Playground: React.FC<{ missionID: string }> = (props) => {
 	)
 }
 
-class EditorView extends React.Component<{ missionContent: MissionContent, closeDetailModal: () => void, showClearModal: () => void, showFailedModal: () => void }> {
+class EditorView extends React.Component<{ missionContent: MissionContent, closeDetailModal: () => void, showClearModal: () => void, showFailedModal: (failReason: string) => void }> {
 	workspace: Blockly.WorkspaceSvg | null = null;
 	initialWorkspace = "<xml xmlns=\"https://developers.google.com/blockly/xml\"><block type=\"entry_point\" id=\"5e{JeNdzKRK}Nyg(x2Ul\" x=\"58\" y=\"59\"></block></xml>";
 	userProgram: UserProgram | null = null;
@@ -376,13 +376,14 @@ class EditorView extends React.Component<{ missionContent: MissionContent, close
 
 			// ミッションクリア条件判断
 			this.props.closeDetailModal ();
-			if (mission.judge ()) {
+			const missionResult = mission.judge ();
+			if (missionResult.cleared) {
 				// スコア記録
 				mission.missionContent.score.setClear (time, this.workspace ? this.workspace.getAllBlocks (false).length : -1);
 
 				this.props.showClearModal (); // ミッション成功
 			} else {
-				this.props.showFailedModal (); // ミッション失敗
+				this.props.showFailedModal (missionResult.failReason); // ミッション失敗
 			}
 		}
 		this.isExecuting = false;

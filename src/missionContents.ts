@@ -40,7 +40,16 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 				initialOneDimensionalArrays,
 				twoDimensionalArraysResult,
 				oneDimensionalArraysResult) => {
-			return consoleOutputs.length === 1 && consoleOutputs[0] === "Hello";
+			if (consoleOutputs.length < 1) {
+				return {cleared: false, failReason: "コンソールにテキストを出力してください。"};
+			} else if (consoleOutputs.length > 1) {
+				return {cleared: false, failReason: "コンソールへの出力が多すぎます。"};
+			}
+
+			if (consoleOutputs[0] !== "Hello") {
+				return {cleared: false, failReason: "出力されたテキストが違います。「Hello」と出力してください。"};
+			}
+			return {cleared: true, failReason: ""};
 		}
 	});
 }
@@ -76,15 +85,19 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 				initialOneDimensionalArrays,
 				twoDimensionalArraysResult,
 				oneDimensionalArraysResult) => {
-			if (consoleOutputs.length !== 3) {
-				return false;
+			if (consoleOutputs.length < 3) {
+				return {cleared: false, failReason: "コンソールへの出力が少なすぎます。"};
+			} else if (consoleOutputs.length > 3) {
+				return {cleared: false, failReason: "コンソールへの出力が多すぎます。"};
 			}
+
 			for (const consoleOutput of consoleOutputs) {
 				if (consoleOutput !== "Hello") {
-					return false;
+					return {cleared: false, failReason: "「Hello」ではないコンソール出力が混ざっています。"};
 				}
 			}
-			return true;
+
+			return {cleared: true, failReason: ""};
 		}
 	});
 }
@@ -120,15 +133,19 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 				initialOneDimensionalArrays,
 				twoDimensionalArraysResult,
 				oneDimensionalArraysResult) => {
-			if (consoleOutputs.length !== 50) {
-				return false;
+			if (consoleOutputs.length < 50) {
+				return {cleared: false, failReason: "コンソールへの出力が少なすぎます。"};
+			} else if (consoleOutputs.length > 50) {
+				return {cleared: false, failReason: "コンソールへの出力が多すぎます。"};
 			}
+
 			for (const consoleOutput of consoleOutputs) {
 				if (consoleOutput !== "Hello") {
-					return false;
+					return {cleared: false, failReason: "「Hello」ではないコンソール出力が混ざっています。"};
 				}
 			}
-			return true;
+
+			return {cleared: true, failReason: ""};
 		}
 	});
 }
@@ -164,7 +181,17 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 				initialOneDimensionalArrays,
 				twoDimensionalArraysResult,
 				oneDimensionalArraysResult) => {
-			return consoleOutputs.length === 1 && isEqual (consoleOutputs[0], 63 * 87);
+			if (consoleOutputs.length < 1) {
+				return {cleared: false, failReason: "コンソールへの出力が少なすぎます。"};
+			} else if (consoleOutputs.length > 1) {
+				return {cleared: false, failReason: "コンソールへの出力が多すぎます。"};
+			}
+
+			if (!isEqual (consoleOutputs[0], 63 * 87)) {
+				return {cleared: false, failReason: "計算結果が異なります。"};
+			}
+
+			return {cleared: true, failReason: ""};
 		}
 	});
 }
@@ -200,7 +227,17 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 				initialOneDimensionalArrays,
 				twoDimensionalArraysResult,
 				oneDimensionalArraysResult) => {
-			return consoleOutputs.length === 1 && isEqual (consoleOutputs[0], 1 + 2 + 3 + 4 + 5);
+			if (consoleOutputs.length < 1) {
+				return {cleared: false, failReason: "コンソールへの出力が少なすぎます。"};
+			} else if (consoleOutputs.length > 1) {
+				return {cleared: false, failReason: "コンソールへの出力が多すぎます。"};
+			}
+
+			if (!isEqual (consoleOutputs[0], 1 + 2 + 3 + 4 + 5)) {
+				return {cleared: false, failReason: "計算結果が異なります。"};
+			}
+
+			return {cleared: true, failReason: ""};
 		}
 	});
 }
@@ -236,7 +273,17 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 				initialOneDimensionalArrays,
 				twoDimensionalArraysResult,
 				oneDimensionalArraysResult) => {
-			return consoleOutputs.length === 1 && isEqual (consoleOutputs[0], 29 + 76)
+			if (consoleOutputs.length < 1) {
+				return {cleared: false, failReason: "コンソールへの出力が少なすぎます。"};
+			} else if (consoleOutputs.length > 1) {
+				return {cleared: false, failReason: "コンソールへの出力が多すぎます。"};
+			}
+
+			if (!isEqual (consoleOutputs[0], 29 + 76)) {
+				return {cleared: false, failReason: "計算結果が異なります。"};
+			}
+
+			return {cleared: true, failReason: ""};
 		}
 	});
 }
@@ -272,7 +319,17 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 				initialOneDimensionalArrays,
 				twoDimensionalArraysResult,
 				oneDimensionalArraysResult) => {
-			return consoleOutputs.length === 1 && isEqual (consoleOutputs[0], (12 + 65 + 83) / 3);
+			if (consoleOutputs.length < 1) {
+				return {cleared: false, failReason: "コンソールへの出力が少なすぎます。"};
+			} else if (consoleOutputs.length > 1) {
+				return {cleared: false, failReason: "コンソールへの出力が多すぎます。"};
+			}
+
+			if (!isEqual (consoleOutputs[0], (12 + 65 + 83) / 3)) {
+				return {cleared: false, failReason: "計算結果が異なります。"};
+			}
+
+			return {cleared: true, failReason: ""};
 		}
 	});
 }
@@ -308,20 +365,26 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 				initialOneDimensionalArrays,
 				twoDimensionalArraysResult,
 				oneDimensionalArraysResult) => {
-			if (consoleOutputs.length !== 51) {
-				return false;
+			if (consoleOutputs.length < 51) {
+				return {cleared: false, failReason: "コンソールへの出力が少なすぎます。"};
+			} else if (consoleOutputs.length > 51) {
+				return {cleared: false, failReason: "コンソールへの出力が多すぎます。"};
 			}
 
 			// Hello判定
 			for (let i = 0; i < consoleOutputs.length - 1; i++) {
 				if (consoleOutputs[i] !== "Hello") {
-					return false;
+					return {cleared: false, failReason: "「Hello」ではないコンソール出力が混ざっています。"};
 				}
 			}
 
 			// 判定用にコンソール出力を数値型に変換
 			const number = Number (consoleOutputs[consoleOutputs.length - 1]);
-			return !isNaN (number);
+			if (isNaN (number)) {
+				return {cleared: false, failReason: "最後にはストップウォッチで測った時間を出力してください。"};
+			}
+
+			return {cleared: true, failReason: ""};
 		}
 	});
 }
@@ -358,7 +421,17 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 				initialOneDimensionalArrays,
 				twoDimensionalArraysResult,
 				oneDimensionalArraysResult) => {
-			return consoleOutputs.length === 1 && isEqual (consoleOutputs[0], oneDimensionalArraysResult["Data"][2]);
+			if (consoleOutputs.length < 1) {
+				return {cleared: false, failReason: "コンソールへの出力が少なすぎます。"};
+			} else if (consoleOutputs.length > 1) {
+				return {cleared: false, failReason: "コンソールへの出力が多すぎます。"};
+			}
+
+			if (!isEqual (consoleOutputs[0], oneDimensionalArraysResult["Data"][2])) {
+				return {cleared: false, failReason: "出力された数字が異なります。"};
+			}
+
+			return {cleared: true, failReason: ""};
 		}
 	});
 }
@@ -395,16 +468,12 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 				initialOneDimensionalArrays,
 				twoDimensionalArraysResult,
 				oneDimensionalArraysResult) => {
-			if (consoleOutputs.length !== 0) {
-				return false;
-			}
-
 			for (const value of oneDimensionalArraysResult["Data"]) {
 				if (value !== 0) {
-					return false;
+					return {cleared: false, failReason: "Dataに0でない要素が含まれています。"};
 				}
 			}
-			return true;
+			return {cleared: true, failReason: ""};
 		}
 	});
 }
@@ -441,18 +510,14 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 				initialOneDimensionalArrays,
 				twoDimensionalArraysResult,
 				oneDimensionalArraysResult) => {
-			if (consoleOutputs.length !== 0) {
-				return false;
-			}
-
 			for (const row of twoDimensionalArraysResult["Data"]) {
 				for (const value of row) {
 					if (value !== 0) {
-						return false;
+						return {cleared: false, failReason: "Dataに0でない要素が含まれています。"};
 					}
 				}
 			}
-			return true;
+			return {cleared: true, failReason: ""};
 		}
 	});
 }
@@ -489,6 +554,12 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 				initialOneDimensionalArrays,
 				twoDimensionalArraysResult,
 				oneDimensionalArraysResult) => {
+			if (consoleOutputs.length < 1) {
+				return {cleared: false, failReason: "コンソールへの出力が少なすぎます。"};
+			} else if (consoleOutputs.length > 1) {
+				return {cleared: false, failReason: "コンソールへの出力が多すぎます。"};
+			}
+
 			let sum = 0;
 			let count = 0
 			for (const row of initialTwoDimensionalArrays["Data"]) {
@@ -497,7 +568,11 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 					count++;
 				}
 			}
-			return consoleOutputs.length === 1 && isEqual (consoleOutputs[0], sum / count);
+			if (!isEqual (consoleOutputs[0], sum / count)) {
+				return {cleared: false, failReason: "計算結果が異なります。"};
+			}
+
+			return {cleared: true, failReason: ""};
 		}
 	});
 }
@@ -534,6 +609,12 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 				initialOneDimensionalArrays,
 				twoDimensionalArraysResult,
 				oneDimensionalArraysResult) => {
+			if (consoleOutputs.length < 1) {
+				return {cleared: false, failReason: "コンソールへの出力が少なすぎます。"};
+			} else if (consoleOutputs.length > 1) {
+				return {cleared: false, failReason: "コンソールへの出力が多すぎます。"};
+			}
+
 			let sum = 0;
 			let count = 0
 			for (const row of initialTwoDimensionalArrays["Data"]) {
@@ -543,7 +624,11 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 				}
 			}
 			const average = sum / count;
-			return consoleOutputs.length === 1 && consoleOutputs[0] === (average >= 50 ? "High" : "Low");
+			if (consoleOutputs[0] !== (average >= 50 ? "High" : "Low")) {
+				return {cleared: false, failReason: "出力結果が異なります。"};
+			}
+
+			return {cleared: true, failReason: ""};
 		}
 	});
 }
@@ -579,15 +664,18 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 				initialOneDimensionalArrays,
 				twoDimensionalArraysResult,
 				oneDimensionalArraysResult) => {
-			if (consoleOutputs.length !== 4) {
-				return false;
+			if (consoleOutputs.length < 4) {
+				return {cleared: false, failReason: "コンソールへの出力が少なすぎます。"};
+			} else if (consoleOutputs.length > 4) {
+				return {cleared: false, failReason: "コンソールへの出力が多すぎます。"};
 			}
+
 			for (const outputs of consoleOutputs) {
 				if (outputs !== "Hello") {
-					return false;
+					return {cleared: false, failReason: "「Hello」ではないコンソール出力が混ざっています。"};
 				}
 			}
-			return true;
+			return {cleared: true, failReason: ""};
 		}
 	});
 }
@@ -614,7 +702,7 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 			globalArrays: [BlockType.GLOBAL_ONE_DIMENSIONAL_ARRAY_READ, BlockType.GLOBAL_ONE_DIMENSIONAL_ARRAY_WRITE, BlockType.GLOBAL_TWO_DIMENSIONAL_ARRAY_READ, BlockType.GLOBAL_TWO_DIMENSIONAL_ARRAY_WRITE],
 			functions: [BlockType.FUNCTION_DEFINITION, BlockType.FUNCTION_CALL, BlockType.ENTRY_POINT, BlockType.GET_ARGUMENT],
 			measurement: [BlockType.STOPWATCH_START, BlockType.STOPWATCH_STOP, BlockType.STOPWATCH_RESET, BlockType.STOPWATCH_READ],
-			parallel: [BlockType.THREAD_CREATE, BlockType.THREAD_JOIN]
+			parallel: [BlockType.THREAD_CREATE]
 		},
 		twoDimensionalArrays: twoDimensionalArrays,
 		oneDimensionalArrays: oneDimensionalArrays,
@@ -623,7 +711,7 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 				initialOneDimensionalArrays,
 				twoDimensionalArraysResult,
 				oneDimensionalArraysResult) => {
-			return true;
+			return {cleared: true, failReason: ""};
 		}
 	});
 }
@@ -659,15 +747,18 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 				initialOneDimensionalArrays,
 				twoDimensionalArraysResult,
 				oneDimensionalArraysResult) => {
-			if (consoleOutputs.length !== 4 * 10) {
-				return false;
+			if (consoleOutputs.length < 4 * 10) {
+				return {cleared: false, failReason: "コンソールへの出力が少なすぎます。"};
+			} else if (consoleOutputs.length > 4 * 10) {
+				return {cleared: false, failReason: "コンソールへの出力が多すぎます。"};
 			}
+
 			for (const output of consoleOutputs) {
 				if (output !== "Hello") {
-					return false;
+					return {cleared: false, failReason: "「Hello」ではないコンソール出力が混ざっています。"};
 				}
 			}
-			return true;
+			return {cleared: true, failReason: ""};
 		}
 	});
 }
@@ -706,10 +797,10 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 				oneDimensionalArraysResult) => {
 			for (const value of oneDimensionalArraysResult["Data"]) {
 				if (value !== 0) {
-					return false;
+					return {cleared: false, failReason: "Dataに0でない要素が含まれています。"};
 				}
 			}
-			return true;
+			return {cleared: true, failReason: ""};
 		}
 	});
 }
@@ -746,15 +837,25 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 				initialOneDimensionalArrays,
 				twoDimensionalArraysResult,
 				oneDimensionalArraysResult) => {
+			if (consoleOutputs.length < 1) {
+				return {cleared: false, failReason: "コンソールへの出力が少なすぎます。"};
+			} else if (consoleOutputs.length > 1) {
+				return {cleared: false, failReason: "コンソールへの出力が多すぎます。"};
+			}
+
 			for (const row of twoDimensionalArraysResult["Data"]) {
 				for (const col of row) {
 					if (col !== 0) {
-						return false;
+						return {cleared: false, failReason: "Dataに0でない要素が含まれています。"};
 					}
 				}
 			}
 
-			return consoleOutputs.length === 1 && !isNaN (Number (consoleOutputs[0]));
+			if (isNaN (Number (consoleOutputs[0]))) {
+				return {cleared: false, failReason: "コンソールには処理時間を出力してください。"}
+			}
+
+			return {cleared: true, failReason: ""};
 		}
 	});
 }
@@ -791,15 +892,25 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 				initialOneDimensionalArrays,
 				twoDimensionalArraysResult,
 				oneDimensionalArraysResult) => {
+			if (consoleOutputs.length < 1) {
+				return {cleared: false, failReason: "コンソールへの出力が少なすぎます。"};
+			} else if (consoleOutputs.length > 1) {
+				return {cleared: false, failReason: "コンソールへの出力が多すぎます。"};
+			}
+
 			for (const row of twoDimensionalArraysResult["Data"]) {
 				for (const col of row) {
 					if (col !== 0) {
-						return false;
+						return {cleared: false, failReason: "Dataに0でない要素が含まれています。"};
 					}
 				}
 			}
 
-			return consoleOutputs.length === 1 && !isNaN (Number (consoleOutputs[0]));
+			if (isNaN (Number (consoleOutputs[0]))) {
+				return {cleared: false, failReason: "コンソールには処理時間を出力してください。"}
+			}
+
+			return {cleared: true, failReason: ""};
 		}
 	});
 }
@@ -846,15 +957,25 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 				initialOneDimensionalArrays,
 				twoDimensionalArraysResult,
 				oneDimensionalArraysResult) => {
+			if (consoleOutputs.length < 1) {
+				return {cleared: false, failReason: "コンソールへの出力が少なすぎます。"};
+			} else if (consoleOutputs.length > 1) {
+				return {cleared: false, failReason: "コンソールへの出力が多すぎます。"};
+			}
+
 			for (const row of twoDimensionalArraysResult["Data"]) {
 				for (const col of row) {
 					if (col !== 0) {
-						return false;
+						return {cleared: false, failReason: "Dataに0でない要素が含まれています。"};
 					}
 				}
 			}
 
-			return consoleOutputs.length === 1 && !isNaN (Number (consoleOutputs[0]));
+			if (isNaN (Number (consoleOutputs[0]))) {
+				return {cleared: false, failReason: "コンソールには処理時間を出力してください。"}
+			}
+
+			return {cleared: true, failReason: ""};
 		}
 	});
 }
@@ -903,11 +1024,11 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 				for (let col = 0; col < initialTwoDimensionalArrays["A+B"][0].length; col++) {
 					const correct = initialTwoDimensionalArrays["A"][row][col] + initialTwoDimensionalArrays["B"][row][col];
 					if (twoDimensionalArraysResult["A+B"][row][col] !== correct) {
-						return false;
+						return {cleared: false, failReason: "計算結果が異なります。"};
 					}
 				}
 			}
-			return true;
+			return {cleared: true, failReason: ""};
 		}
 	});
 }
@@ -941,11 +1062,11 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 			for (const row of twoDimensionalArraysResult["Array1"]) {
 				for (const element of row) {
 					if (element !== 0) {
-						return false;
+						return {cleared: false, failReason: "Dataに0でない要素が含まれています。"};
 					}
 				}
 			}
-			return true;
+			return {cleared: true, failReason: ""};
 		}
 
 	});

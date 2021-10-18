@@ -62,13 +62,16 @@ export const MissionClearModal: React.FC<{ isVisible: boolean, setIsVisible: (va
 };
 
 // ミッション失敗モーダル
-export const MissionFailedModal: React.FC<{ isVisible: boolean, setIsVisible: (value: boolean) => void, missionContent: MissionContent }> = (props) => {
+export const MissionFailedModal: React.FC<{ isVisible: boolean, setIsVisible: (value: boolean) => void, missionContent: MissionContent, failReason: string }> = (props) => {
 	return (
 		<div className={"modal-panel"} id={"mission-failed"} style={{display: props.isVisible ? "block" : "none"}}>
 			<h1 className={"center"}>Mission Failed...</h1>
 			<h2 className={"center"}>{props.missionContent.missionTitle}</h2>
 			<h2 className={"center"}>クリア条件</h2>
 			<div className={"center"}>{props.missionContent.goal}</div>
+
+			<h2 className={"center"}>失敗理由</h2>
+			<div className={"center"}>{props.failReason}</div>
 
 			<h2 className={"center"}>ヒント</h2>
 			<div>サンプルテキスト</div>

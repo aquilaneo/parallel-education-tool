@@ -72,7 +72,7 @@ export interface MissionContent {
 			initialOneDimensionalArrays: { [key: string]: number[] },
 			twoDimensionalArraysResult: { [key: string]: number[][] },
 			oneDimensionalArraysResult: { [key: string]: number[] },
-	) => boolean; // ミッション達成判断関数(プログラム終了時に呼び出される)
+	) => MissionResult; // ミッション達成判断関数(プログラム終了時に呼び出される)
 }
 
 
@@ -205,6 +205,11 @@ export class MissionScore {
 	getBlockCount () {
 		return this.blockCount;
 	}
+}
+
+export interface MissionResult {
+	cleared: boolean;
+	failReason: string;
 }
 
 export class Mission {
