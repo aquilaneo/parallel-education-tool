@@ -22,6 +22,7 @@ const Playground: React.FC<{ missionID: string }> = (props) => {
 	const [variableCanvas, setVariableCanvas] = useState (new VariableCanvas.VariableCanvas ());
 	const [threadInfos, setThreadInfos] = useState ([] as { name: string, blocksXml: string }[]);
 	const [threadCount, setThreadCount] = useState (threadInfos.length);
+	const [missionFailReason, setMissionFailReason] = useState ("");
 	const [programSpeed, setProgramSpeed] = useState ("1");
 
 	// 参照の取得
@@ -113,10 +114,12 @@ const Playground: React.FC<{ missionID: string }> = (props) => {
 
 			<PlaygroundModals.MissionDetailModal isVisible={isDetailVisible} setIsVisible={setIsDetailVisible}
 												 missionContent={missionContent}/>
-			<PlaygroundModals.MissionClearModal isVisible={isClearVisible} setIsVisible={setIsClearVisible}
-												missionContent={missionContent} nextMissionID={nextMissionID}/>
-			<PlaygroundModals.MissionFailedModal isVisible={isFailedVisible} setIsVisible={setIsFailedVisible}
-												 missionContent={missionContent}/>
+			<PlaygroundModals.MissionClearModal isVisible={isClearVisible} close={() => {
+				setIsClearVisible (false)
+			}} missionContent={missionContent} nextMissionID={nextMissionID}/>
+			<PlaygroundModals.MissionFailedModal isVisible={isFailedVisible} close={() => {
+				setIsFailedVisible (false)
+			}} missionContent={missionContent} failReason={missionFailReason}/>
 
 			<SplitView.SplitView id={"main-view"}>
 				<SplitView.SplitPanel id={"left-panel"} initialWidth={editorInitialWidth} minWidth={editorMinWidth}
@@ -125,7 +128,8 @@ const Playground: React.FC<{ missionID: string }> = (props) => {
 						setIsDetailVisible (false);
 					}} showClearModal={() => {
 						setIsClearVisible (true);
-					}} showFailedModal={() => {
+					}} showFailedModal={(failReason: string) => {
+						setMissionFailReason (failReason);
 						setIsFailedVisible (true);
 					}}/>
 				</SplitView.SplitPanel>

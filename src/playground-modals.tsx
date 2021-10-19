@@ -26,7 +26,7 @@ export const MissionDetailModal: React.FC<{ isVisible: boolean, setIsVisible: (v
 };
 
 // ミッションクリアモーダル
-export const MissionClearModal: React.FC<{ isVisible: boolean, setIsVisible: (value: boolean) => void, missionContent: MissionContent, nextMissionID: string | undefined }> = (props) => {
+export const MissionClearModal: React.FC<{ isVisible: boolean, close: () => void, missionContent: MissionContent, nextMissionID: string | undefined }> = (props) => {
 	const nextMissionID = props.nextMissionID ? props.nextMissionID : "";
 	return (
 		<div className={"modal-panel"} id={"mission-clear"} style={{display: props.isVisible ? "block" : "none"}}>
@@ -52,7 +52,7 @@ export const MissionClearModal: React.FC<{ isVisible: boolean, setIsVisible: (va
 					次のミッションへ
 				</Link></div>
 				<button onClick={() => {
-					props.setIsVisible (false);
+					props.close ();
 				}}>ミッションに戻る
 				</button>
 				<div><Link to={"/"}>トップページへ</Link></div>
@@ -62,7 +62,7 @@ export const MissionClearModal: React.FC<{ isVisible: boolean, setIsVisible: (va
 };
 
 // ミッション失敗モーダル
-export const MissionFailedModal: React.FC<{ isVisible: boolean, setIsVisible: (value: boolean) => void, missionContent: MissionContent, failReason: string }> = (props) => {
+export const MissionFailedModal: React.FC<{ isVisible: boolean, close: () => void, missionContent: MissionContent, failReason: string }> = (props) => {
 	return (
 		<div className={"modal-panel"} id={"mission-failed"} style={{display: props.isVisible ? "block" : "none"}}>
 			<h1 className={"center"}>Mission Failed...</h1>
@@ -79,7 +79,7 @@ export const MissionFailedModal: React.FC<{ isVisible: boolean, setIsVisible: (v
 			<div style={{margin: "0 0 1rem 0"}} className={"center"}>
 				<div>
 					<button onClick={() => {
-						props.setIsVisible (false);
+						props.close ();
 					}}>ミッションに戻る
 					</button>
 				</div>
