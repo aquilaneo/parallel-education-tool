@@ -1033,6 +1033,50 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 	});
 }
 
+// ミッション3-1
+{
+	const twoDimensionalArrays = new Mission.TwoDimensionalArrays ();
+	const oneDimensionalArrays = new Mission.OneDimensionalArrays ();
+	oneDimensionalArrays.addConstArray ("fib", [0, 0, 0, 0, 0, 0, 0, 0]);
+	missionContents.addMissionContent ({
+		chapterName: "3章",
+		missionTitle: "[3章 並列プログラミング基礎編 - 1.並列化できないアルゴリズム]",
+		missionExplanation: "世の中には並列化できないアルゴリズムも存在します。",
+		missionID: "mission3-1",
+		score: new Mission.MissionScore (),
+		program: "",
+		goal: `フィボナッチ数列を求める。`,
+		blockList: {
+			behaviors: [BlockType.TEXT_PRINT, BlockType.WAIT_MS, BlockType.WAIT_S],
+			logic: [BlockType.CONTROLS_IF, BlockType.CONTROLS_IFELSE, BlockType.LOGIC_COMPARE, BlockType.LOGIC_OPERATION, BlockType.LOGIC_NEGATE],
+			loops: [BlockType.CONTROLS_REPEAT_EXT, BlockType.CONTROLS_WHILEUNTIL],
+			math: [BlockType.MATH_NUMBER, BlockType.MATH_ARITHMETIC],
+			text: [BlockType.TEXT, BlockType.STR_ARITHMETIC],
+			localVariables: [BlockType.LOCAL_VARIABLE_AVAILABLE],
+			globalArrays: [BlockType.GLOBAL_ONE_DIMENSIONAL_ARRAY_READ, BlockType.GLOBAL_ONE_DIMENSIONAL_ARRAY_WRITE, BlockType.GLOBAL_TWO_DIMENSIONAL_ARRAY_READ, BlockType.GLOBAL_TWO_DIMENSIONAL_ARRAY_WRITE],
+			functions: [BlockType.FUNCTION_DEFINITION, BlockType.FUNCTION_CALL, BlockType.ENTRY_POINT, BlockType.GET_ARGUMENT],
+			measurement: [BlockType.STOPWATCH_START, BlockType.STOPWATCH_STOP, BlockType.STOPWATCH_RESET, BlockType.STOPWATCH_READ],
+			parallel: [BlockType.THREAD_CREATE, BlockType.THREAD_JOIN]
+		},
+		twoDimensionalArrays: twoDimensionalArrays,
+		oneDimensionalArrays: oneDimensionalArrays,
+		judge: (consoleOutputs,
+				initialTwoDimensionalArrays,
+				initialOneDimensionalArrays,
+				twoDimensionalArraysResult,
+				oneDimensionalArraysResult) => {
+			const correct = [0, 1, 1, 2, 3, 5, 8, 13];
+			for (let i = 0; i < correct.length; i++) {
+				if (oneDimensionalArraysResult["fib"][i] !== correct[i]) {
+					return {cleared: false, failReason: "計算結果が異なります。"};
+				}
+			}
+
+			return {cleared: true, failReason: ""};
+		}
+	});
+}
+
 // サンプルミッション
 {
 	const twoDimensionalArrays = new Mission.TwoDimensionalArrays ();
