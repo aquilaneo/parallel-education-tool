@@ -13,6 +13,7 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 {
 	const twoDimensionalArrays = new Mission.TwoDimensionalArrays ();
 	const oneDimensionalArrays = new Mission.OneDimensionalArrays ();
+	const globalVariables = new Mission.GlobalVariables ();
 	missionContents.addMissionContent ({
 		chapterName: "1章",
 		missionTitle: "[1章 基本操作編 - 1.プログラムの作り方]",
@@ -35,11 +36,10 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 		},
 		twoDimensionalArrays: twoDimensionalArrays,
 		oneDimensionalArrays: oneDimensionalArrays,
+		globalVariables: globalVariables,
 		judge: (consoleOutputs,
-				initialTwoDimensionalArrays,
-				initialOneDimensionalArrays,
-				twoDimensionalArraysResult,
-				oneDimensionalArraysResult) => {
+				initialTwoDimensionalArrays, initialOneDimensionalArrays, initialVariables,
+				twoDimensionalArraysResult, oneDimensionalArraysResult, variablesResult) => {
 			if (consoleOutputs.length < 1) {
 				return {cleared: false, failReason: "コンソールにテキストを出力してください。"};
 			} else if (consoleOutputs.length > 1) {
@@ -58,6 +58,7 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 {
 	const twoDimensionalArrays = new Mission.TwoDimensionalArrays ();
 	const oneDimensionalArrays = new Mission.OneDimensionalArrays ();
+	const globalVariables = new Mission.GlobalVariables ();
 	missionContents.addMissionContent ({
 		chapterName: "1章",
 		missionTitle: "[1章 基本操作編 - 2.複数のブロック]",
@@ -80,11 +81,10 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 		},
 		twoDimensionalArrays: twoDimensionalArrays,
 		oneDimensionalArrays: oneDimensionalArrays,
+		globalVariables: globalVariables,
 		judge: (consoleOutputs,
-				initialTwoDimensionalArrays,
-				initialOneDimensionalArrays,
-				twoDimensionalArraysResult,
-				oneDimensionalArraysResult) => {
+				initialTwoDimensionalArrays, initialOneDimensionalArrays, initialVariables,
+				twoDimensionalArraysResult, oneDimensionalArraysResult, variablesResult) => {
 			if (consoleOutputs.length < 3) {
 				return {cleared: false, failReason: "コンソールへの出力が少なすぎます。"};
 			} else if (consoleOutputs.length > 3) {
@@ -106,6 +106,7 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 {
 	const twoDimensionalArrays = new Mission.TwoDimensionalArrays ();
 	const oneDimensionalArrays = new Mission.OneDimensionalArrays ();
+	const globalVariables = new Mission.GlobalVariables ();
 	missionContents.addMissionContent ({
 		chapterName: "1章",
 		missionTitle: "[1章 基本操作編 - 3.繰り返し]",
@@ -128,11 +129,10 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 		},
 		twoDimensionalArrays: twoDimensionalArrays,
 		oneDimensionalArrays: oneDimensionalArrays,
+		globalVariables: globalVariables,
 		judge: (consoleOutputs,
-				initialTwoDimensionalArrays,
-				initialOneDimensionalArrays,
-				twoDimensionalArraysResult,
-				oneDimensionalArraysResult) => {
+				initialTwoDimensionalArrays, initialOneDimensionalArrays, initialVariables,
+				twoDimensionalArraysResult, oneDimensionalArraysResult, variablesResult) => {
 			if (consoleOutputs.length < 50) {
 				return {cleared: false, failReason: "コンソールへの出力が少なすぎます。"};
 			} else if (consoleOutputs.length > 50) {
@@ -154,6 +154,7 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 {
 	const twoDimensionalArrays = new Mission.TwoDimensionalArrays ();
 	const oneDimensionalArrays = new Mission.OneDimensionalArrays ();
+	const globalVariables = new Mission.GlobalVariables ();
 	missionContents.addMissionContent ({
 		chapterName: "1章",
 		missionTitle: "[1章 基本操作編 - 4.数値ブロックと計算]",
@@ -176,11 +177,10 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 		},
 		twoDimensionalArrays: twoDimensionalArrays,
 		oneDimensionalArrays: oneDimensionalArrays,
+		globalVariables: globalVariables,
 		judge: (consoleOutputs,
-				initialTwoDimensionalArrays,
-				initialOneDimensionalArrays,
-				twoDimensionalArraysResult,
-				oneDimensionalArraysResult) => {
+				initialTwoDimensionalArrays, initialOneDimensionalArrays, initialVariables,
+				twoDimensionalArraysResult, oneDimensionalArraysResult, variablesResult) => {
 			if (consoleOutputs.length < 1) {
 				return {cleared: false, failReason: "コンソールへの出力が少なすぎます。"};
 			} else if (consoleOutputs.length > 1) {
@@ -200,6 +200,7 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 {
 	const twoDimensionalArrays = new Mission.TwoDimensionalArrays ();
 	const oneDimensionalArrays = new Mission.OneDimensionalArrays ();
+	const globalVariables = new Mission.GlobalVariables ();
 	missionContents.addMissionContent ({
 		chapterName: "1章",
 		missionTitle: "[1章 基本操作編 - 5.変数の使い方]",
@@ -222,11 +223,10 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 		},
 		twoDimensionalArrays: twoDimensionalArrays,
 		oneDimensionalArrays: oneDimensionalArrays,
+		globalVariables: globalVariables,
 		judge: (consoleOutputs,
-				initialTwoDimensionalArrays,
-				initialOneDimensionalArrays,
-				twoDimensionalArraysResult,
-				oneDimensionalArraysResult) => {
+				initialTwoDimensionalArrays, initialOneDimensionalArrays, initialVariables,
+				twoDimensionalArraysResult, oneDimensionalArraysResult, variablesResult) => {
 			if (consoleOutputs.length < 1) {
 				return {cleared: false, failReason: "コンソールへの出力が少なすぎます。"};
 			} else if (consoleOutputs.length > 1) {
@@ -246,6 +246,7 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 {
 	const twoDimensionalArrays = new Mission.TwoDimensionalArrays ();
 	const oneDimensionalArrays = new Mission.OneDimensionalArrays ();
+	const globalVariables = new Mission.GlobalVariables ();
 	missionContents.addMissionContent ({
 		chapterName: "1章",
 		missionTitle: "[1章 基本操作編 - 6.関数の作り方と使い方]",
@@ -268,11 +269,10 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 		},
 		twoDimensionalArrays: twoDimensionalArrays,
 		oneDimensionalArrays: oneDimensionalArrays,
+		globalVariables: globalVariables,
 		judge: (consoleOutputs,
-				initialTwoDimensionalArrays,
-				initialOneDimensionalArrays,
-				twoDimensionalArraysResult,
-				oneDimensionalArraysResult) => {
+				initialTwoDimensionalArrays, initialOneDimensionalArrays, initialVariables,
+				twoDimensionalArraysResult, oneDimensionalArraysResult, variablesResult) => {
 			if (consoleOutputs.length < 1) {
 				return {cleared: false, failReason: "コンソールへの出力が少なすぎます。"};
 			} else if (consoleOutputs.length > 1) {
@@ -292,6 +292,7 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 {
 	const twoDimensionalArrays = new Mission.TwoDimensionalArrays ();
 	const oneDimensionalArrays = new Mission.OneDimensionalArrays ();
+	const globalVariables = new Mission.GlobalVariables ();
 	missionContents.addMissionContent ({
 		chapterName: "1章",
 		missionTitle: "[1章 基本操作編 - 7.関数の引数]",
@@ -314,11 +315,10 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 		},
 		twoDimensionalArrays: twoDimensionalArrays,
 		oneDimensionalArrays: oneDimensionalArrays,
+		globalVariables: globalVariables,
 		judge: (consoleOutputs,
-				initialTwoDimensionalArrays,
-				initialOneDimensionalArrays,
-				twoDimensionalArraysResult,
-				oneDimensionalArraysResult) => {
+				initialTwoDimensionalArrays, initialOneDimensionalArrays, initialVariables,
+				twoDimensionalArraysResult, oneDimensionalArraysResult, variablesResult) => {
 			if (consoleOutputs.length < 1) {
 				return {cleared: false, failReason: "コンソールへの出力が少なすぎます。"};
 			} else if (consoleOutputs.length > 1) {
@@ -338,6 +338,7 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 {
 	const twoDimensionalArrays = new Mission.TwoDimensionalArrays ();
 	const oneDimensionalArrays = new Mission.OneDimensionalArrays ();
+	const globalVariables = new Mission.GlobalVariables ();
 	missionContents.addMissionContent ({
 		chapterName: "1章",
 		missionTitle: "[1章 基本操作編 - 8.処理時間計測]",
@@ -360,11 +361,10 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 		},
 		twoDimensionalArrays: twoDimensionalArrays,
 		oneDimensionalArrays: oneDimensionalArrays,
+		globalVariables: globalVariables,
 		judge: (consoleOutputs,
-				initialTwoDimensionalArrays,
-				initialOneDimensionalArrays,
-				twoDimensionalArraysResult,
-				oneDimensionalArraysResult) => {
+				initialTwoDimensionalArrays, initialOneDimensionalArrays, initialVariables,
+				twoDimensionalArraysResult, oneDimensionalArraysResult, variablesResult) => {
 			if (consoleOutputs.length < 51) {
 				return {cleared: false, failReason: "コンソールへの出力が少なすぎます。"};
 			} else if (consoleOutputs.length > 51) {
@@ -393,6 +393,7 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 {
 	const twoDimensionalArrays = new Mission.TwoDimensionalArrays ();
 	const oneDimensionalArrays = new Mission.OneDimensionalArrays ();
+	const globalVariables = new Mission.GlobalVariables ();
 	oneDimensionalArrays.addConstArray ("Data", [2, 4, 6, 8]);
 	missionContents.addMissionContent ({
 		chapterName: "1章",
@@ -416,11 +417,10 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 		},
 		twoDimensionalArrays: twoDimensionalArrays,
 		oneDimensionalArrays: oneDimensionalArrays,
+		globalVariables: globalVariables,
 		judge: (consoleOutputs,
-				initialTwoDimensionalArrays,
-				initialOneDimensionalArrays,
-				twoDimensionalArraysResult,
-				oneDimensionalArraysResult) => {
+				initialTwoDimensionalArrays, initialOneDimensionalArrays, initialVariables,
+				twoDimensionalArraysResult, oneDimensionalArraysResult, variablesResult) => {
 			if (consoleOutputs.length < 1) {
 				return {cleared: false, failReason: "コンソールへの出力が少なすぎます。"};
 			} else if (consoleOutputs.length > 1) {
@@ -440,6 +440,7 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 {
 	const twoDimensionalArrays = new Mission.TwoDimensionalArrays ();
 	const oneDimensionalArrays = new Mission.OneDimensionalArrays ();
+	const globalVariables = new Mission.GlobalVariables ();
 	oneDimensionalArrays.addConstArray ("Data", [2, 4, 6, 8]);
 	missionContents.addMissionContent ({
 		chapterName: "1章",
@@ -463,11 +464,10 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 		},
 		twoDimensionalArrays: twoDimensionalArrays,
 		oneDimensionalArrays: oneDimensionalArrays,
+		globalVariables: globalVariables,
 		judge: (consoleOutputs,
-				initialTwoDimensionalArrays,
-				initialOneDimensionalArrays,
-				twoDimensionalArraysResult,
-				oneDimensionalArraysResult) => {
+				initialTwoDimensionalArrays, initialOneDimensionalArrays, initialVariables,
+				twoDimensionalArraysResult, oneDimensionalArraysResult, variablesResult) => {
 			for (const value of oneDimensionalArraysResult["Data"]) {
 				if (value !== 0) {
 					return {cleared: false, failReason: "Dataに0でない要素が含まれています。"};
@@ -482,6 +482,7 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 {
 	const twoDimensionalArrays = new Mission.TwoDimensionalArrays ();
 	const oneDimensionalArrays = new Mission.OneDimensionalArrays ();
+	const globalVariables = new Mission.GlobalVariables ();
 	twoDimensionalArrays.addConstArray ("Data", [[1, 2, 3], [4, 5, 6]]);
 	missionContents.addMissionContent ({
 		chapterName: "1章",
@@ -505,11 +506,10 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 		},
 		twoDimensionalArrays: twoDimensionalArrays,
 		oneDimensionalArrays: oneDimensionalArrays,
+		globalVariables: globalVariables,
 		judge: (consoleOutputs,
-				initialTwoDimensionalArrays,
-				initialOneDimensionalArrays,
-				twoDimensionalArraysResult,
-				oneDimensionalArraysResult) => {
+				initialTwoDimensionalArrays, initialOneDimensionalArrays, initialVariables,
+				twoDimensionalArraysResult, oneDimensionalArraysResult, variablesResult) => {
 			for (const row of twoDimensionalArraysResult["Data"]) {
 				for (const value of row) {
 					if (value !== 0) {
@@ -526,6 +526,7 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 {
 	const twoDimensionalArrays = new Mission.TwoDimensionalArrays ();
 	const oneDimensionalArrays = new Mission.OneDimensionalArrays ();
+	const globalVariables = new Mission.GlobalVariables ();
 	twoDimensionalArrays.addRandomArray ("Data", 2, 3, 0, 99);
 	missionContents.addMissionContent ({
 		chapterName: "1章",
@@ -549,11 +550,10 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 		},
 		twoDimensionalArrays: twoDimensionalArrays,
 		oneDimensionalArrays: oneDimensionalArrays,
+		globalVariables: globalVariables,
 		judge: (consoleOutputs,
-				initialTwoDimensionalArrays,
-				initialOneDimensionalArrays,
-				twoDimensionalArraysResult,
-				oneDimensionalArraysResult) => {
+				initialTwoDimensionalArrays, initialOneDimensionalArrays, initialVariables,
+				twoDimensionalArraysResult, oneDimensionalArraysResult, variablesResult) => {
 			if (consoleOutputs.length < 1) {
 				return {cleared: false, failReason: "コンソールへの出力が少なすぎます。"};
 			} else if (consoleOutputs.length > 1) {
@@ -581,6 +581,7 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 {
 	const twoDimensionalArrays = new Mission.TwoDimensionalArrays ();
 	const oneDimensionalArrays = new Mission.OneDimensionalArrays ();
+	const globalVariables = new Mission.GlobalVariables ();
 	twoDimensionalArrays.addRandomArray ("Data", 2, 3, 0, 99);
 	missionContents.addMissionContent ({
 		chapterName: "1章",
@@ -604,11 +605,10 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 		},
 		twoDimensionalArrays: twoDimensionalArrays,
 		oneDimensionalArrays: oneDimensionalArrays,
+		globalVariables: globalVariables,
 		judge: (consoleOutputs,
-				initialTwoDimensionalArrays,
-				initialOneDimensionalArrays,
-				twoDimensionalArraysResult,
-				oneDimensionalArraysResult) => {
+				initialTwoDimensionalArrays, initialOneDimensionalArrays, initialVariables,
+				twoDimensionalArraysResult, oneDimensionalArraysResult, variablesResult) => {
 			if (consoleOutputs.length < 1) {
 				return {cleared: false, failReason: "コンソールへの出力が少なすぎます。"};
 			} else if (consoleOutputs.length > 1) {
@@ -637,6 +637,7 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 {
 	const twoDimensionalArrays = new Mission.TwoDimensionalArrays ();
 	const oneDimensionalArrays = new Mission.OneDimensionalArrays ();
+	const globalVariables = new Mission.GlobalVariables ();
 	missionContents.addMissionContent ({
 		chapterName: "2章",
 		missionTitle: "[2章 並列プログラミング入門編 - 1.スレッドの生成]",
@@ -659,11 +660,10 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 		},
 		twoDimensionalArrays: twoDimensionalArrays,
 		oneDimensionalArrays: oneDimensionalArrays,
+		globalVariables: globalVariables,
 		judge: (consoleOutputs,
-				initialTwoDimensionalArrays,
-				initialOneDimensionalArrays,
-				twoDimensionalArraysResult,
-				oneDimensionalArraysResult) => {
+				initialTwoDimensionalArrays, initialOneDimensionalArrays, initialVariables,
+				twoDimensionalArraysResult, oneDimensionalArraysResult, variablesResult) => {
 			if (consoleOutputs.length < 4) {
 				return {cleared: false, failReason: "コンソールへの出力が少なすぎます。"};
 			} else if (consoleOutputs.length > 4) {
@@ -684,6 +684,7 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 {
 	const twoDimensionalArrays = new Mission.TwoDimensionalArrays ();
 	const oneDimensionalArrays = new Mission.OneDimensionalArrays ();
+	const globalVariables = new Mission.GlobalVariables ();
 	missionContents.addMissionContent ({
 		chapterName: "2章",
 		missionTitle: "[2章 並列プログラミング入門編 - 2.スレッドの終了待ち1]",
@@ -706,11 +707,10 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 		},
 		twoDimensionalArrays: twoDimensionalArrays,
 		oneDimensionalArrays: oneDimensionalArrays,
+		globalVariables: globalVariables,
 		judge: (consoleOutputs,
-				initialTwoDimensionalArrays,
-				initialOneDimensionalArrays,
-				twoDimensionalArraysResult,
-				oneDimensionalArraysResult) => {
+				initialTwoDimensionalArrays, initialOneDimensionalArrays, initialVariables,
+				twoDimensionalArraysResult, oneDimensionalArraysResult, variablesResult) => {
 			return {cleared: true, failReason: ""};
 		}
 	});
@@ -720,6 +720,7 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 {
 	const twoDimensionalArrays = new Mission.TwoDimensionalArrays ();
 	const oneDimensionalArrays = new Mission.OneDimensionalArrays ();
+	const globalVariables = new Mission.GlobalVariables ();
 	missionContents.addMissionContent ({
 		chapterName: "2章",
 		missionTitle: "[2章 並列プログラミング入門編 - 3.スレッドの終了待ち2]",
@@ -742,11 +743,10 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 		},
 		twoDimensionalArrays: twoDimensionalArrays,
 		oneDimensionalArrays: oneDimensionalArrays,
+		globalVariables: globalVariables,
 		judge: (consoleOutputs,
-				initialTwoDimensionalArrays,
-				initialOneDimensionalArrays,
-				twoDimensionalArraysResult,
-				oneDimensionalArraysResult) => {
+				initialTwoDimensionalArrays, initialOneDimensionalArrays, initialVariables,
+				twoDimensionalArraysResult, oneDimensionalArraysResult, variablesResult) => {
 			if (consoleOutputs.length < 4 * 10) {
 				return {cleared: false, failReason: "コンソールへの出力が少なすぎます。"};
 			} else if (consoleOutputs.length > 4 * 10) {
@@ -767,6 +767,7 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 {
 	const twoDimensionalArrays = new Mission.TwoDimensionalArrays ();
 	const oneDimensionalArrays = new Mission.OneDimensionalArrays ();
+	const globalVariables = new Mission.GlobalVariables ();
 	oneDimensionalArrays.addConstArray ("Data", [1, 2, 3, 4]);
 	missionContents.addMissionContent ({
 		chapterName: "2章",
@@ -790,11 +791,10 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 		},
 		twoDimensionalArrays: twoDimensionalArrays,
 		oneDimensionalArrays: oneDimensionalArrays,
+		globalVariables: globalVariables,
 		judge: (consoleOutputs,
-				initialTwoDimensionalArrays,
-				initialOneDimensionalArrays,
-				twoDimensionalArraysResult,
-				oneDimensionalArraysResult) => {
+				initialTwoDimensionalArrays, initialOneDimensionalArrays, initialVariables,
+				twoDimensionalArraysResult, oneDimensionalArraysResult, variablesResult) => {
 			for (const value of oneDimensionalArraysResult["Data"]) {
 				if (value !== 0) {
 					return {cleared: false, failReason: "Dataに0でない要素が含まれています。"};
@@ -809,6 +809,7 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 {
 	const twoDimensionalArrays = new Mission.TwoDimensionalArrays ();
 	const oneDimensionalArrays = new Mission.OneDimensionalArrays ();
+	const globalVariables = new Mission.GlobalVariables ();
 	twoDimensionalArrays.addConstArray ("Data", [[1, 2, 3, 4], [5, 6, 7, 8], [9, 10, 11, 12], [13, 14, 15, 16]]);
 	missionContents.addMissionContent ({
 		chapterName: "2章",
@@ -832,11 +833,10 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 		},
 		twoDimensionalArrays: twoDimensionalArrays,
 		oneDimensionalArrays: oneDimensionalArrays,
+		globalVariables: globalVariables,
 		judge: (consoleOutputs,
-				initialTwoDimensionalArrays,
-				initialOneDimensionalArrays,
-				twoDimensionalArraysResult,
-				oneDimensionalArraysResult) => {
+				initialTwoDimensionalArrays, initialOneDimensionalArrays, initialVariables,
+				twoDimensionalArraysResult, oneDimensionalArraysResult, variablesResult) => {
 			if (consoleOutputs.length < 1) {
 				return {cleared: false, failReason: "コンソールへの出力が少なすぎます。"};
 			} else if (consoleOutputs.length > 1) {
@@ -864,6 +864,7 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 {
 	const twoDimensionalArrays = new Mission.TwoDimensionalArrays ();
 	const oneDimensionalArrays = new Mission.OneDimensionalArrays ();
+	const globalVariables = new Mission.GlobalVariables ();
 	twoDimensionalArrays.addConstArray ("Data", [[1, 2, 3, 4], [5, 6, 7, 8], [9, 10, 11, 12], [13, 14, 15, 16]]);
 	missionContents.addMissionContent ({
 		chapterName: "2章",
@@ -887,11 +888,10 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 		},
 		twoDimensionalArrays: twoDimensionalArrays,
 		oneDimensionalArrays: oneDimensionalArrays,
+		globalVariables: globalVariables,
 		judge: (consoleOutputs,
-				initialTwoDimensionalArrays,
-				initialOneDimensionalArrays,
-				twoDimensionalArraysResult,
-				oneDimensionalArraysResult) => {
+				initialTwoDimensionalArrays, initialOneDimensionalArrays, initialVariables,
+				twoDimensionalArraysResult, oneDimensionalArraysResult, variablesResult) => {
 			if (consoleOutputs.length < 1) {
 				return {cleared: false, failReason: "コンソールへの出力が少なすぎます。"};
 			} else if (consoleOutputs.length > 1) {
@@ -919,6 +919,7 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 {
 	const twoDimensionalArrays = new Mission.TwoDimensionalArrays ();
 	const oneDimensionalArrays = new Mission.OneDimensionalArrays ();
+	const globalVariables = new Mission.GlobalVariables ();
 	const array = [];
 	const rowCount = 8;
 	const colCount = 16;
@@ -952,11 +953,10 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 		},
 		twoDimensionalArrays: twoDimensionalArrays,
 		oneDimensionalArrays: oneDimensionalArrays,
+		globalVariables: globalVariables,
 		judge: (consoleOutputs,
-				initialTwoDimensionalArrays,
-				initialOneDimensionalArrays,
-				twoDimensionalArraysResult,
-				oneDimensionalArraysResult) => {
+				initialTwoDimensionalArrays, initialOneDimensionalArrays, initialVariables,
+				twoDimensionalArraysResult, oneDimensionalArraysResult, variablesResult) => {
 			if (consoleOutputs.length < 1) {
 				return {cleared: false, failReason: "コンソールへの出力が少なすぎます。"};
 			} else if (consoleOutputs.length > 1) {
@@ -984,6 +984,7 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 {
 	const twoDimensionalArrays = new Mission.TwoDimensionalArrays ();
 	const oneDimensionalArrays = new Mission.OneDimensionalArrays ();
+	const globalVariables = new Mission.GlobalVariables ();
 	const rowCount = 4;
 	const colCount = 8;
 	twoDimensionalArrays.addRandomArray ("A", rowCount, colCount, 0, 10);
@@ -1015,11 +1016,10 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 		},
 		twoDimensionalArrays: twoDimensionalArrays,
 		oneDimensionalArrays: oneDimensionalArrays,
+		globalVariables: globalVariables,
 		judge: (consoleOutputs,
-				initialTwoDimensionalArrays,
-				initialOneDimensionalArrays,
-				twoDimensionalArraysResult,
-				oneDimensionalArraysResult) => {
+				initialTwoDimensionalArrays, initialOneDimensionalArrays, initialVariables,
+				twoDimensionalArraysResult, oneDimensionalArraysResult, variablesResult) => {
 			for (let row = 0; row < initialTwoDimensionalArrays["A+B"].length; row++) {
 				for (let col = 0; col < initialTwoDimensionalArrays["A+B"][0].length; col++) {
 					const correct = initialTwoDimensionalArrays["A"][row][col] + initialTwoDimensionalArrays["B"][row][col];
@@ -1037,6 +1037,7 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 {
 	const twoDimensionalArrays = new Mission.TwoDimensionalArrays ();
 	const oneDimensionalArrays = new Mission.OneDimensionalArrays ();
+	const globalVariables = new Mission.GlobalVariables ();
 	oneDimensionalArrays.addConstArray ("fib", [0, 0, 0, 0, 0, 0, 0, 0]);
 	missionContents.addMissionContent ({
 		chapterName: "3章",
@@ -1060,11 +1061,10 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 		},
 		twoDimensionalArrays: twoDimensionalArrays,
 		oneDimensionalArrays: oneDimensionalArrays,
+		globalVariables: globalVariables,
 		judge: (consoleOutputs,
-				initialTwoDimensionalArrays,
-				initialOneDimensionalArrays,
-				twoDimensionalArraysResult,
-				oneDimensionalArraysResult) => {
+				initialTwoDimensionalArrays, initialOneDimensionalArrays, initialVariables,
+				twoDimensionalArraysResult, oneDimensionalArraysResult, variablesResult) => {
 			const correct = [0, 1, 1, 2, 3, 5, 8, 13];
 			for (let i = 0; i < correct.length; i++) {
 				if (oneDimensionalArraysResult["fib"][i] !== correct[i]) {
@@ -1087,6 +1087,9 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 	twoDimensionalArrays.addRandomArray ("Array2", 2, 2, 0, 100);
 	const oneDimensionalArrays = new Mission.OneDimensionalArrays ();
 	oneDimensionalArrays.addRandomArray ("Array3", 4, 0, 10);
+	const globalVariables = new Mission.GlobalVariables ();
+	globalVariables.addConstValue ("Value1", 2);
+	globalVariables.addRandomValue ("value2", 0, 9);
 	missionContents.addMissionContent ({
 		chapterName: "サンプル",
 		missionTitle: "[サンプルミッション - グローバル配列]",
@@ -1098,11 +1101,10 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 		blockList: getAllBlockListXml (),
 		twoDimensionalArrays: twoDimensionalArrays,
 		oneDimensionalArrays: oneDimensionalArrays,
+		globalVariables: globalVariables,
 		judge: (consoleOutputs,
-				initialTwoDimensionalArrays,
-				initialOneDimensionalArrays,
-				twoDimensionalArraysResult,
-				oneDimensionalArraysResult) => {
+				initialTwoDimensionalArrays, initialOneDimensionalArrays, initialVariables,
+				twoDimensionalArraysResult, oneDimensionalArraysResult, variablesResult) => {
 			for (const row of twoDimensionalArraysResult["Array1"]) {
 				for (const element of row) {
 					if (element !== 0) {

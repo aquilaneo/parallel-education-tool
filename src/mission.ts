@@ -65,22 +65,25 @@ export interface MissionContent {
 	program: string, // 作成途中のプログラム保持
 	goal: string, // クリア条件
 	blockList: BlockSettings.BlockList, // 命令ブロック一覧
-	twoDimensionalArrays: TwoDimensionalArrays; // グローバル2次元配列
+	twoDimensionalArrays: TwoDimensionalArrays; // グローバル2次元配列の初期値
 	oneDimensionalArrays: OneDimensionalArrays; // グローバル1次元配列の初期値
+	globalVariables: GlobalVariables; // グローバル変数の初期値
 	judge: (consoleOutputs: string[],
 			initialTwoDimensionalArrays: { [key: string]: number[][] },
 			initialOneDimensionalArrays: { [key: string]: number[] },
+			initialVariables: { [key: string]: number },
 			twoDimensionalArraysResult: { [key: string]: number[][] },
 			oneDimensionalArraysResult: { [key: string]: number[] },
+			variablesResult: { [key: string]: number }
 	) => MissionResult; // ミッション達成判断関数(プログラム終了時に呼び出される)
 }
 
 
 // 配列が定数かランダムかを表すenum
-export enum GlobalArrayType { constant, random}
+export enum GlobalDataType { constant, random}
 
 // ランダム配列の範囲
-export interface ArrayRandomRange {
+export interface DataRandomRange {
 	min: number,
 	max: number
 }
@@ -88,13 +91,13 @@ export interface ArrayRandomRange {
 // 2次元配列クラス
 export class TwoDimensionalArrays {
 	arrays: { [key: string]: number[][] } = {};
-	arrayTypes: { [key: string]: GlobalArrayType } = {};
-	randomRanges: { [key: string]: ArrayRandomRange } = {};
+	arrayTypes: { [key: string]: GlobalDataType } = {};
+	randomRanges: { [key: string]: DataRandomRange } = {};
 
 	// すべてのランダム配列の値をシャッフル
 	randomizeAll () {
 		for (const key in this.arrays) {
-			if (this.arrayTypes[key] === GlobalArrayType.random) {
+			if (this.arrayTypes[key] === GlobalDataType.random) {
 				// 長さ取得
 				const rowLength = this.arrays[key].length;
 				const colLength = this.arrays[key][0].length;
@@ -125,27 +128,27 @@ export class TwoDimensionalArrays {
 	// 定数の2次元配列を追加
 	addConstArray (key: string, array: number[][]) {
 		this.arrays[key] = array;
-		this.arrayTypes[key] = GlobalArrayType.constant;
+		this.arrayTypes[key] = GlobalDataType.constant;
 		this.randomRanges[key] = {min: -1, max: -1};
 	}
 
 	// ランダムの2次元配列を追加
 	addRandomArray (key: string, rowLength: number, colLength: number, randomMin: number, randomMax: number) {
 		this.arrays[key] = this.getRandomArray (rowLength, colLength, randomMin, randomMax);
-		this.arrayTypes[key] = GlobalArrayType.random;
+		this.arrayTypes[key] = GlobalDataType.random;
 		this.randomRanges[key] = {min: randomMin, max: randomMax};
 	}
 }
 
 export class OneDimensionalArrays {
 	arrays: { [key: string]: number[] } = {};
-	arrayTypes: { [key: string]: GlobalArrayType } = {};
-	randomRanges: { [key: string]: ArrayRandomRange } = {};
+	arrayTypes: { [key: string]: GlobalDataType } = {};
+	randomRanges: { [key: string]: DataRandomRange } = {};
 
 	// すべてのランダム配列の値をシャッフル
 	randomizeAll () {
 		for (const key in this.arrays) {
-			if (this.arrayTypes[key] === GlobalArrayType.random) {
+			if (this.arrayTypes[key] === GlobalDataType.random) {
 				// 長さ取得
 				const length = this.arrays[key].length;
 
@@ -170,14 +173,48 @@ export class OneDimensionalArrays {
 	// 定数の2次元配列を追加
 	addConstArray (key: string, array: number[]) {
 		this.arrays[key] = array;
-		this.arrayTypes[key] = GlobalArrayType.constant;
+		this.arrayTypes[key] = GlobalDataType.constant;
 		this.randomRanges[key] = {min: -1, max: -1};
 	}
 
 	// ランダムの2次元配列を追加
 	addRandomArray (key: string, length: number, randomMin: number, randomMax: number) {
 		this.arrays[key] = this.getRandomArray (length, randomMin, randomMax);
-		this.arrayTypes[key] = GlobalArrayType.random;
+		this.arrayTypes[key] = GlobalDataType.random;
+		this.randomRanges[key] = {min: randomMin, max: randomMax};
+	}
+}
+
+export class GlobalVariables {
+	variables: { [key: string]: number } = {};
+	variableTypes: { [key: string]: GlobalDataType } = {};
+	randomRanges: { [key: string]: DataRandomRange } = {};
+
+	// 全てのランダム値をシャッフル
+	randomizeAll () {
+		for (const key in this.variables) {
+			if (this.variableTypes[key] === GlobalDataType.random) {
+				this.variableTypes[key] = this.getRandomArray (this.randomRanges[key].max, this.randomRanges[key].min);
+			}
+		}
+	}
+
+	// ランダムな値を作成
+	getRandomArray (randomMin: number, randomMax: number) {
+		return Math.floor (Math.random () * (randomMax - randomMin) + randomMin);
+	}
+
+	// 定数を追加
+	addConstValue (key: string, value: number) {
+		this.variables[key] = value;
+		this.variableTypes[key] = GlobalDataType.constant;
+		this.randomRanges[key] = {min: -1, max: -1};
+	}
+
+	// ランダムな値を追加
+	addRandomValue (key: string, randomMin: number, randomMax: number) {
+		this.variables[key] = this.getRandomArray (randomMin, randomMax);
+		this.variableTypes[key] = GlobalDataType.random;
 		this.randomRanges[key] = {min: randomMin, max: randomMax};
 	}
 }
@@ -218,6 +255,7 @@ export class Mission {
 	// グローバルデータ現在値
 	currentTwoDimensionalArrays: { [key: string]: number[][] } = {};
 	currentOneDimensionalArrays: { [key: string]: number[] } = {};
+	currentVariables: { [key: string]: number } = {};
 	// コンソール出力内容
 	consoleOutputs: string[] = [];
 	// キャンバス描画関数
@@ -246,8 +284,8 @@ export class Mission {
 
 	judge () {
 		return this.missionContent.judge (this.consoleOutputs,
-			this.missionContent.twoDimensionalArrays.arrays, this.missionContent.oneDimensionalArrays.arrays,
-			this.currentTwoDimensionalArrays, this.currentOneDimensionalArrays);
+			this.missionContent.twoDimensionalArrays.arrays, this.missionContent.oneDimensionalArrays.arrays, this.missionContent.globalVariables.variables,
+			this.currentTwoDimensionalArrays, this.currentOneDimensionalArrays, this.currentVariables);
 	}
 
 	printLog (text: string) {
@@ -322,8 +360,28 @@ export class Mission {
 		// ランダム配列をシャッフルして現在値に初期値をコピー
 		this.missionContent.twoDimensionalArrays.randomizeAll ();
 		this.missionContent.oneDimensionalArrays.randomizeAll ();
+		this.missionContent.globalVariables.randomizeAll ();
 		this.currentTwoDimensionalArrays = JSON.parse (JSON.stringify (this.missionContent.twoDimensionalArrays.arrays));
 		this.currentOneDimensionalArrays = JSON.parse (JSON.stringify (this.missionContent.oneDimensionalArrays.arrays));
+		this.currentVariables = JSON.parse (JSON.stringify (this.missionContent.globalVariables.variables));
+	}
+
+	readVariable (variableName: string) {
+		const variable = this.currentVariables[variableName];
+		if (variable !== undefined) {
+			return variable;
+		} else {
+			this.printError (`"${variableName}" というグローバル変数は存在しません！`);
+		}
+	}
+
+	writeVariable (variableName: string, value: number) {
+		const variable = this.currentVariables[variableName];
+		if (variable !== undefined) {
+			this.currentVariables[variableName] = value;
+		} else {
+			this.printError (`"${variableName}" というグローバル変数は存在しません！`);
+		}
 	}
 
 	addThread (threadName: string, functionStatementElement: Element) {

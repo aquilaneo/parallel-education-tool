@@ -42,7 +42,7 @@ const Playground: React.FC<{ missionID: string }> = (props) => {
 	const blockListXml = missionContent.blockList;
 	const [mission, setMission] = useState (new Mission (missionContent,
 		() => {
-			variableCanvas.drawTable (mission.currentTwoDimensionalArrays, mission.currentOneDimensionalArrays);
+			variableCanvas.drawTable (mission.currentTwoDimensionalArrays, mission.currentOneDimensionalArrays, mission.currentVariables);
 		},
 		(output: { text: string, type: ConsoleOutputType }) => {
 			if (consoleRef.current) {
@@ -77,7 +77,7 @@ const Playground: React.FC<{ missionID: string }> = (props) => {
 	// 中央パネルリサイズ処理
 	function onCenterPanelResized () {
 		variableCanvas.resize ();
-		variableCanvas.drawTable (mission.currentTwoDimensionalArrays, mission.currentOneDimensionalArrays);
+		variableCanvas.drawTable (mission.currentTwoDimensionalArrays, mission.currentOneDimensionalArrays, mission.currentVariables);
 	}
 
 	useEffect (() => {
@@ -369,7 +369,7 @@ class EditorView extends React.Component<{ missionContent: MissionContent, close
 		if (this.userProgram) {
 			// グローバル配列Canvasを初期化
 			mission.resetGlobalArray ();
-			variableCanvas.drawTable (mission.currentTwoDimensionalArrays, mission.currentOneDimensionalArrays);
+			variableCanvas.drawTable (mission.currentTwoDimensionalArrays, mission.currentOneDimensionalArrays, mission.currentVariables);
 
 			// プログラム速度の初期値
 			this.userProgram.setProgramSpeed (initialProgramSpeed);

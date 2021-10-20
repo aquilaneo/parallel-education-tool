@@ -12,7 +12,7 @@ export class VariableCanvas {
 		this.resize ();
 	}
 
-	drawTable (twoDimensionalArrays: { [key: string]: number[][] }, oneDimensionalArrays: { [key: string]: number[] }) {
+	drawTable (twoDimensionalArrays: { [key: string]: number[][] }, oneDimensionalArrays: { [key: string]: number[] }, variables: { [key: string]: number }) {
 		if (this.context) {
 			this.context.clearRect (0, 0, this.screenWidth, this.screenHeight);
 
@@ -114,6 +114,37 @@ export class VariableCanvas {
 					this.context.fillStyle = "black";
 					this.context.fillText (oneDimensionalArrays[key][col].toString (), cellX + cellWidth / 2, cellY + tableFontSize / 2 + cellHeight / 2);
 				}
+			}
+			originY += cellHeight * Object.keys (oneDimensionalArrays).length + yOffset;
+
+
+			// ========== グローバル変数の表を描画 ==========
+			for (const key of Object.keys (variables)) {
+				this.context.font = `${nameFontSize}px serif`;
+				this.context.fillStyle = "black";
+				this.context.textAlign = "left";
+				this.context.fillText (key, originX, originY + cellHeight / 2 + nameFontSize / 2);
+
+				// セルを描画
+				this.context.font = `${tableFontSize}px serif`;
+				this.context.textAlign = "center";
+				// セルの左上座標を定義
+				const cellX = originX + nameWidth;
+				const cellY = originY;
+
+				// セルを描画
+				this.context.fillStyle = colors[0];
+				this.context.fillRect (cellX, cellY, cellWidth, cellHeight);
+
+				// 枠線描画
+				this.context.strokeStyle = "black";
+				this.context.strokeRect (cellX, cellY, cellWidth, cellHeight);
+
+				// 値を描画
+				this.context.fillStyle = "black";
+				this.context.fillText (variables[key].toString (), cellX + cellWidth / 2, cellY + tableFontSize / 2 + cellHeight / 2);
+
+				originY += yOffset;
 			}
 		}
 	}
