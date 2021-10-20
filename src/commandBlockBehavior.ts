@@ -430,7 +430,7 @@ export class GlobalVariableWriteBlock extends CommandBlock {
 
 		const value = await this.userProgram.executeValueBlock (this.value);
 		assertIsNumber (value);
-		this.userProgram.writeGlobalVariable (this.name, value);
+		this.userProgram.mission.writeVariable(this.name, value);
 	}
 }
 

@@ -309,7 +309,8 @@ export class GlobalVariableReadBlock extends ValueBlock {
 	}
 
 	executeBlock () {
-		return this.userProgram.readGlobalVariable (this.name);
+		const result = this.userProgram.mission.readVariable (this.name);
+		return result ? result : 0;
 	}
 }
 

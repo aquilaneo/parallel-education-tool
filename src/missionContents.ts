@@ -1089,7 +1089,7 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 	oneDimensionalArrays.addRandomArray ("Array3", 4, 0, 10);
 	const globalVariables = new Mission.GlobalVariables ();
 	globalVariables.addConstValue ("Value1", 2);
-	globalVariables.addRandomValue ("value2", 0, 9);
+	globalVariables.addRandomValue ("Value2", 0, 99);
 	missionContents.addMissionContent ({
 		chapterName: "サンプル",
 		missionTitle: "[サンプルミッション - グローバル配列]",

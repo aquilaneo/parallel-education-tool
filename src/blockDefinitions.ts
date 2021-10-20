@@ -143,32 +143,6 @@ export class UserProgram {
 		});
 	}
 
-	readGlobalVariable (variableName: string) {
-		return this.getGlobalVariable (variableName).readValue ();
-	}
-
-	writeGlobalVariable (variableName: string, value: number) {
-		this.getGlobalVariable (variableName).writeValue (value);
-	}
-
-	getGlobalVariable (variableName: string) {
-		const searchedVariable = this.globalVariables.find ((globalVariable) => {
-			return globalVariable.variableName === variableName;
-		});
-		// なかったら新しい変数を作る
-		if (searchedVariable) {
-			return searchedVariable;
-		} else {
-			return this.addGlobalVariable (variableName, 0);
-		}
-	}
-
-	addGlobalVariable (variableName: string, initValue: number) {
-		const newVariable = new NumberVariable (variableName, initValue)
-		this.globalVariables.push (newVariable);
-		return newVariable;
-	}
-
 	addStopwatch (swNumber: number) {
 		// 番号が重複していたら上書き、そうでなければ追加
 		const searchedIndex = this.stopwatches.findIndex ((sw) => {
