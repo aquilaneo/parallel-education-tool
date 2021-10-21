@@ -194,14 +194,15 @@ export class GlobalVariables {
 	randomizeAll () {
 		for (const key in this.variables) {
 			if (this.variableTypes[key] === GlobalDataType.random) {
-				this.variableTypes[key] = this.getRandomArray (this.randomRanges[key].max, this.randomRanges[key].min);
+				this.variables[key] = this.getRandomValue (this.randomRanges[key].max, this.randomRanges[key].min);
 			}
 		}
 	}
 
 	// ランダムな値を作成
-	getRandomArray (randomMin: number, randomMax: number) {
-		return Math.floor (Math.random () * (randomMax - randomMin) + randomMin);
+	getRandomValue (randomMin: number, randomMax: number) {
+		const random = Math.floor (Math.random () * (randomMax - randomMin) + randomMin);
+		return random;
 	}
 
 	// 定数を追加
@@ -213,7 +214,7 @@ export class GlobalVariables {
 
 	// ランダムな値を追加
 	addRandomValue (key: string, randomMin: number, randomMax: number) {
-		this.variables[key] = this.getRandomArray (randomMin, randomMax);
+		this.variables[key] = this.getRandomValue (randomMin, randomMax);
 		this.variableTypes[key] = GlobalDataType.random;
 		this.randomRanges[key] = {min: randomMin, max: randomMax};
 	}
