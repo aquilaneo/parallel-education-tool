@@ -1077,6 +1077,48 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 	});
 }
 
+// ミッション3-5
+{
+	const twoDimensionalArrays = new Mission.TwoDimensionalArrays ();
+	const oneDimensionalArrays = new Mission.OneDimensionalArrays ();
+	const globalVariables = new Mission.GlobalVariables ();
+	twoDimensionalArrays.addRandomArray ("Data", 4, 4, 1, 9);
+	globalVariables.addConstValue ("Sum", 0);
+	missionContents.addMissionContent ({
+		chapterName: "3章",
+		missionTitle: "[3章 並列プログラミング基礎編 - 5.排他制御1]",
+		missionExplanation: "複数スレッドからグローバル領域の同じ場所に書き込みを行う時には注意が必要です。",
+		missionID: "mission3-5",
+		score: new Mission.MissionScore (),
+		program: "",
+		goal: `グローバル変数「sum」に配列「Data」の各要素の合計を並列処理で入れる。`,
+		blockList: {
+			behaviors: [BlockType.TEXT_PRINT, BlockType.WAIT_MS, BlockType.WAIT_S],
+			logic: [BlockType.CONTROLS_IF, BlockType.CONTROLS_IFELSE, BlockType.LOGIC_COMPARE, BlockType.LOGIC_OPERATION, BlockType.LOGIC_NEGATE],
+			loops: [BlockType.CONTROLS_REPEAT_EXT, BlockType.CONTROLS_WHILEUNTIL],
+			math: [BlockType.MATH_NUMBER, BlockType.MATH_ARITHMETIC],
+			text: [BlockType.TEXT, BlockType.STR_ARITHMETIC],
+			localVariables: [BlockType.LOCAL_VARIABLE_AVAILABLE],
+			globalArrays: [BlockType.GLOBAL_VARIABLE_READ, BlockType.GLOBAL_VARIABLE_WRITE, BlockType.GLOBAL_ONE_DIMENSIONAL_ARRAY_READ, BlockType.GLOBAL_ONE_DIMENSIONAL_ARRAY_WRITE, BlockType.GLOBAL_TWO_DIMENSIONAL_ARRAY_READ, BlockType.GLOBAL_TWO_DIMENSIONAL_ARRAY_WRITE],
+			functions: [BlockType.FUNCTION_DEFINITION, BlockType.FUNCTION_CALL, BlockType.ENTRY_POINT, BlockType.GET_ARGUMENT],
+			measurement: [BlockType.STOPWATCH_START, BlockType.STOPWATCH_STOP, BlockType.STOPWATCH_RESET, BlockType.STOPWATCH_READ],
+			parallel: [BlockType.THREAD_CREATE, BlockType.THREAD_JOIN]
+		},
+		twoDimensionalArrays: twoDimensionalArrays,
+		oneDimensionalArrays: oneDimensionalArrays,
+		globalVariables: globalVariables,
+		judge: (consoleOutputs,
+				initialTwoDimensionalArrays, initialOneDimensionalArrays, initialVariables,
+				twoDimensionalArraysResult, oneDimensionalArraysResult, variablesResult) => {
+			if (variablesResult["sum"] === 0) {
+				return {cleared: false, failReason: "計算結果が異なります。"};
+			}
+
+			return {cleared: true, failReason: ""};
+		}
+	});
+}
+
 // サンプルミッション
 {
 	const twoDimensionalArrays = new Mission.TwoDimensionalArrays ();
