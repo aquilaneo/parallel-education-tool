@@ -357,16 +357,6 @@ export class Mission {
 		}
 	}
 
-	resetGlobalArray () {
-		// ランダム配列をシャッフルして現在値に初期値をコピー
-		this.missionContent.twoDimensionalArrays.randomizeAll ();
-		this.missionContent.oneDimensionalArrays.randomizeAll ();
-		this.missionContent.globalVariables.randomizeAll ();
-		this.currentTwoDimensionalArrays = JSON.parse (JSON.stringify (this.missionContent.twoDimensionalArrays.arrays));
-		this.currentOneDimensionalArrays = JSON.parse (JSON.stringify (this.missionContent.oneDimensionalArrays.arrays));
-		this.currentVariables = JSON.parse (JSON.stringify (this.missionContent.globalVariables.variables));
-	}
-
 	readVariable (variableName: string) {
 		const variable = this.currentVariables[variableName];
 		if (variable !== undefined) {
@@ -380,9 +370,20 @@ export class Mission {
 		const variable = this.currentVariables[variableName];
 		if (variable !== undefined) {
 			this.currentVariables[variableName] = value;
+			this.drawVariableView ();
 		} else {
 			this.printError (`"${variableName}" というグローバル変数は存在しません！`);
 		}
+	}
+
+	resetGlobalArray () {
+		// ランダム配列をシャッフルして現在値に初期値をコピー
+		this.missionContent.twoDimensionalArrays.randomizeAll ();
+		this.missionContent.oneDimensionalArrays.randomizeAll ();
+		this.missionContent.globalVariables.randomizeAll ();
+		this.currentTwoDimensionalArrays = JSON.parse (JSON.stringify (this.missionContent.twoDimensionalArrays.arrays));
+		this.currentOneDimensionalArrays = JSON.parse (JSON.stringify (this.missionContent.oneDimensionalArrays.arrays));
+		this.currentVariables = JSON.parse (JSON.stringify (this.missionContent.globalVariables.variables));
 	}
 
 	addThread (threadName: string, functionStatementElement: Element) {
