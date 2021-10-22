@@ -59,11 +59,11 @@ export class MissionList {
 export interface MissionContent {
 	chapterName: string; // チャプター名
 	missionTitle: string, // ミッション名
-	missionExplanation: string, // ミッションの説明
+	missionExplanation: JSX.Element, // ミッションの説明
 	missionID: string, // ミッションID
 	score: MissionScore, // スコア
 	program: string, // 作成途中のプログラム保持
-	goal: string, // クリア条件
+	goal: JSX.Element, // クリア条件
 	blockList: BlockSettings.BlockList, // 命令ブロック一覧
 	twoDimensionalArrays: TwoDimensionalArrays; // グローバル2次元配列の初期値
 	oneDimensionalArrays: OneDimensionalArrays; // グローバル1次元配列の初期値

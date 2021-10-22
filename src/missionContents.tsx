@@ -1,5 +1,7 @@
 import * as Mission from "./mission";
 import {BlockType, getAllBlockListXml} from "./blockSettings";
+import React from "react";
+import "./missionContents.scss";
 
 export const missionContents = new Mission.MissionList ();
 
@@ -17,11 +19,11 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 	missionContents.addMissionContent ({
 		chapterName: "1章",
 		missionTitle: "[1章 基本操作編 - 1.プログラムの作り方]",
-		missionExplanation: "printブロックを使ってプログラムの作り方を学びます。",
+		missionExplanation: <div><span className={"keyword"}>printブロック</span>を使ってプログラムの作り方を学びます。</div>,
 		missionID: "mission1-01",
 		score: new Mission.MissionScore (),
 		program: "",
-		goal: `コンソールに "Hello" と出力する`,
+		goal: <div>コンソールに "Hello" と出力する</div>,
 		blockList: {
 			behaviors: [BlockType.TEXT_PRINT, BlockType.WAIT_MS, BlockType.WAIT_S],
 			logic: [],
@@ -62,11 +64,11 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 	missionContents.addMissionContent ({
 		chapterName: "1章",
 		missionTitle: "[1章 基本操作編 - 2.複数のブロック]",
-		missionExplanation: "複数のブロックの並べ方を学びます。",
+		missionExplanation: <div><span className={"keyword"}>複数のブロック</span>の並べ方を学びます。</div>,
 		missionID: "mission1-02",
 		score: new Mission.MissionScore (),
 		program: "",
-		goal: `コンソールに3回 "Hello" と出力する`,
+		goal: <div>コンソールに3回 "Hello" と出力する</div>,
 		blockList: {
 			behaviors: [BlockType.TEXT_PRINT, BlockType.WAIT_MS, BlockType.WAIT_S],
 			logic: [],
@@ -110,11 +112,11 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 	missionContents.addMissionContent ({
 		chapterName: "1章",
 		missionTitle: "[1章 基本操作編 - 3.繰り返し]",
-		missionExplanation: "繰り返しブロックの使い方を学びます。",
+		missionExplanation: <div><span className={"keyword"}>繰り返しブロック</span>の使い方を学びます。</div>,
 		missionID: "mission1-03",
 		score: new Mission.MissionScore (),
 		program: "",
-		goal: `コンソールに50回 "Hello" と出力する`,
+		goal: <div>コンソールに50回 "Hello" と出力する</div>,
 		blockList: {
 			behaviors: [BlockType.TEXT_PRINT, BlockType.WAIT_MS, BlockType.WAIT_S],
 			logic: [],
@@ -158,11 +160,14 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 	missionContents.addMissionContent ({
 		chapterName: "1章",
 		missionTitle: "[1章 基本操作編 - 4.数値ブロックと計算]",
-		missionExplanation: "数値ブロックと計算ブロックの使い方を学びます。",
+		missionExplanation: <div>
+			<span className={"keyword"}>数値ブロック</span>と<span className={"keyword"}>計算ブロック</span>の使い方を学びます。
+		</div>,
 		missionID: "mission1-04",
 		score: new Mission.MissionScore (),
 		program: "",
-		goal: `数値ブロックや計算ブロックを使用し、 63×87 の答えをコンソールに表示する`,
+		goal: <div><span className={"keyword"}>数値ブロック</span>や<span className={"keyword"}>計算ブロック</span>を使用し、
+			63×87の答えをコンソールに表示する</div>,
 		blockList: {
 			behaviors: [BlockType.TEXT_PRINT, BlockType.WAIT_MS, BlockType.WAIT_S],
 			logic: [],
@@ -204,11 +209,12 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 	missionContents.addMissionContent ({
 		chapterName: "1章",
 		missionTitle: "[1章 基本操作編 - 5.変数の使い方]",
-		missionExplanation: "変数の作り方、値の書き込み/読み込み/加算の方法を学びます。",
+		missionExplanation: <div><span className={"keyword"}>変数の作り方</span>、<span className={"keyword"}>値の書き込み</span>/
+			<span className={"keyword"}>読み込み</span>/<span className={"keyword"}>加算</span>の方法を学びます。</div>,
 		missionID: "mission1-05",
 		score: new Mission.MissionScore (),
 		program: "",
-		goal: `変数ブロックを使用し、 1+2+3+4+5 の計算結果をコンソールに表示する`,
+		goal: <div><span className={"keyword"}>変数ブロック</span>を使用し、 1+2+3+4+5 の計算結果をコンソールに表示する</div>,
 		blockList: {
 			behaviors: [BlockType.TEXT_PRINT, BlockType.WAIT_MS, BlockType.WAIT_S],
 			logic: [],
@@ -250,11 +256,11 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 	missionContents.addMissionContent ({
 		chapterName: "1章",
 		missionTitle: "[1章 基本操作編 - 6.関数の作り方と使い方]",
-		missionExplanation: "関数(サブルーチン)の作り方と使い方を学びます。",
+		missionExplanation: <div><span className={"keyword"}>関数(サブルーチン)</span>の作り方と使い方を学びます。</div>,
 		missionID: "mission1-06",
 		score: new Mission.MissionScore (),
 		program: "",
-		goal: `29+76 を計算しコンソールに表示する関数を作成する。`,
+		goal: <div>29+76 を計算しコンソールに表示する<span className={"keyword"}>関数</span>を作成する。</div>,
 		blockList: {
 			behaviors: [BlockType.TEXT_PRINT, BlockType.WAIT_MS, BlockType.WAIT_S],
 			logic: [],
@@ -296,11 +302,11 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 	missionContents.addMissionContent ({
 		chapterName: "1章",
 		missionTitle: "[1章 基本操作編 - 7.関数の引数]",
-		missionExplanation: "関数に値を渡す「引数(ひきすう)」の使い方を学びます。",
+		missionExplanation: <div>関数に値を渡す<span className={"keyword"}>引数(ひきすう)</span>の使い方を学びます。</div>,
 		missionID: "mission1-07",
 		score: new Mission.MissionScore (),
 		program: "",
-		goal: `引数で渡された3つの数値の平均を求める関数を作成し、12 65 83の平均をコンソールに表示する`,
+		goal: <div><span className={"keyword"}>引数</span>で渡された3つの数値の平均を求める関数を作成し、12 65 83の平均をコンソールに表示する</div>,
 		blockList: {
 			behaviors: [BlockType.TEXT_PRINT, BlockType.WAIT_MS, BlockType.WAIT_S],
 			logic: [],
@@ -342,11 +348,11 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 	missionContents.addMissionContent ({
 		chapterName: "1章",
 		missionTitle: "[1章 基本操作編 - 8.処理時間計測]",
-		missionExplanation: "ストップウォッチ機能を使い、処理にかかった時間の計測を行います。",
+		missionExplanation: <div><span className={"keyword"}>ストップウォッチ</span>機能を使い、処理にかかった時間の計測を行います。</div>,
 		missionID: "mission1-08",
 		score: new Mission.MissionScore (),
 		program: "",
-		goal: `Helloと50回コンソールに表示し、最後にその処理にかかった時間を表示する`,
+		goal: <div>Helloと50回コンソールに表示し、最後にその処理にかかった時間を表示する</div>,
 		blockList: {
 			behaviors: [BlockType.TEXT_PRINT, BlockType.WAIT_MS, BlockType.WAIT_S],
 			logic: [],
@@ -398,11 +404,11 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 	missionContents.addMissionContent ({
 		chapterName: "1章",
 		missionTitle: "[1章 基本操作編 - 9.グローバル1次元配列1]",
-		missionExplanation: "グローバル1次元配列の読み込み方を学習します。",
+		missionExplanation: <div><span className={"keyword"}>グローバル1次元配列</span>の読み込み方を学習します。</div>,
 		missionID: "mission1-09",
 		score: new Mission.MissionScore (),
 		program: "",
-		goal: `配列「Data」の2番目の要素を読み取り、その内容をコンソールに表示する`,
+		goal: <div>配列「Data」の2番目の要素を読み取り、その内容をコンソールに表示する</div>,
 		blockList: {
 			behaviors: [BlockType.TEXT_PRINT, BlockType.WAIT_MS, BlockType.WAIT_S],
 			logic: [],
@@ -445,11 +451,11 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 	missionContents.addMissionContent ({
 		chapterName: "1章",
 		missionTitle: "[1章 基本操作編 - 10.グローバル1次元配列2]",
-		missionExplanation: "グローバル1次元配列の書き込み方を学習します。",
+		missionExplanation: <div><span className={"keyword"}>グローバル1次元配列</span>の書き込み方を学習します。</div>,
 		missionID: "mission1-10",
 		score: new Mission.MissionScore (),
 		program: "",
-		goal: `配列「Data」の全ての要素を0にする`,
+		goal: <div>配列「Data」の全ての要素を0にする</div>,
 		blockList: {
 			behaviors: [BlockType.TEXT_PRINT, BlockType.WAIT_MS, BlockType.WAIT_S],
 			logic: [],
@@ -487,11 +493,11 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 	missionContents.addMissionContent ({
 		chapterName: "1章",
 		missionTitle: "[1章 基本操作編 - 11.グローバル2次元配列]",
-		missionExplanation: "グローバル2次元配列の使い方を学習します。",
+		missionExplanation: <div><span className={"keyword"}>グローバル2次元配列</span>の使い方を学習します。</div>,
 		missionID: "mission1-11",
 		score: new Mission.MissionScore (),
 		program: "",
-		goal: `配列「Data」の全ての要素を0にする`,
+		goal: <div>配列「Data」の全ての要素を0にする</div>,
 		blockList: {
 			behaviors: [BlockType.TEXT_PRINT, BlockType.WAIT_MS, BlockType.WAIT_S],
 			logic: [],
@@ -531,11 +537,11 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 	missionContents.addMissionContent ({
 		chapterName: "1章",
 		missionTitle: "[1章 基本操作編 - 12.ランダムな配列]",
-		missionExplanation: "グローバル2次元配列を使った計算です。今回は要素の値がランダムで決まります。",
+		missionExplanation: <div>グローバル2次元配列を使った計算です。今回は要素の値が<span className={"keyword"}>ランダム</span>で決まります。</div>,
 		missionID: "mission1-12",
 		score: new Mission.MissionScore (),
 		program: "",
-		goal: `配列「Data」の全要素の平均をコンソールに出力する`,
+		goal: <div>配列「Data」の全要素の平均をコンソールに出力する</div>,
 		blockList: {
 			behaviors: [BlockType.TEXT_PRINT, BlockType.WAIT_MS, BlockType.WAIT_S],
 			logic: [],
@@ -586,11 +592,11 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 	missionContents.addMissionContent ({
 		chapterName: "1章",
 		missionTitle: "[1章 基本操作編 - 13.分岐]",
-		missionExplanation: "分岐の使い方を学習します。",
+		missionExplanation: <div><span className={"keyword"}>分岐</span>の使い方を学習します。</div>,
 		missionID: "mission1-13",
 		score: new Mission.MissionScore (),
 		program: "",
-		goal: `配列「Data」の全要素の平均を計算し、結果が50以上だったら「High」、それ以外の場合は「Low」とコンソールに出力する`,
+		goal: <div>配列「Data」の全要素の平均を計算し、結果が50以上だったら「High」、それ以外の場合は「Low」とコンソールに出力する</div>,
 		blockList: {
 			behaviors: [BlockType.TEXT_PRINT, BlockType.WAIT_MS, BlockType.WAIT_S],
 			logic: [BlockType.CONTROLS_IF, BlockType.CONTROLS_IFELSE, BlockType.LOGIC_COMPARE, BlockType.LOGIC_OPERATION, BlockType.LOGIC_NEGATE],
@@ -641,11 +647,12 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 	missionContents.addMissionContent ({
 		chapterName: "2章",
 		missionTitle: "[2章 並列プログラミング入門編 - 1.スレッドの生成]",
-		missionExplanation: "スレッドの作り方を学習します。",
-		missionID: "mission2-1",
+		missionExplanation: <div><span className={"keyword"}>スレッド</span>の作り方を学習します。</div>,
+		missionID: "mission2-01",
 		score: new Mission.MissionScore (),
 		program: "",
-		goal: `4つのスレッドを生成し、それぞれのスレッドから1回ずつ「Hello」とコンソールに表示する`,
+		goal: <div>4つの<span className={"keyword"}>スレッド</span>を生成し、
+			それぞれの<span className={"keyword"}>スレッド</span>から1回ずつ「Hello」とコンソールに表示する</div>,
 		blockList: {
 			behaviors: [BlockType.TEXT_PRINT, BlockType.WAIT_MS, BlockType.WAIT_S],
 			logic: [BlockType.CONTROLS_IF, BlockType.CONTROLS_IFELSE, BlockType.LOGIC_COMPARE, BlockType.LOGIC_OPERATION, BlockType.LOGIC_NEGATE],
@@ -688,11 +695,11 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 	missionContents.addMissionContent ({
 		chapterName: "2章",
 		missionTitle: "[2章 並列プログラミング入門編 - 2.スレッドの終了待ち1]",
-		missionExplanation: "実用的なスレッド処理について学びます。",
-		missionID: "mission2-2",
+		missionExplanation: <div>実用的なスレッド処理について学びます。</div>,
+		missionID: "mission2-02",
 		score: new Mission.MissionScore (),
 		program: "",
-		goal: `4つのスレッドを生成し、それぞれのスレッドから10回ずつ「Hello」とコンソールに表示する`,
+		goal: <div>4つのスレッドを生成し、それぞれのスレッドから10回ずつ「Hello」とコンソールに表示する</div>,
 		blockList: {
 			behaviors: [BlockType.TEXT_PRINT, BlockType.WAIT_MS, BlockType.WAIT_S],
 			logic: [BlockType.CONTROLS_IF, BlockType.CONTROLS_IFELSE, BlockType.LOGIC_COMPARE, BlockType.LOGIC_OPERATION, BlockType.LOGIC_NEGATE],
@@ -724,11 +731,11 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 	missionContents.addMissionContent ({
 		chapterName: "2章",
 		missionTitle: "[2章 並列プログラミング入門編 - 3.スレッドの終了待ち2]",
-		missionExplanation: "スレッドの終了待ち機能(Join)について学びます。",
-		missionID: "mission2-3",
+		missionExplanation: <div>スレッドの<span className={"keyword"}>終了待ち機能(Join)</span>について学びます。</div>,
+		missionID: "mission2-03",
 		score: new Mission.MissionScore (),
 		program: "",
-		goal: `4つのスレッドを生成し、それぞれのスレッドから10回ずつ「Hello」とコンソールに表示する`,
+		goal: <div>4つのスレッドを生成し、それぞれのスレッドから10回ずつ「Hello」とコンソールに表示する</div>,
 		blockList: {
 			behaviors: [BlockType.TEXT_PRINT, BlockType.WAIT_MS, BlockType.WAIT_S],
 			logic: [BlockType.CONTROLS_IF, BlockType.CONTROLS_IFELSE, BlockType.LOGIC_COMPARE, BlockType.LOGIC_OPERATION, BlockType.LOGIC_NEGATE],
@@ -772,11 +779,11 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 	missionContents.addMissionContent ({
 		chapterName: "2章",
 		missionTitle: "[2章 並列プログラミング入門編 - 4.スレッドの引数]",
-		missionExplanation: "スレッドに渡す引数について学びます。",
-		missionID: "mission2-4",
+		missionExplanation: <div>スレッドに渡す<span className={"keyword"}>引数</span>について学びます。</div>,
+		missionID: "mission2-04",
 		score: new Mission.MissionScore (),
 		program: "",
-		goal: `4つのスレッド使い、グローバル配列「Data」の要素を全て0にする`,
+		goal: <div>4つのスレッド使い、グローバル配列「Data」の要素を全て0にする</div>,
 		blockList: {
 			behaviors: [BlockType.TEXT_PRINT, BlockType.WAIT_MS, BlockType.WAIT_S],
 			logic: [BlockType.CONTROLS_IF, BlockType.CONTROLS_IFELSE, BlockType.LOGIC_COMPARE, BlockType.LOGIC_OPERATION, BlockType.LOGIC_NEGATE],
@@ -814,11 +821,11 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 	missionContents.addMissionContent ({
 		chapterName: "2章",
 		missionTitle: "[2章 並列プログラミング入門編 - 5.逐次処理と並列処理の比較1]",
-		missionExplanation: "逐次処理と並列処理の処理速度について比較します。",
-		missionID: "mission2-5",
+		missionExplanation: <div>逐次処理と並列処理の処理速度について比較します。</div>,
+		missionID: "mission2-05",
 		score: new Mission.MissionScore (),
 		program: "",
-		goal: `グローバル配列「Data」の値を並列処理を使わずに全て0にし、その処理にかかった時間を表示する`,
+		goal: <div>グローバル配列「Data」の値を並列処理を使わずに全て0にし、その処理にかかった時間を表示する</div>,
 		blockList: {
 			behaviors: [BlockType.TEXT_PRINT, BlockType.WAIT_MS, BlockType.WAIT_S],
 			logic: [BlockType.CONTROLS_IF, BlockType.CONTROLS_IFELSE, BlockType.LOGIC_COMPARE, BlockType.LOGIC_OPERATION, BlockType.LOGIC_NEGATE],
@@ -869,11 +876,11 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 	missionContents.addMissionContent ({
 		chapterName: "2章",
 		missionTitle: "[2章 並列プログラミング入門編 - 6.逐次処理と並列処理の比較2]",
-		missionExplanation: "逐次処理と並列処理の処理速度について比較します。",
-		missionID: "mission2-6",
+		missionExplanation: <div>逐次処理と並列処理の処理速度について比較します。</div>,
+		missionID: "mission2-06",
 		score: new Mission.MissionScore (),
 		program: "",
-		goal: `グローバル配列「Data」の値を並列処理で全て0にし、その処理にかかった時間を表示する`,
+		goal: <div>グローバル配列「Data」の値を並列処理で全て0にし、その処理にかかった時間を表示する</div>,
 		blockList: {
 			behaviors: [BlockType.TEXT_PRINT, BlockType.WAIT_MS, BlockType.WAIT_S],
 			logic: [BlockType.CONTROLS_IF, BlockType.CONTROLS_IFELSE, BlockType.LOGIC_COMPARE, BlockType.LOGIC_OPERATION, BlockType.LOGIC_NEGATE],
@@ -934,11 +941,11 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 	missionContents.addMissionContent ({
 		chapterName: "2章",
 		missionTitle: "[2章 並列プログラミング入門編 - 7.仕事の割り振り]",
-		missionExplanation: "各スレッドにどう仕事を割り振るかの学習です。",
-		missionID: "mission2-7",
+		missionExplanation: <div>各スレッドにどう仕事を割り振るかの学習です。</div>,
+		missionID: "mission2-07",
 		score: new Mission.MissionScore (),
 		program: "",
-		goal: `グローバル配列「Data」の値を並列処理で全て0にし、その処理にかかった時間を表示する`,
+		goal: <div>グローバル配列「Data」の値を並列処理で全て0にし、その処理にかかった時間を表示する</div>,
 		blockList: {
 			behaviors: [BlockType.TEXT_PRINT, BlockType.WAIT_MS, BlockType.WAIT_S],
 			logic: [BlockType.CONTROLS_IF, BlockType.CONTROLS_IFELSE, BlockType.LOGIC_COMPARE, BlockType.LOGIC_OPERATION, BlockType.LOGIC_NEGATE],
@@ -997,11 +1004,11 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 	missionContents.addMissionContent ({
 		chapterName: "2章",
 		missionTitle: "[2章 並列プログラミング入門編 - 8.行列計算1]",
-		missionExplanation: "並列処理を使って行列計算をしてみましょう",
-		missionID: "mission2-8",
+		missionExplanation: <div>並列処理を使って行列計算をしてみましょう</div>,
+		missionID: "mission2-08",
 		score: new Mission.MissionScore (),
 		program: "",
-		goal: `グローバル2次元配列を行列に見立て、「A」の行列と「B」の行列を加算した結果を「A+B」の行列に代入する`,
+		goal: <div>グローバル2次元配列を行列に見立て、「A」の行列と「B」の行列を加算した結果を「A+B」の行列に代入する</div>,
 		blockList: {
 			behaviors: [BlockType.TEXT_PRINT, BlockType.WAIT_MS, BlockType.WAIT_S],
 			logic: [BlockType.CONTROLS_IF, BlockType.CONTROLS_IFELSE, BlockType.LOGIC_COMPARE, BlockType.LOGIC_OPERATION, BlockType.LOGIC_NEGATE],
@@ -1042,11 +1049,11 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 	missionContents.addMissionContent ({
 		chapterName: "3章",
 		missionTitle: "[3章 並列プログラミング基礎編 - 1.並列化できないアルゴリズム]",
-		missionExplanation: "世の中には並列化できないアルゴリズムも存在します。",
-		missionID: "mission3-1",
+		missionExplanation: <div>世の中には並列化できないアルゴリズムも存在します。</div>,
+		missionID: "mission3-01",
 		score: new Mission.MissionScore (),
 		program: "",
-		goal: `フィボナッチ数列を求める。`,
+		goal: <div>フィボナッチ数列を求める。</div>,
 		blockList: {
 			behaviors: [BlockType.TEXT_PRINT, BlockType.WAIT_MS, BlockType.WAIT_S],
 			logic: [BlockType.CONTROLS_IF, BlockType.CONTROLS_IFELSE, BlockType.LOGIC_COMPARE, BlockType.LOGIC_OPERATION, BlockType.LOGIC_NEGATE],
@@ -1077,7 +1084,7 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 	});
 }
 
-// ミッション3-5
+// ミッション3-4
 {
 	const twoDimensionalArrays = new Mission.TwoDimensionalArrays ();
 	const oneDimensionalArrays = new Mission.OneDimensionalArrays ();
@@ -1086,12 +1093,12 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 	globalVariables.addConstValue ("Sum", 0);
 	missionContents.addMissionContent ({
 		chapterName: "3章",
-		missionTitle: "[3章 並列プログラミング基礎編 - 5.排他制御1]",
-		missionExplanation: "複数スレッドからグローバル領域の同じ場所に書き込みを行う時には注意が必要です。",
-		missionID: "mission3-5",
+		missionTitle: "[3章 並列プログラミング基礎編 - 4.排他制御1]",
+		missionExplanation: <div>複数スレッドからグローバル領域の同じ場所に書き込みを行う時には注意が必要です。</div>,
+		missionID: "mission3-04",
 		score: new Mission.MissionScore (),
 		program: "",
-		goal: `グローバル変数「sum」に配列「Data」の各要素の合計を並列処理で入れる。`,
+		goal: <div>グローバル変数「sum」に配列「Data」の各要素の合計を並列処理で入れる。</div>,
 		blockList: {
 			behaviors: [BlockType.TEXT_PRINT, BlockType.WAIT_MS, BlockType.WAIT_S],
 			logic: [BlockType.CONTROLS_IF, BlockType.CONTROLS_IFELSE, BlockType.LOGIC_COMPARE, BlockType.LOGIC_OPERATION, BlockType.LOGIC_NEGATE],
@@ -1135,11 +1142,11 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 	missionContents.addMissionContent ({
 		chapterName: "サンプル",
 		missionTitle: "[サンプルミッション - グローバル配列]",
-		missionExplanation: "グローバル配列について学びます。",
+		missionExplanation: <div>グローバル配列について学びます。</div>,
 		missionID: "sample",
 		score: new Mission.MissionScore (),
 		program: "",
-		goal: `グローバル配列 "Array1" の値をすべて0にする`,
+		goal: <div>グローバル配列 "Array1" の値をすべて0にする</div>,
 		blockList: getAllBlockListXml (),
 		twoDimensionalArrays: twoDimensionalArrays,
 		oneDimensionalArrays: oneDimensionalArrays,
