@@ -1163,6 +1163,5 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 			}
 			return {cleared: true, failReason: ""};
 		}
-
 	});
 }

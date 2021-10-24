@@ -14,9 +14,9 @@ export class UserProgram {
 	functions: Function[] = []; // 関数一覧
 	threads: Thread[] = []; // スレッド一覧
 	functionStatementElements: { name: string, element: Element }[] = [];
-	globalVariables: NumberVariable[] = [];
 	currentMilliSecond: number = 0;
 	oldTime: number = 0;
+	mutexes: { [key: string]: boolean } = {};
 	stopwatches: { key: number, sw: Stopwatch } [] = []; // ストップウォッチ一覧
 
 	constructor (xml: Element, mission: Mission, workspace: Blockly.Workspace | null) {
@@ -200,6 +200,33 @@ export class UserProgram {
 		return this.threads.find ((thread) => {
 			return thread.threadID === threadID;
 		});
+	}
+
+	lockMutex (mutexID: string) {
+		for (const key of Object.keys (this.mutexes)) {
+			if (key === mutexID) {
+				if (!this.mutexes[key]) {
+					// ロックされてない
+					this.mutexes[key] = true;
+					return true;
+				} else {
+					// ロックされてる
+					return false;
+				}
+			}
+		}
+
+		this.mutexes[mutexID] = true;
+		return true;
+	}
+
+	unlockMutex (mutexID: string) {
+		for (const key of Object.keys (this.mutexes)) {
+			if (key === mutexID) {
+				this.mutexes[key] = false;
+				return;
+			}
+		}
 	}
 
 	getCurrentMilliSecond () {
@@ -1012,6 +1039,60 @@ export const commandBlockDefinitions = [
 			"nextStatement": null,
 			"colour": 230,
 			"tooltip": "指定した名前のスレッドの終了を待ちます。",
+			"helpUrl": ""
+		}
+	},
+
+	// ========== ミューテックスロック ==========
+	{
+		type: "mutex_lock",
+		wait: 100,
+		randomSpeed: true,
+		instantiate: (blockXml: Element, workspace: Blockly.Workspace | null, userProgram: UserProgram, myRoutine: Routine, wait: number, randomSpeed: boolean): CommandBlockBehaviors.CommandBlock => {
+			return new CommandBlockBehaviors.MutexLockBlock (blockXml, workspace, userProgram, myRoutine, wait, randomSpeed);
+		},
+		blocklyJson: {
+			"type": "mutex_lock",
+			"message0": "ミューテックスID %1 をロック",
+			"args0": [
+				{
+					"type": "input_value",
+					"name": "mutex_id",
+					"check": "String"
+				}
+			],
+			"inputsInline": true,
+			"previousStatement": null,
+			"nextStatement": null,
+			"colour": 230,
+			"tooltip": "ミューテックスのロックを行います。他スレッドがすでに同じIDをロックしている場合はロック解除されるまで待機します。",
+			"helpUrl": ""
+		}
+	},
+
+	// ========== ミューテックスロック解除 ==========
+	{
+		type: "mutex_unlock",
+		wait: 100,
+		randomSpeed: true,
+		instantiate: (blockXml: Element, workspace: Blockly.Workspace | null, userProgram: UserProgram, myRoutine: Routine, wait: number, randomSpeed: boolean): CommandBlockBehaviors.CommandBlock => {
+			return new CommandBlockBehaviors.MutexUnlockBlock (blockXml, workspace, userProgram, myRoutine, wait, randomSpeed);
+		},
+		blocklyJson: {
+			"type": "mutex_unlock",
+			"message0": "ミューテックスID %1 をロック解除",
+			"args0": [
+				{
+					"type": "input_value",
+					"name": "mutex_id",
+					"check": "String"
+				}
+			],
+			"inputsInline": true,
+			"previousStatement": null,
+			"nextStatement": null,
+			"colour": 230,
+			"tooltip": "ミューテックスのロックを解除します。",
 			"helpUrl": ""
 		}
 	}

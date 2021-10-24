@@ -383,7 +383,20 @@ export enum BlockType {
 			<value name="thread_name">
 				<shadow type="text"></shadow>
 			</value>
-		</block>`
+		</block>`,
+	MUTEX_LOCK = `
+		<block type="mutex_lock">
+			<value name="mutex_id">
+				<shadow type="text"></shadow>
+			</value>
+		</block>`,
+	MUTEX_UNLOCK = `
+		<block type="mutex_unlock">
+			<value name="mutex_id">
+				<shadow type="text"></shadow>
+			</value>
+		</block>
+	`
 }
 
 // ブロック一覧に載せる全命令ブロックたち
@@ -398,6 +411,6 @@ export const getAllBlockListXml = () => {
 		globalArrays: [BlockType.GLOBAL_VARIABLE_READ, BlockType.GLOBAL_VARIABLE_WRITE, BlockType.GLOBAL_ONE_DIMENSIONAL_ARRAY_READ, BlockType.GLOBAL_ONE_DIMENSIONAL_ARRAY_WRITE, BlockType.GLOBAL_TWO_DIMENSIONAL_ARRAY_READ, BlockType.GLOBAL_TWO_DIMENSIONAL_ARRAY_WRITE],
 		functions: [BlockType.FUNCTION_DEFINITION, BlockType.FUNCTION_CALL, BlockType.ENTRY_POINT, BlockType.GET_ARGUMENT],
 		measurement: [BlockType.STOPWATCH_START, BlockType.STOPWATCH_STOP, BlockType.STOPWATCH_RESET, BlockType.STOPWATCH_READ],
-		parallel: [BlockType.THREAD_CREATE, BlockType.THREAD_JOIN]
+		parallel: [BlockType.THREAD_CREATE, BlockType.THREAD_JOIN, BlockType.MUTEX_LOCK, BlockType.MUTEX_UNLOCK]
 	};
 };

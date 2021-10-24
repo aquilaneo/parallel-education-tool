@@ -2,6 +2,7 @@ import * as BlockDefinitions from "./blockDefinitions";
 import * as ValueBlockBehaviors from "./valueBlockBehaviors";
 import {assertIsDefined, assertIsNumber, assertIsString} from "./common";
 import * as Blockly from "blockly";
+import {ValueBlock} from "./valueBlockBehaviors";
 
 export class CommandBlock {
 	blockType: string;
@@ -430,7 +431,7 @@ export class GlobalVariableWriteBlock extends CommandBlock {
 
 		const value = await this.userProgram.executeValueBlock (this.value);
 		assertIsNumber (value);
-		this.userProgram.mission.writeVariable(this.name, value);
+		this.userProgram.mission.writeVariable (this.name, value);
 	}
 }
 
@@ -734,12 +735,55 @@ export class ThreadJoinBlock extends CommandBlock {
 		this.threadIDStr = threadName;
 	}
 
-	isWaiting (): boolean {
+	isWaiting () {
 		const thread = this.userProgram.getThread (this.threadIDStr);
 		if (thread) {
 			return thread.isExecuting;
 		} else {
 			return false;
 		}
+	}
+}
+
+export class MutexLockBlock extends CommandBlock {
+	mutexID: ValueBlockBehaviors.ValueBlock | null;
+	mutexIDStr: string;
+
+	constructor (blockXml: Element, workspace: Blockly.Workspace | null, userProgram: BlockDefinitions.UserProgram, myRoutine: BlockDefinitions.Routine, wait: number, randomSpeed: boolean) {
+		super (blockXml, workspace, userProgram, myRoutine, wait, randomSpeed);
+		const mutexID = super.getValue ("mutex_id");
+		this.mutexID = mutexID ? ValueBlockBehaviors.ValueBlock.constructBlock (mutexID, userProgram, myRoutine) : null;
+		this.mutexIDStr = "";
+	}
+
+	async executeBlock () {
+		assertIsDefined (this.mutexID);
+
+		const mutexID = await this.userProgram.executeValueBlock (this.mutexID);
+		assertIsString (mutexID);
+		this.mutexIDStr = mutexID;
+	}
+
+	isWaiting () {
+		return !this.userProgram.lockMutex (this.mutexIDStr);
+	}
+}
+
+export class MutexUnlockBlock extends CommandBlock {
+	mutexID: ValueBlockBehaviors.ValueBlock | null;
+
+	constructor (blockXml: Element, workspace: Blockly.Workspace | null, userProgram: BlockDefinitions.UserProgram, myRoutine: BlockDefinitions.Routine, wait: number, randomSpeed: boolean) {
+		super (blockXml, workspace, userProgram, myRoutine, wait, randomSpeed);
+		const mutexID = super.getValue ("mutex_id");
+		this.mutexID = mutexID ? ValueBlockBehaviors.ValueBlock.constructBlock (mutexID, userProgram, myRoutine) : null;
+	}
+
+	async executeBlock () {
+		assertIsDefined (this.mutexID);
+
+		const mutexID = await this.userProgram.executeValueBlock (this.mutexID);
+		assertIsString (mutexID);
+
+		this.userProgram.unlockMutex (mutexID);
 	}
 }

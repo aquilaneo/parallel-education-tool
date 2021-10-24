@@ -59,11 +59,13 @@ const Playground: React.FC<{ missionID: string }> = (props) => {
 			setThreadCount ((oldThreadCount) => oldThreadCount + 1);
 		},
 		(threadName: string) => {
-			const newThreadNames = [...threadInfos];
-			setThreadInfos (newThreadNames.filter ((item) => {
-				return item.name !== threadName;
-			}));
-			setThreadCount (newThreadNames.length);
+			setThreadInfos ((oldThreadInfos) => {
+				const newThreadNames = [...oldThreadInfos].filter ((item) => {
+					return item.name !== threadName;
+				});
+				setThreadCount(newThreadNames.length);
+				return newThreadNames;
+			});
 		}
 	));
 
