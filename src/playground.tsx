@@ -19,7 +19,9 @@ const Playground: React.FC<{ missionID: string }> = (props) => {
 	const [isDetailVisible, setIsDetailVisible] = useState (true);
 	const [isClearVisible, setIsClearVisible] = useState (false);
 	const [isFailedVisible, setIsFailedVisible] = useState (false);
-	const [variableCanvas, setVariableCanvas] = useState (new VariableCanvas.VariableCanvas ());
+	const [variableCanvas, setVariableCanvas] = useState (() => {
+		return new VariableCanvas.VariableCanvas ()
+	});
 	const [threadInfos, setThreadInfos] = useState ([] as { name: string, blocksXml: string }[]);
 	const [threadCount, setThreadCount] = useState (threadInfos.length);
 	const [missionFailReason, setMissionFailReason] = useState ("");
@@ -39,35 +41,36 @@ const Playground: React.FC<{ missionID: string }> = (props) => {
 	}
 	const nextMissionID = missionContents.findNextMission (missionContent.missionID);
 
-	const blockListXml = missionContent.blockList;
-	const [mission, setMission] = useState (new Mission (missionContent,
-		() => {
-			variableCanvas.drawTable (mission.currentTwoDimensionalArrays, mission.currentOneDimensionalArrays, mission.currentVariables);
-		},
-		(output: { text: string, type: ConsoleOutputType }) => {
-			if (consoleRef.current) {
-				consoleRef.current.writeConsole (output);
-			}
-		},
-		() => {
-			if (consoleRef.current) {
-				consoleRef.current.clearConsole ();
-			}
-		},
-		(threadInfo: { name: string, blocksXml: string }) => {
-			setThreadInfos ((oldThreadNames) => [...oldThreadNames, threadInfo]);
-			setThreadCount ((oldThreadCount) => oldThreadCount + 1);
-		},
-		(threadName: string) => {
-			setThreadInfos ((oldThreadInfos) => {
-				const newThreadNames = [...oldThreadInfos].filter ((item) => {
-					return item.name !== threadName;
+	const [mission, setMission] = useState (() => {
+		return new Mission (missionContent,
+			() => {
+				variableCanvas.drawTable (mission.currentTwoDimensionalArrays, mission.currentOneDimensionalArrays, mission.currentVariables);
+			},
+			(output: { text: string, type: ConsoleOutputType }) => {
+				if (consoleRef.current) {
+					consoleRef.current.writeConsole (output);
+				}
+			},
+			() => {
+				if (consoleRef.current) {
+					consoleRef.current.clearConsole ();
+				}
+			},
+			(threadInfo: { name: string, blocksXml: string }) => {
+				setThreadInfos ((oldThreadNames) => [...oldThreadNames, threadInfo]);
+				setThreadCount ((oldThreadCount) => oldThreadCount + 1);
+			},
+			(threadName: string) => {
+				setThreadInfos ((oldThreadInfos) => {
+					const newThreadNames = [...oldThreadInfos].filter ((item) => {
+						return item.name !== threadName;
+					});
+					setThreadCount (newThreadNames.length);
+					return newThreadNames;
 				});
-				setThreadCount(newThreadNames.length);
-				return newThreadNames;
-			});
-		}
-	));
+			}
+		)
+	});
 
 	// エディタパネルリサイズ処理
 	function onEditorPanelResized () {
