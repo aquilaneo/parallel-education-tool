@@ -710,8 +710,11 @@ export class ThreadCreateBlock extends CommandBlock {
 
 		const functionStatementElement = this.userProgram.getFunctionStatementElementByName (this.routineName);
 		if (functionStatementElement) {
-			this.userProgram.addThread (this.routineName, threadID, functionStatementElement.element, argument1, argument2, argument3);
-			this.userProgram.executeThread (threadID);
+			if (this.userProgram.addThread (this.routineName, threadID, functionStatementElement.element, argument1, argument2, argument3)) {
+				this.userProgram.executeThread (threadID);
+			}
+		} else {
+			this.userProgram.mission.printError (`"${this.routineName}" という名前の関数はありません！`);
 		}
 	}
 }
@@ -740,6 +743,7 @@ export class ThreadJoinBlock extends CommandBlock {
 		if (thread) {
 			return thread.isExecuting;
 		} else {
+			this.userProgram.mission.printError (`"${this.threadIDStr}" というスレッドは存在しません！`);
 			return false;
 		}
 	}

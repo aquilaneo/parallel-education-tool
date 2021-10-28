@@ -13,6 +13,7 @@ export class UserProgram {
 	entryFunction: Function | null = null; // エントリポイント
 	functions: Function[] = []; // 関数一覧
 	threads: Thread[] = []; // スレッド一覧
+	maxThreadCount: number = 4; // スレッド数上限
 	functionStatementElements: { name: string, element: Element }[] = [];
 	currentMilliSecond: number = 0;
 	oldTime: number = 0;
@@ -171,10 +172,23 @@ export class UserProgram {
 
 	addThread (routineName: string, threadID: string, functionStatementElement: Element,
 			   argument1: number, argument2: number, argument3: number) {
+		if (this.threads.length >= this.maxThreadCount) {
+			// スレッド数上限だったらエラー
+			this.mission.printError (`${this.maxThreadCount}つより多くのスレッドを作成することはできません！`);
+			return false;
+		}
+		if (this.getThread (threadID)) {
+			// 同名スレッドあったらエラー
+			this.mission.printError (`"${threadID}" というスレッドはすでに存在します！`);
+			return false;
+		}
+
 		const thread = new Thread (routineName, threadID, null, this, functionStatementElement, argument1, argument2, argument3);
 		const functionInstance = CommandBlockBehaviors.FunctionDefinitionBlock.constructBlock (functionStatementElement, null, this, thread)[0];
 		thread.setDefinitionBlock (functionInstance);
 		this.threads.push (thread);
+
+		return true;
 	}
 
 	removeThread (threadID: string) {
