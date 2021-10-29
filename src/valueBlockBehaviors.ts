@@ -1,6 +1,5 @@
 import * as BlockDefinitions from "./blockDefinitions";
 import {assertIsBoolean, assertIsDefined, assertIsNumber, assertIsString} from "./common";
-import {CommandBlock} from "./commandBlockBehavior";
 
 export class ValueBlock {
 	blockType: string;
@@ -25,7 +24,7 @@ export class ValueBlock {
 		this.wait = wait;
 	}
 
-	executeBlock (): number | string | boolean {
+	async executeBlock (): Promise<number | string | boolean> {
 		return 0;
 	}
 
@@ -77,12 +76,12 @@ export class CompareBlock extends ValueBlock {
 		this.operator = operator ? operator : "";
 	}
 
-	executeBlock () {
+	async executeBlock () {
 		assertIsDefined (this.operand1);
 		assertIsDefined (this.operand2);
 
-		const operand1 = this.operand1.executeBlock ();
-		const operand2 = this.operand2.executeBlock ();
+		const operand1 = await this.userProgram.executeValueBlock (this.operand1);
+		const operand2 = await this.userProgram.executeValueBlock (this.operand2);
 		assertIsNumber (operand1);
 		assertIsNumber (operand2);
 		// 演算子ごとに適した演算結果を返す
@@ -120,12 +119,12 @@ export class LogicOperationBlock extends ValueBlock {
 		this.operator = operator ? operator : "";
 	}
 
-	executeBlock () {
+	async executeBlock () {
 		assertIsDefined (this.operand1);
 		assertIsDefined (this.operand2);
 
-		const operand1 = this.operand1.executeBlock ();
-		const operand2 = this.operand2.executeBlock ();
+		const operand1 = await this.userProgram.executeValueBlock (this.operand1);
+		const operand2 = await this.userProgram.executeValueBlock (this.operand2);
 		assertIsBoolean (operand1);
 		assertIsBoolean (operand2);
 		// 演算子ごとに適した演算結果を返す。
@@ -149,10 +148,10 @@ export class NotBlock extends ValueBlock {
 		this.value = value ? ValueBlock.constructBlock (value, userProgram, myRoutine) : null;
 	}
 
-	executeBlock () {
+	async executeBlock () {
 		assertIsDefined (this.value);
 
-		const value = this.value.executeBlock ();
+		const value = await this.userProgram.executeValueBlock (this.value);
 		assertIsBoolean (value);
 		return value;
 	}
@@ -167,7 +166,7 @@ export class NumberBlock extends ValueBlock {
 		this.num = num ? Number (num) : 0;
 	}
 
-	executeBlock () {
+	async executeBlock () {
 		return this.num;
 	}
 }
@@ -187,12 +186,12 @@ export class CalculateBlock extends ValueBlock {
 		this.operator = operator ? operator : "";
 	}
 
-	executeBlock () {
+	async executeBlock () {
 		assertIsDefined (this.operand1);
 		assertIsDefined (this.operand2);
 
-		const operand1 = this.operand1.executeBlock ();
-		const operand2 = this.operand2.executeBlock ();
+		const operand1 = await this.userProgram.executeValueBlock (this.operand1);
+		const operand2 = await this.userProgram.executeValueBlock (this.operand2);
 		assertIsNumber (operand1);
 		assertIsNumber (operand2);
 		// 演算子ごとに適した演算結果を返す。
@@ -222,7 +221,7 @@ export class TextBlock extends ValueBlock {
 		this.text = text != null ? text : "";
 	}
 
-	executeBlock () {
+	async executeBlock () {
 		return this.text;
 	}
 }
@@ -242,22 +241,15 @@ export class TextCalculateBlock extends ValueBlock {
 		this.operator = operator ? operator : "";
 	}
 
-	executeBlock () {
+	async executeBlock () {
 		assertIsDefined (this.operand1);
 		assertIsDefined (this.operand2);
 
-		let operand1 = this.operand1.executeBlock ();
-		let operand2 = this.operand2.executeBlock ();
+		let operand1 = await this.userProgram.executeValueBlock (this.operand1);
+		let operand2 = await this.userProgram.executeValueBlock (this.operand2);
 
-		if (typeof (operand1) === "number") {
-			operand1 = operand1.toString ();
-		}
-		if (typeof (operand2) === "number") {
-			operand2 = operand2.toString ();
-		}
-
-		assertIsString (operand1);
-		assertIsString (operand2);
+		operand1 = operand1.toString ();
+		operand2 = operand2.toString ();
 
 		// 演算子ごとに適した演算結果を返す。
 		switch (this.operator) {
@@ -278,7 +270,7 @@ export class VariablesGetNumber extends ValueBlock {
 		this.variableName = variableName ? variableName : "";
 	}
 
-	executeBlock () {
+	async executeBlock () {
 		const result = this.myRoutine?.readLocalNumberVariable (this.variableName);
 		return result ? result : 0;
 	}
@@ -293,7 +285,7 @@ export class VariablesGetString extends ValueBlock {
 		this.variableName = variableName ? variableName : "";
 	}
 
-	executeBlock () {
+	async executeBlock () {
 		const result = this.myRoutine?.readLocalStringVariable (this.variableName);
 		return result ? result : "";
 	}
@@ -308,7 +300,7 @@ export class GlobalVariableReadBlock extends ValueBlock {
 		this.name = name ? name : "";
 	}
 
-	executeBlock () {
+	async executeBlock () {
 		const result = this.userProgram.mission.readVariable (this.name);
 		return result ? result : 0;
 	}
@@ -327,10 +319,10 @@ export class GlobalOneDimensionalArrayRead extends ValueBlock {
 		this.index = index ? ValueBlock.constructBlock (index, userProgram, myRoutine) : null;
 	}
 
-	executeBlock () {
+	async executeBlock () {
 		assertIsDefined (this.index);
 
-		const index = this.index.executeBlock ();
+		const index = await this.userProgram.executeValueBlock (this.index);
 		assertIsNumber (index);
 
 		const result = this.userProgram.mission.readOneDimensionalArray (this.name, index);
@@ -354,12 +346,12 @@ export class GlobalTwoDimensionalArrayRead extends ValueBlock {
 		this.col = col ? ValueBlock.constructBlock (col, userProgram, myRoutine) : null;
 	}
 
-	executeBlock () {
+	async executeBlock () {
 		assertIsDefined (this.row);
 		assertIsDefined (this.col);
 
-		const row = this.row.executeBlock ();
-		const col = this.col.executeBlock ();
+		const row = await this.userProgram.executeValueBlock (this.row);
+		const col = await this.userProgram.executeValueBlock (this.col);
 		assertIsNumber (row);
 		assertIsNumber (col);
 
@@ -377,7 +369,7 @@ export class GetArgumentBlock extends ValueBlock {
 		this.argument = argument ? argument : "";
 	}
 
-	executeBlock () {
+	async executeBlock () {
 		if (this.myRoutine) {
 			switch (this.argument) {
 				case "argument1":
@@ -392,6 +384,40 @@ export class GetArgumentBlock extends ValueBlock {
 	}
 }
 
+export class FunctionCallWithReturnBlock extends ValueBlock {
+	name: string;
+	argument1: ValueBlock | null;
+	argument2: ValueBlock | null;
+	argument3: ValueBlock | null;
+
+	constructor (blockXml: Element, userProgram: BlockDefinitions.UserProgram, myRoutine: BlockDefinitions.Routine, wait: number) {
+		super (blockXml, userProgram, myRoutine, wait);
+		const name = super.getField ("name");
+		this.name = name ? name : "";
+
+		const argument1 = super.getValue ("argument1");
+		this.argument1 = argument1 ? ValueBlock.constructBlock (argument1, userProgram, myRoutine) : null;
+		const argument2 = super.getValue ("argument2");
+		this.argument2 = argument2 ? ValueBlock.constructBlock (argument2, userProgram, myRoutine) : null;
+		const argument3 = super.getValue ("argument3");
+		this.argument3 = argument3 ? ValueBlock.constructBlock (argument3, userProgram, myRoutine) : null;
+	}
+
+	async executeBlock () {
+		assertIsDefined (this.argument1);
+		assertIsDefined (this.argument2);
+		assertIsDefined (this.argument3);
+		const argument1 = await this.userProgram.executeValueBlock (this.argument1);
+		const argument2 = await this.userProgram.executeValueBlock (this.argument2);
+		const argument3 = await this.userProgram.executeValueBlock (this.argument3);
+		assertIsNumber (argument1);
+		assertIsNumber (argument2);
+		assertIsNumber (argument3);
+
+		return await this.userProgram.executeFunction (this.name, argument1, argument2, argument3);
+	}
+}
+
 export class StopwatchReadBlock extends ValueBlock {
 	swNumber: ValueBlock | null;
 
@@ -401,10 +427,10 @@ export class StopwatchReadBlock extends ValueBlock {
 		this.swNumber = threadNumber ? ValueBlock.constructBlock (threadNumber, userProgram, myRoutine) : null;
 	}
 
-	executeBlock () {
+	async executeBlock () {
 		assertIsDefined (this.swNumber);
 
-		const swNumber = this.swNumber.executeBlock ();
+		const swNumber = await this.userProgram.executeValueBlock (this.swNumber);
 		assertIsNumber (swNumber);
 		return Math.round (this.userProgram.getStopwatch (swNumber).read ());
 	}

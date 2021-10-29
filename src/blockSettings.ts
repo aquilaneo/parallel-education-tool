@@ -321,6 +321,33 @@ export enum BlockType {
 				</shadow>
 			</value>
 		</block>`,
+	FUNCTION_CALL_WITH_RETURN = `
+		<block type="function_call_with_return">
+			<value name="argument1">
+				<shadow type="math_number">
+					<field name="NUM">0</field>
+				</shadow>
+			</value>
+			<value name="argument2">
+				<shadow type="math_number">
+					<field name="NUM">0</field>
+				</shadow>
+			</value>
+			<value name="argument3">
+				<shadow type="math_number">
+					<field name="NUM">0</field>
+				</shadow>
+			</value>
+		</block>`,
+	RETURN_VALUE = `
+		<block type="return_value">
+			<value name="return_value">
+				<shadow type="math_number">
+					<field name="NUM">0</field>
+				</shadow>
+			</value>
+		</block>
+	`,
 	ENTRY_POINT = `
 		<block type="entry_point"></block>`,
 	GET_ARGUMENT = `
@@ -409,7 +436,7 @@ export const getAllBlockListXml = () => {
 		text: [BlockType.TEXT, BlockType.STR_ARITHMETIC],
 		localVariables: [BlockType.LOCAL_VARIABLE_AVAILABLE],
 		globalArrays: [BlockType.GLOBAL_VARIABLE_READ, BlockType.GLOBAL_VARIABLE_WRITE, BlockType.GLOBAL_ONE_DIMENSIONAL_ARRAY_READ, BlockType.GLOBAL_ONE_DIMENSIONAL_ARRAY_WRITE, BlockType.GLOBAL_TWO_DIMENSIONAL_ARRAY_READ, BlockType.GLOBAL_TWO_DIMENSIONAL_ARRAY_WRITE],
-		functions: [BlockType.FUNCTION_DEFINITION, BlockType.FUNCTION_CALL, BlockType.ENTRY_POINT, BlockType.GET_ARGUMENT],
+		functions: [BlockType.FUNCTION_DEFINITION, BlockType.FUNCTION_CALL, BlockType.FUNCTION_CALL_WITH_RETURN, BlockType.RETURN_VALUE, BlockType.ENTRY_POINT, BlockType.GET_ARGUMENT],
 		measurement: [BlockType.STOPWATCH_START, BlockType.STOPWATCH_STOP, BlockType.STOPWATCH_RESET, BlockType.STOPWATCH_READ],
 		parallel: [BlockType.THREAD_CREATE, BlockType.THREAD_JOIN, BlockType.MUTEX_LOCK, BlockType.MUTEX_UNLOCK]
 	};

@@ -127,8 +127,10 @@ export class UserProgram {
 		if (searchedFunction) {
 			searchedFunction.setArguments (argument1, argument2, argument3);
 			await searchedFunction.executeBlock ();
+			return searchedFunction.returnValue;
 		} else {
 			this.mission.printError (`"${functionName}" という関数は存在しません！`);
+			return 0;
 		}
 	}
 
@@ -340,6 +342,7 @@ export class Routine {
 	argument1: number = 0;
 	argument2: number = 0;
 	argument3: number = 0;
+	returnValue: number = 0;
 	definitionBlock: CommandBlockBehaviors.FunctionDefinitionBlock | CommandBlockBehaviors.EntryPointBlock | null;
 	functionStatementElement: Element;
 	localNumberVariables: NumberVariable[] = [];
@@ -352,6 +355,7 @@ export class Routine {
 	}
 
 	async executeBlock () {
+		this.returnValue = 0;
 		await this.definitionBlock?.executeBlock ();
 	}
 
@@ -875,6 +879,32 @@ export const commandBlockDefinitions = [
 		}
 	},
 
+	// ========== return ==========
+	{
+		type: "return_value",
+		wait: 100,
+		randomSpeed: true,
+		instantiate: (blockXml: Element, workspace: Blockly.Workspace | null, userProgram: UserProgram, myRoutine: Routine, wait: number, randomSpeed: boolean): CommandBlockBehaviors.CommandBlock => {
+			return new CommandBlockBehaviors.ReturnValueBlock (blockXml, workspace, userProgram, myRoutine, wait, randomSpeed);
+		},
+		blocklyJson: {
+			"type": "return_value",
+			"message0": "値を返す %1",
+			"args0": [
+				{
+					"type": "input_value",
+					"name": "return_value",
+					"check": "Number"
+				}
+			],
+			"inputsInline": true,
+			"previousStatement": null,
+			"colour": 230,
+			"tooltip": "値を返します。",
+			"helpUrl": ""
+		}
+	},
+
 	// ========== スタート関数 ==========
 	{
 		type: "entry_point",
@@ -1389,6 +1419,48 @@ export const valueBlockDefinitions = [
 			"output": "Number",
 			"colour": 230,
 			"tooltip": "引数を読み取ります。",
+			"helpUrl": ""
+		}
+	},
+
+	{
+		type: "function_call_with_return",
+		wait: 100,
+		instantiate: (blockXml: Element, userProgram: UserProgram, myRoutine: Routine, wait: number): ValueBlockBehaviors.ValueBlock => {
+			return new ValueBlockBehaviors.FunctionCallWithReturnBlock (blockXml, userProgram, myRoutine, wait);
+		},
+		blocklyJson: {
+			"type": "function_call_with_return",
+			"message0": "実行 %1 %2 引数1 %3 引数2 %4 引数3 %5",
+			"args0": [
+				{
+					"type": "field_input",
+					"name": "name",
+					"text": "関数名"
+				},
+				{
+					"type": "input_dummy"
+				},
+				{
+					"type": "input_value",
+					"name": "argument1",
+					"check": "Number"
+				},
+				{
+					"type": "input_value",
+					"name": "argument2",
+					"check": "Number"
+				},
+				{
+					"type": "input_value",
+					"name": "argument3",
+					"check": "Number"
+				}
+			],
+			"inputsInline": true,
+			"output": null,
+			"colour": 230,
+			"tooltip": "戻り値がある関数を実行します。",
 			"helpUrl": ""
 		}
 	},

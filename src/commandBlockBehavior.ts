@@ -575,6 +575,25 @@ export class FunctionCallBlock extends CommandBlock {
 	}
 }
 
+export class ReturnValueBlock extends CommandBlock {
+	returnValue: ValueBlockBehaviors.ValueBlock | null;
+
+	constructor (blockXml: Element, workspace: Blockly.Workspace | null, userProgram: BlockDefinitions.UserProgram, myRoutine: BlockDefinitions.Routine, wait: number, randomSpeed: boolean) {
+		super (blockXml, workspace, userProgram, myRoutine, wait, randomSpeed);
+
+		const returnValue = super.getValue ("return_value");
+		this.returnValue = returnValue ? ValueBlockBehaviors.ValueBlock.constructBlock (returnValue, userProgram, myRoutine) : null;
+	}
+
+	async executeBlock () {
+		assertIsDefined (this.returnValue);
+		const returnValue = await this.userProgram.executeValueBlock (this.returnValue);
+		assertIsNumber (returnValue);
+
+		this.myRoutine.returnValue = returnValue;
+	}
+}
+
 export class EntryPointBlock extends CommandBlock {
 	statement: CommandBlock[];
 
