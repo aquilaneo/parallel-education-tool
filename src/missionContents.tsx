@@ -400,12 +400,100 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 	const twoDimensionalArrays = new Mission.TwoDimensionalArrays ();
 	const oneDimensionalArrays = new Mission.OneDimensionalArrays ();
 	const globalVariables = new Mission.GlobalVariables ();
+	globalVariables.addConstValue ("Value", 2);
+	missionContents.addMissionContent ({
+		chapterName: "1章",
+		missionTitle: "[1章 基本操作編 - 9.グローバル変数1]",
+		missionExplanation: <div><span className={"keyword"}>グローバル変数</span>の読み込み方を学習します。</div>,
+		missionID: "mission1-09",
+		score: new Mission.MissionScore (),
+		program: "",
+		goal: <div>グローバル変数「Value」の値を読み込み、コンソールに表示する</div>,
+		blockList: {
+			behaviors: [BlockType.TEXT_PRINT, BlockType.WAIT_MS, BlockType.WAIT_S],
+			logic: [],
+			loops: [BlockType.CONTROLS_REPEAT_EXT, BlockType.CONTROLS_WHILEUNTIL],
+			math: [BlockType.MATH_NUMBER, BlockType.MATH_ARITHMETIC],
+			text: [BlockType.TEXT, BlockType.STR_ARITHMETIC],
+			localVariables: [BlockType.LOCAL_VARIABLE_AVAILABLE],
+			globalArrays: [BlockType.GLOBAL_VARIABLE_READ],
+			functions: [BlockType.FUNCTION_DEFINITION, BlockType.FUNCTION_CALL, BlockType.ENTRY_POINT, BlockType.GET_ARGUMENT],
+			measurement: [BlockType.STOPWATCH_START, BlockType.STOPWATCH_STOP, BlockType.STOPWATCH_RESET, BlockType.STOPWATCH_READ],
+			parallel: []
+		},
+		twoDimensionalArrays: twoDimensionalArrays,
+		oneDimensionalArrays: oneDimensionalArrays,
+		globalVariables: globalVariables,
+		judge: (consoleOutputs,
+				initialTwoDimensionalArrays, initialOneDimensionalArrays, initialVariables,
+				twoDimensionalArraysResult, oneDimensionalArraysResult, variablesResult) => {
+			if (consoleOutputs.length < 1) {
+				return {cleared: false, failReason: "コンソールへの出力が少なすぎます。"};
+			} else if (consoleOutputs.length > 1) {
+				return {cleared: false, failReason: "コンソールへの出力が多すぎます。"};
+			}
+
+			if (!isEqual (consoleOutputs[0], initialVariables["Value"])) {
+				return {cleared: false, failReason: "出力された数字が異なります。"};
+			}
+
+			return {cleared: true, failReason: ""};
+		}
+	});
+}
+
+// ミッション1-10
+{
+	const twoDimensionalArrays = new Mission.TwoDimensionalArrays ();
+	const oneDimensionalArrays = new Mission.OneDimensionalArrays ();
+	const globalVariables = new Mission.GlobalVariables ();
+	globalVariables.addConstValue ("Result", 0);
+	missionContents.addMissionContent ({
+		chapterName: "1章",
+		missionTitle: "[1章 基本操作編 - 10.グローバル変数2]",
+		missionExplanation: <div><span className={"keyword"}>グローバル変数</span>の書き込み方を学習します。</div>,
+		missionID: "mission1-10",
+		score: new Mission.MissionScore (),
+		program: "",
+		goal: <div>32 - 24の計算結果をグローバル変数「Result」に書き込む</div>,
+		blockList: {
+			behaviors: [BlockType.TEXT_PRINT, BlockType.WAIT_MS, BlockType.WAIT_S],
+			logic: [],
+			loops: [BlockType.CONTROLS_REPEAT_EXT, BlockType.CONTROLS_WHILEUNTIL],
+			math: [BlockType.MATH_NUMBER, BlockType.MATH_ARITHMETIC],
+			text: [BlockType.TEXT, BlockType.STR_ARITHMETIC],
+			localVariables: [BlockType.LOCAL_VARIABLE_AVAILABLE],
+			globalArrays: [BlockType.GLOBAL_VARIABLE_READ, BlockType.GLOBAL_VARIABLE_WRITE],
+			functions: [BlockType.FUNCTION_DEFINITION, BlockType.FUNCTION_CALL, BlockType.ENTRY_POINT, BlockType.GET_ARGUMENT],
+			measurement: [BlockType.STOPWATCH_START, BlockType.STOPWATCH_STOP, BlockType.STOPWATCH_RESET, BlockType.STOPWATCH_READ],
+			parallel: []
+		},
+		twoDimensionalArrays: twoDimensionalArrays,
+		oneDimensionalArrays: oneDimensionalArrays,
+		globalVariables: globalVariables,
+		judge: (consoleOutputs,
+				initialTwoDimensionalArrays, initialOneDimensionalArrays, initialVariables,
+				twoDimensionalArraysResult, oneDimensionalArraysResult, variablesResult) => {
+			if (variablesResult["Result"] !== 32 - 24) {
+				return {cleared: false, failReason: "計算結果が異なります。"};
+			}
+
+			return {cleared: true, failReason: ""};
+		}
+	});
+}
+
+// ミッション1-11
+{
+	const twoDimensionalArrays = new Mission.TwoDimensionalArrays ();
+	const oneDimensionalArrays = new Mission.OneDimensionalArrays ();
+	const globalVariables = new Mission.GlobalVariables ();
 	oneDimensionalArrays.addConstArray ("Data", [2, 4, 6, 8]);
 	missionContents.addMissionContent ({
 		chapterName: "1章",
-		missionTitle: "[1章 基本操作編 - 9.グローバル1次元配列1]",
+		missionTitle: "[1章 基本操作編 - 11.グローバル1次元配列1]",
 		missionExplanation: <div><span className={"keyword"}>グローバル1次元配列</span>の読み込み方を学習します。</div>,
-		missionID: "mission1-09",
+		missionID: "mission1-11",
 		score: new Mission.MissionScore (),
 		program: "",
 		goal: <div>配列「Data」の2番目の要素を読み取り、その内容をコンソールに表示する</div>,
@@ -433,7 +521,7 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 				return {cleared: false, failReason: "コンソールへの出力が多すぎます。"};
 			}
 
-			if (!isEqual (consoleOutputs[0], oneDimensionalArraysResult["Data"][2])) {
+			if (!isEqual (consoleOutputs[0], initialOneDimensionalArrays["Data"][2])) {
 				return {cleared: false, failReason: "出力された数字が異なります。"};
 			}
 
@@ -442,7 +530,7 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 	});
 }
 
-// ミッション1-10
+// ミッション1-12
 {
 	const twoDimensionalArrays = new Mission.TwoDimensionalArrays ();
 	const oneDimensionalArrays = new Mission.OneDimensionalArrays ();
@@ -450,9 +538,9 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 	oneDimensionalArrays.addConstArray ("Data", [2, 4, 6, 8]);
 	missionContents.addMissionContent ({
 		chapterName: "1章",
-		missionTitle: "[1章 基本操作編 - 10.グローバル1次元配列2]",
+		missionTitle: "[1章 基本操作編 - 12.グローバル1次元配列2]",
 		missionExplanation: <div><span className={"keyword"}>グローバル1次元配列</span>の書き込み方を学習します。</div>,
-		missionID: "mission1-10",
+		missionID: "mission1-12",
 		score: new Mission.MissionScore (),
 		program: "",
 		goal: <div>配列「Data」の全ての要素を0にする</div>,
@@ -484,7 +572,7 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 	});
 }
 
-// ミッション1-11
+// ミッション1-13
 {
 	const twoDimensionalArrays = new Mission.TwoDimensionalArrays ();
 	const oneDimensionalArrays = new Mission.OneDimensionalArrays ();
@@ -492,9 +580,9 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 	twoDimensionalArrays.addConstArray ("Data", [[1, 2, 3], [4, 5, 6]]);
 	missionContents.addMissionContent ({
 		chapterName: "1章",
-		missionTitle: "[1章 基本操作編 - 11.グローバル2次元配列]",
+		missionTitle: "[1章 基本操作編 - 13.グローバル2次元配列]",
 		missionExplanation: <div><span className={"keyword"}>グローバル2次元配列</span>の使い方を学習します。</div>,
-		missionID: "mission1-11",
+		missionID: "mission1-13",
 		score: new Mission.MissionScore (),
 		program: "",
 		goal: <div>配列「Data」の全ての要素を0にする</div>,
@@ -528,7 +616,7 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 	});
 }
 
-// ミッション1-12
+// ミッション1-14
 {
 	const twoDimensionalArrays = new Mission.TwoDimensionalArrays ();
 	const oneDimensionalArrays = new Mission.OneDimensionalArrays ();
@@ -536,9 +624,9 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 	twoDimensionalArrays.addRandomArray ("Data", 2, 3, 0, 99);
 	missionContents.addMissionContent ({
 		chapterName: "1章",
-		missionTitle: "[1章 基本操作編 - 12.ランダムな配列]",
+		missionTitle: "[1章 基本操作編 - 14.ランダムな配列]",
 		missionExplanation: <div>グローバル2次元配列を使った計算です。今回は要素の値が<span className={"keyword"}>ランダム</span>で決まります。</div>,
-		missionID: "mission1-12",
+		missionID: "mission1-14",
 		score: new Mission.MissionScore (),
 		program: "",
 		goal: <div>配列「Data」の全要素の平均をコンソールに出力する</div>,
@@ -583,7 +671,7 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 	});
 }
 
-// ミッション1-13
+// ミッション1-15
 {
 	const twoDimensionalArrays = new Mission.TwoDimensionalArrays ();
 	const oneDimensionalArrays = new Mission.OneDimensionalArrays ();
@@ -591,9 +679,9 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 	twoDimensionalArrays.addRandomArray ("Data", 2, 3, 0, 99);
 	missionContents.addMissionContent ({
 		chapterName: "1章",
-		missionTitle: "[1章 基本操作編 - 13.分岐]",
+		missionTitle: "[1章 基本操作編 - 15.分岐]",
 		missionExplanation: <div><span className={"keyword"}>分岐</span>の使い方を学習します。</div>,
-		missionID: "mission1-13",
+		missionID: "mission1-15",
 		score: new Mission.MissionScore (),
 		program: "",
 		goal: <div>配列「Data」の全要素の平均を計算し、結果が50以上だったら「High」、それ以外の場合は「Low」とコンソールに出力する</div>,
