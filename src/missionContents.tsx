@@ -301,12 +301,13 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 	const globalVariables = new Mission.GlobalVariables ();
 	missionContents.addMissionContent ({
 		chapterName: "1章",
-		missionTitle: "[1章 基本操作編 - 7.関数の引数]",
-		missionExplanation: <div>関数に値を渡す<span className={"keyword"}>引数(ひきすう)</span>の使い方を学びます。</div>,
+		missionTitle: "[1章 基本操作編 - 7.関数の引数と戻り値]",
+		missionExplanation: <div>関数に値を渡す<span className={"keyword"}>引数(ひきすう)</span>と
+			関数から結果を受け取る<span className={"keyword"}>戻り値</span>の使い方を学びます。</div>,
 		missionID: "mission1-07",
 		score: new Mission.MissionScore (),
 		program: "",
-		goal: <div><span className={"keyword"}>引数</span>で渡された3つの数値の平均を求める関数を作成し、12 65 83の平均をコンソールに表示する</div>,
+		goal: <div><span className={"keyword"}>引数</span>で渡された3つの数値の平均を求める関数を作成し、12 64 83の平均をコンソールに表示する</div>,
 		blockList: {
 			behaviors: [BlockType.TEXT_PRINT, BlockType.WAIT_MS, BlockType.WAIT_S],
 			logic: [],
@@ -315,7 +316,7 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 			text: [BlockType.TEXT, BlockType.STR_ARITHMETIC],
 			localVariables: [BlockType.LOCAL_VARIABLE_AVAILABLE],
 			globalArrays: [],
-			functions: [BlockType.FUNCTION_DEFINITION, BlockType.FUNCTION_CALL, BlockType.ENTRY_POINT, BlockType.GET_ARGUMENT],
+			functions: [BlockType.FUNCTION_DEFINITION, BlockType.FUNCTION_CALL, BlockType.FUNCTION_CALL_WITH_RETURN, BlockType.ENTRY_POINT, BlockType.GET_ARGUMENT, BlockType.RETURN_VALUE],
 			measurement: [],
 			parallel: []
 		},
@@ -331,7 +332,7 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 				return {cleared: false, failReason: "コンソールへの出力が多すぎます。"};
 			}
 
-			if (!isEqual (consoleOutputs[0], (12 + 65 + 83) / 3)) {
+			if (!isEqual (consoleOutputs[0], (12 + 64 + 83) / 3)) {
 				return {cleared: false, failReason: "計算結果が異なります。"};
 			}
 
