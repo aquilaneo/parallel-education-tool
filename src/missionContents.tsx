@@ -1263,6 +1263,89 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 	});
 }
 
+// ミッション3-6
+{
+	const twoDimensionalArrays = new Mission.TwoDimensionalArrays ();
+	const oneDimensionalArrays = new Mission.OneDimensionalArrays ();
+	const globalVariables = new Mission.GlobalVariables ();
+	globalVariables.addConstValue ("Value1", 0);
+	globalVariables.addConstValue ("Value2", 0);
+	missionContents.addMissionContent ({
+		chapterName: "3章",
+		missionTitle: "[3章 並列プログラミング基礎編 - 6.デッドロック1]",
+		missionExplanation: <div>ミューテックスは便利な機能ですが、使い方に注意しないとプログラムがフリーズする原因となります。</div>,
+		missionID: "mission3-06",
+		score: new Mission.MissionScore (),
+		program: "",
+		goal: <div>用意されたプログラムを実行する。</div>,
+		blockList: {
+			behaviors: [BlockType.TEXT_PRINT, BlockType.WAIT_MS, BlockType.WAIT_S],
+			logic: [BlockType.CONTROLS_IF, BlockType.CONTROLS_IFELSE, BlockType.LOGIC_COMPARE, BlockType.LOGIC_OPERATION, BlockType.LOGIC_NEGATE],
+			loops: [BlockType.CONTROLS_REPEAT_EXT, BlockType.CONTROLS_WHILEUNTIL],
+			math: [BlockType.MATH_NUMBER, BlockType.MATH_ARITHMETIC],
+			text: [BlockType.TEXT, BlockType.STR_ARITHMETIC],
+			localVariables: [BlockType.LOCAL_VARIABLE_AVAILABLE],
+			globalArrays: [BlockType.GLOBAL_VARIABLE_READ, BlockType.GLOBAL_VARIABLE_WRITE, BlockType.GLOBAL_ONE_DIMENSIONAL_ARRAY_READ, BlockType.GLOBAL_ONE_DIMENSIONAL_ARRAY_WRITE, BlockType.GLOBAL_TWO_DIMENSIONAL_ARRAY_READ, BlockType.GLOBAL_TWO_DIMENSIONAL_ARRAY_WRITE],
+			functions: [BlockType.FUNCTION_DEFINITION, BlockType.FUNCTION_CALL, BlockType.ENTRY_POINT, BlockType.GET_ARGUMENT],
+			measurement: [BlockType.STOPWATCH_START, BlockType.STOPWATCH_STOP, BlockType.STOPWATCH_RESET, BlockType.STOPWATCH_READ],
+			parallel: [BlockType.THREAD_CREATE, BlockType.THREAD_JOIN, BlockType.MUTEX_LOCK, BlockType.MUTEX_UNLOCK]
+		},
+		twoDimensionalArrays: twoDimensionalArrays,
+		oneDimensionalArrays: oneDimensionalArrays,
+		globalVariables: globalVariables,
+		judge: (consoleOutputs,
+				initialTwoDimensionalArrays, initialOneDimensionalArrays, initialVariables,
+				twoDimensionalArraysResult, oneDimensionalArraysResult, variablesResult) => {
+			return {cleared: true, failReason: ""};
+		}
+	});
+}
+
+// ミッション3-7
+{
+	const twoDimensionalArrays = new Mission.TwoDimensionalArrays ();
+	const oneDimensionalArrays = new Mission.OneDimensionalArrays ();
+	const globalVariables = new Mission.GlobalVariables ();
+	globalVariables.addConstValue ("Value1", 0);
+	globalVariables.addConstValue ("Value2", 0);
+	missionContents.addMissionContent ({
+		chapterName: "3章",
+		missionTitle: "[3章 並列プログラミング基礎編 - 7.デッドロック2]",
+		missionExplanation: <div>先ほどのような、お互いに相手のスレッドのロック解除を待ってしまいプログラムが先に進まなくなる現象を
+			<span className={"keyword"}>デッドロック</span>と言います。</div>,
+		missionID: "mission3-07",
+		score: new Mission.MissionScore (),
+		program: "",
+		goal: <div>用意されたプログラムを改造し、グローバル変数Value1とValue2が無事に20になるようにする</div>,
+		blockList: {
+			behaviors: [BlockType.TEXT_PRINT, BlockType.WAIT_MS, BlockType.WAIT_S],
+			logic: [BlockType.CONTROLS_IF, BlockType.CONTROLS_IFELSE, BlockType.LOGIC_COMPARE, BlockType.LOGIC_OPERATION, BlockType.LOGIC_NEGATE],
+			loops: [BlockType.CONTROLS_REPEAT_EXT, BlockType.CONTROLS_WHILEUNTIL],
+			math: [BlockType.MATH_NUMBER, BlockType.MATH_ARITHMETIC],
+			text: [BlockType.TEXT, BlockType.STR_ARITHMETIC],
+			localVariables: [BlockType.LOCAL_VARIABLE_AVAILABLE],
+			globalArrays: [BlockType.GLOBAL_VARIABLE_READ, BlockType.GLOBAL_VARIABLE_WRITE, BlockType.GLOBAL_ONE_DIMENSIONAL_ARRAY_READ, BlockType.GLOBAL_ONE_DIMENSIONAL_ARRAY_WRITE, BlockType.GLOBAL_TWO_DIMENSIONAL_ARRAY_READ, BlockType.GLOBAL_TWO_DIMENSIONAL_ARRAY_WRITE],
+			functions: [BlockType.FUNCTION_DEFINITION, BlockType.FUNCTION_CALL, BlockType.ENTRY_POINT, BlockType.GET_ARGUMENT],
+			measurement: [BlockType.STOPWATCH_START, BlockType.STOPWATCH_STOP, BlockType.STOPWATCH_RESET, BlockType.STOPWATCH_READ],
+			parallel: [BlockType.THREAD_CREATE, BlockType.THREAD_JOIN, BlockType.MUTEX_LOCK, BlockType.MUTEX_UNLOCK]
+		},
+		twoDimensionalArrays: twoDimensionalArrays,
+		oneDimensionalArrays: oneDimensionalArrays,
+		globalVariables: globalVariables,
+		judge: (consoleOutputs,
+				initialTwoDimensionalArrays, initialOneDimensionalArrays, initialVariables,
+				twoDimensionalArraysResult, oneDimensionalArraysResult, variablesResult) => {
+			if (variablesResult["Value1"] !== 20) {
+				return {cleared: false, failReason: "Value1の値が異なります。"};
+			}
+			if (variablesResult["Value2"] !== 20) {
+				return {cleared: false, failReason: "Value2の値が異なります。"};
+			}
+			return {cleared: true, failReason: ""};
+		}
+	});
+}
+
 // サンプルミッション
 {
 	const twoDimensionalArrays = new Mission.TwoDimensionalArrays ();
