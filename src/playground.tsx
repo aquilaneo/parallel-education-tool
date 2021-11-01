@@ -252,10 +252,29 @@ class EditorView extends React.Component<{ missionContent: MissionContent, close
 		// ワークスペースを生成
 		const document: HTMLElement | undefined = xmlDom.getElementById ("toolbox") || undefined; // 要素取得して型合わせ
 		Blockly.setLocale (Ja);
-		this.workspace = Blockly.inject ("blocklyDiv", {
-			toolbox: document,
-			disable: true
-		});
+		// 編集可能かのオプション
+		let options: Blockly.BlocklyOptions;
+		if (this.props.missionContent.editable) {
+			options = {
+				toolbox: document,
+				move: {
+					scrollbars: true,
+					drag: true,
+					wheel: true
+				}
+			}
+		} else {
+			options = {
+				toolbox: document,
+				readOnly: true,
+				move: {
+					scrollbars: true,
+					drag: true,
+					wheel: true
+				}
+			}
+		}
+		this.workspace = Blockly.inject ("blocklyDiv", options);
 
 		// ========== 変数関連設定 ==========
 		// 数値型変数追加ボタンの定義
@@ -328,7 +347,11 @@ class EditorView extends React.Component<{ missionContent: MissionContent, close
 		// ワークスペースにプログラム読み込み
 		if (this.props.missionContent.program === "") {
 			// デフォルトプログラム
-			this.xmlToWorkspace (this.initialWorkspace);
+			if (this.props.missionContent.defaultProgram === "") {
+				this.xmlToWorkspace (this.initialWorkspace);
+			} else {
+				this.xmlToWorkspace (this.props.missionContent.defaultProgram);
+			}
 		} else {
 			// 保存されたプログラム
 			this.xmlToWorkspace (this.props.missionContent.program);
@@ -428,7 +451,14 @@ class ThreadView extends React.Component<{ threadNames: string, threadCount: num
 	workspace: WorkspaceSvg | null = null;
 
 	componentDidMount () {
-		this.workspace = Blockly.inject (`thread${this.props.threadNames}`);
+		this.workspace = Blockly.inject (`thread${this.props.threadNames}`, {
+			readOnly: true,
+			move: {
+				scrollbars: true,
+				drag: true,
+				wheel: true
+			}
+		});
 		const xml = `<xml xmlns="https://developers.google.com/blockly/xml">${this.props.blocks}</xml>`;
 		const dom = Blockly.Xml.textToDom (xml);
 		Blockly.Xml.domToWorkspace (dom, this.workspace);
