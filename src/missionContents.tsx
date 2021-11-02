@@ -19,7 +19,16 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 	missionContents.addMissionContent ({
 		chapterName: "1章",
 		missionTitle: "[1章 基本操作編 - 1.プログラムの作り方]",
-		missionExplanation: <div><span className={"keyword"}>printブロック</span>を使ってプログラムの作り方を学びます。</div>,
+		missionExplanation: <div>
+			<div>まずは<span className={"keyword"}>コンソール</span>に文字列を表示するプログラムを作り、基本的なプログラミング方法を学びます。</div>
+			<div>
+				<span className={"keyword"}>プログラム画面</span>左側のメニューにある「動作」から<span className={"keyword"}>表示ブロック</span>を
+				<span className={"keyword"}>関数 スタート</span>内にドラッグアンドドロップし、緑色の入力欄に「Hello」と入力してみてください。
+			</div>
+			<div>
+				「ブロックを実行」ボタンを押すとプログラムがスタートします。
+			</div>
+		</div>,
 		missionID: "mission1-01",
 		score: new Mission.MissionScore (),
 		defaultProgram: "",
@@ -66,7 +75,10 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 	missionContents.addMissionContent ({
 		chapterName: "1章",
 		missionTitle: "[1章 基本操作編 - 2.複数のブロック]",
-		missionExplanation: <div><span className={"keyword"}>複数のブロック</span>の並べ方を学びます。</div>,
+		missionExplanation: <div>
+			<div>プログラムのブロックは複数個連ねることができます。今回はコンソールにHelloと3回表示したいので、表示ブロックを3つ連ねます。</div>
+			<div>配置し終わったら「ブロックを実行」ボタンからプログラムを実行してください。</div>
+		</div>,
 		missionID: "mission1-02",
 		score: new Mission.MissionScore (),
 		defaultProgram: "",
@@ -116,7 +128,11 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 	missionContents.addMissionContent ({
 		chapterName: "1章",
 		missionTitle: "[1章 基本操作編 - 3.繰り返し]",
-		missionExplanation: <div><span className={"keyword"}>繰り返しブロック</span>の使い方を学びます。</div>,
+		missionExplanation: <div>
+			<div>ある命令を指定した回数繰り返すには<span className={"keyword"}>繰り返しブロック</span>を使います。</div>
+			<div>繰り返しブロックは「ループ」カテゴリの中にあります。</div>
+			<div>このミッションは使用するブロック数の制限があるため、ただ表示ブロックを50個並べる方法ではクリアできません。</div>
+		</div>,
 		missionID: "mission1-03",
 		score: new Mission.MissionScore (),
 		defaultProgram: "",
