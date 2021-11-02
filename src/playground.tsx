@@ -253,10 +253,15 @@ class EditorView extends React.Component<{ missionContent: MissionContent, close
 		const document: HTMLElement | undefined = xmlDom.getElementById ("toolbox") || undefined; // 要素取得して型合わせ
 		Blockly.setLocale (Ja);
 		// 編集可能かのオプション
-		let options: Blockly.BlocklyOptions;
+		let options: object;
+		let blockCountLimit = Infinity;
+		if (this.props.missionContent.blockCountLimit >= 0) {
+			blockCountLimit = this.props.missionContent.blockCountLimit;
+		}
 		if (this.props.missionContent.editable) {
 			options = {
 				toolbox: document,
+				maxBlocks: blockCountLimit,
 				move: {
 					scrollbars: true,
 					drag: true,
@@ -266,6 +271,7 @@ class EditorView extends React.Component<{ missionContent: MissionContent, close
 		} else {
 			options = {
 				toolbox: document,
+				maxBlocks: blockCountLimit,
 				readOnly: true,
 				move: {
 					scrollbars: true,

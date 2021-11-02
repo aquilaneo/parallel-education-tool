@@ -35,6 +35,7 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 		program: "",
 		goal: <div>コンソールに "Hello" と出力する</div>,
 		editable: true,
+		blockCountLimit: -1,
 		blockList: {
 			behaviors: [BlockType.TEXT_PRINT, BlockType.WAIT_MS, BlockType.WAIT_S],
 			logic: [],
@@ -85,6 +86,7 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 		program: "",
 		goal: <div>コンソールに3回 "Hello" と出力する</div>,
 		editable: true,
+		blockCountLimit: -1,
 		blockList: {
 			behaviors: [BlockType.TEXT_PRINT, BlockType.WAIT_MS, BlockType.WAIT_S],
 			logic: [],
@@ -139,6 +141,7 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 		program: "",
 		goal: <div>コンソールに50回 "Hello" と出力する</div>,
 		editable: true,
+		blockCountLimit: 10,
 		blockList: {
 			behaviors: [BlockType.TEXT_PRINT, BlockType.WAIT_MS, BlockType.WAIT_S],
 			logic: [],
@@ -192,6 +195,7 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 		goal: <div><span className={"keyword"}>数値ブロック</span>や<span className={"keyword"}>計算ブロック</span>を使用し、
 			63×87の答えをコンソールに表示する</div>,
 		editable: true,
+		blockCountLimit: -1,
 		blockList: {
 			behaviors: [BlockType.TEXT_PRINT, BlockType.WAIT_MS, BlockType.WAIT_S],
 			logic: [],
@@ -241,6 +245,7 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 		program: "",
 		goal: <div><span className={"keyword"}>変数ブロック</span>を使用し、 1+2+3+4+5 の計算結果をコンソールに表示する</div>,
 		editable: true,
+		blockCountLimit: -1,
 		blockList: {
 			behaviors: [BlockType.TEXT_PRINT, BlockType.WAIT_MS, BlockType.WAIT_S],
 			logic: [],
@@ -289,6 +294,7 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 		program: "",
 		goal: <div>29+76 を計算しコンソールに表示する<span className={"keyword"}>関数</span>を作成する。</div>,
 		editable: true,
+		blockCountLimit: -1,
 		blockList: {
 			behaviors: [BlockType.TEXT_PRINT, BlockType.WAIT_MS, BlockType.WAIT_S],
 			logic: [],
@@ -338,6 +344,7 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 		program: "",
 		goal: <div><span className={"keyword"}>引数</span>で渡された3つの数値の平均を求める関数を作成し、12 64 83の平均をコンソールに表示する</div>,
 		editable: true,
+		blockCountLimit: -1,
 		blockList: {
 			behaviors: [BlockType.TEXT_PRINT, BlockType.WAIT_MS, BlockType.WAIT_S],
 			logic: [],
@@ -386,6 +393,7 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 		program: "",
 		goal: <div>Helloと50回コンソールに表示し、最後にその処理にかかった時間を表示する</div>,
 		editable: true,
+		blockCountLimit: -1,
 		blockList: {
 			behaviors: [BlockType.TEXT_PRINT, BlockType.WAIT_MS, BlockType.WAIT_S],
 			logic: [],
@@ -444,6 +452,7 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 		program: "",
 		goal: <div>グローバル変数「Value」の値を読み込み、コンソールに表示する</div>,
 		editable: true,
+		blockCountLimit: -1,
 		blockList: {
 			behaviors: [BlockType.TEXT_PRINT, BlockType.WAIT_MS, BlockType.WAIT_S],
 			logic: [],
@@ -493,6 +502,7 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 		program: "",
 		goal: <div>32 - 24の計算結果をグローバル変数「Result」に書き込む</div>,
 		editable: true,
+		blockCountLimit: -1,
 		blockList: {
 			behaviors: [BlockType.TEXT_PRINT, BlockType.WAIT_MS, BlockType.WAIT_S],
 			logic: [],
@@ -536,6 +546,7 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 		program: "",
 		goal: <div>配列「Data」の2番目の要素を読み取り、その内容をコンソールに表示する</div>,
 		editable: true,
+		blockCountLimit: -1,
 		blockList: {
 			behaviors: [BlockType.TEXT_PRINT, BlockType.WAIT_MS, BlockType.WAIT_S],
 			logic: [],
@@ -585,6 +596,7 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 		program: "",
 		goal: <div>配列「Data」の全ての要素を0にする</div>,
 		editable: true,
+		blockCountLimit: -1,
 		blockList: {
 			behaviors: [BlockType.TEXT_PRINT, BlockType.WAIT_MS, BlockType.WAIT_S],
 			logic: [],
@@ -629,6 +641,7 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 		program: "",
 		goal: <div>配列「Data」の全ての要素を0にする</div>,
 		editable: true,
+		blockCountLimit: -1,
 		blockList: {
 			behaviors: [BlockType.TEXT_PRINT, BlockType.WAIT_MS, BlockType.WAIT_S],
 			logic: [],
@@ -675,6 +688,7 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 		program: "",
 		goal: <div>配列「Data」の全要素の平均をコンソールに出力する</div>,
 		editable: true,
+		blockCountLimit: -1,
 		blockList: {
 			behaviors: [BlockType.TEXT_PRINT, BlockType.WAIT_MS, BlockType.WAIT_S],
 			logic: [],
@@ -732,6 +746,7 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 		program: "",
 		goal: <div>配列「Data」の全要素の平均を計算し、結果が50以上だったら「High」、それ以外の場合は「Low」とコンソールに出力する</div>,
 		editable: true,
+		blockCountLimit: -1,
 		blockList: {
 			behaviors: [BlockType.TEXT_PRINT, BlockType.WAIT_MS, BlockType.WAIT_S],
 			logic: [BlockType.CONTROLS_IF, BlockType.CONTROLS_IFELSE, BlockType.LOGIC_COMPARE, BlockType.LOGIC_OPERATION, BlockType.LOGIC_NEGATE],
@@ -790,6 +805,7 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 		goal: <div>4つの<span className={"keyword"}>スレッド</span>を生成し、
 			それぞれの<span className={"keyword"}>スレッド</span>から1回ずつ「Hello」とコンソールに表示する</div>,
 		editable: true,
+		blockCountLimit: -1,
 		blockList: {
 			behaviors: [BlockType.TEXT_PRINT, BlockType.WAIT_MS, BlockType.WAIT_S],
 			logic: [BlockType.CONTROLS_IF, BlockType.CONTROLS_IFELSE, BlockType.LOGIC_COMPARE, BlockType.LOGIC_OPERATION, BlockType.LOGIC_NEGATE],
@@ -839,6 +855,7 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 		program: "",
 		goal: <div>4つのスレッドを生成し、それぞれのスレッドから10回ずつ「Hello」とコンソールに表示する</div>,
 		editable: true,
+		blockCountLimit: -1,
 		blockList: {
 			behaviors: [BlockType.TEXT_PRINT, BlockType.WAIT_MS, BlockType.WAIT_S],
 			logic: [BlockType.CONTROLS_IF, BlockType.CONTROLS_IFELSE, BlockType.LOGIC_COMPARE, BlockType.LOGIC_OPERATION, BlockType.LOGIC_NEGATE],
@@ -877,6 +894,7 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 		program: "",
 		goal: <div>4つのスレッドを生成し、それぞれのスレッドから10回ずつ「Hello」とコンソールに表示する</div>,
 		editable: true,
+		blockCountLimit: -1,
 		blockList: {
 			behaviors: [BlockType.TEXT_PRINT, BlockType.WAIT_MS, BlockType.WAIT_S],
 			logic: [BlockType.CONTROLS_IF, BlockType.CONTROLS_IFELSE, BlockType.LOGIC_COMPARE, BlockType.LOGIC_OPERATION, BlockType.LOGIC_NEGATE],
@@ -927,6 +945,7 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 		program: "",
 		goal: <div>4つのスレッド使い、グローバル配列「Data」の要素を全て0にする</div>,
 		editable: true,
+		blockCountLimit: -1,
 		blockList: {
 			behaviors: [BlockType.TEXT_PRINT, BlockType.WAIT_MS, BlockType.WAIT_S],
 			logic: [BlockType.CONTROLS_IF, BlockType.CONTROLS_IFELSE, BlockType.LOGIC_COMPARE, BlockType.LOGIC_OPERATION, BlockType.LOGIC_NEGATE],
@@ -971,6 +990,7 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 		program: "",
 		goal: <div>グローバル配列「Data」の値を並列処理を使わずに全て0にし、その処理にかかった時間を表示する</div>,
 		editable: true,
+		blockCountLimit: -1,
 		blockList: {
 			behaviors: [BlockType.TEXT_PRINT, BlockType.WAIT_MS, BlockType.WAIT_S],
 			logic: [BlockType.CONTROLS_IF, BlockType.CONTROLS_IFELSE, BlockType.LOGIC_COMPARE, BlockType.LOGIC_OPERATION, BlockType.LOGIC_NEGATE],
@@ -1028,6 +1048,7 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 		program: "",
 		goal: <div>グローバル配列「Data」の値を並列処理で全て0にし、その処理にかかった時間を表示する</div>,
 		editable: true,
+		blockCountLimit: -1,
 		blockList: {
 			behaviors: [BlockType.TEXT_PRINT, BlockType.WAIT_MS, BlockType.WAIT_S],
 			logic: [BlockType.CONTROLS_IF, BlockType.CONTROLS_IFELSE, BlockType.LOGIC_COMPARE, BlockType.LOGIC_OPERATION, BlockType.LOGIC_NEGATE],
@@ -1095,6 +1116,7 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 		program: "",
 		goal: <div>グローバル配列「Data」の値を並列処理で全て0にし、その処理にかかった時間を表示する</div>,
 		editable: true,
+		blockCountLimit: -1,
 		blockList: {
 			behaviors: [BlockType.TEXT_PRINT, BlockType.WAIT_MS, BlockType.WAIT_S],
 			logic: [BlockType.CONTROLS_IF, BlockType.CONTROLS_IFELSE, BlockType.LOGIC_COMPARE, BlockType.LOGIC_OPERATION, BlockType.LOGIC_NEGATE],
@@ -1160,6 +1182,7 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 		program: "",
 		goal: <div>グローバル2次元配列を行列に見立て、「A」の行列と「B」の行列を加算した結果を「A+B」の行列に代入する</div>,
 		editable: true,
+		blockCountLimit: -1,
 		blockList: {
 			behaviors: [BlockType.TEXT_PRINT, BlockType.WAIT_MS, BlockType.WAIT_S],
 			logic: [BlockType.CONTROLS_IF, BlockType.CONTROLS_IFELSE, BlockType.LOGIC_COMPARE, BlockType.LOGIC_OPERATION, BlockType.LOGIC_NEGATE],
@@ -1207,6 +1230,7 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 		program: "",
 		goal: <div>フィボナッチ数列を求める。</div>,
 		editable: true,
+		blockCountLimit: -1,
 		blockList: {
 			behaviors: [BlockType.TEXT_PRINT, BlockType.WAIT_MS, BlockType.WAIT_S],
 			logic: [BlockType.CONTROLS_IF, BlockType.CONTROLS_IFELSE, BlockType.LOGIC_COMPARE, BlockType.LOGIC_OPERATION, BlockType.LOGIC_NEGATE],
@@ -1254,6 +1278,7 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 		program: "",
 		goal: <div>グローバル変数「sum」に配列「Data」の各要素の合計を並列処理で入れる。</div>,
 		editable: true,
+		blockCountLimit: -1,
 		blockList: {
 			behaviors: [BlockType.TEXT_PRINT, BlockType.WAIT_MS, BlockType.WAIT_S],
 			logic: [BlockType.CONTROLS_IF, BlockType.CONTROLS_IFELSE, BlockType.LOGIC_COMPARE, BlockType.LOGIC_OPERATION, BlockType.LOGIC_NEGATE],
@@ -1298,6 +1323,7 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 		program: "",
 		goal: <div>グローバル変数「sum」に配列「Data」の各要素の合計を並列処理で入れる。</div>,
 		editable: true,
+		blockCountLimit: -1,
 		blockList: {
 			behaviors: [BlockType.TEXT_PRINT, BlockType.WAIT_MS, BlockType.WAIT_S],
 			logic: [BlockType.CONTROLS_IF, BlockType.CONTROLS_IFELSE, BlockType.LOGIC_COMPARE, BlockType.LOGIC_OPERATION, BlockType.LOGIC_NEGATE],
@@ -1348,6 +1374,7 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 		program: "",
 		goal: <div>用意されたプログラムを実行する。</div>,
 		editable: false,
+		blockCountLimit: -1,
 		blockList: {
 			behaviors: [BlockType.TEXT_PRINT, BlockType.WAIT_MS, BlockType.WAIT_S],
 			logic: [BlockType.CONTROLS_IF, BlockType.CONTROLS_IFELSE, BlockType.LOGIC_COMPARE, BlockType.LOGIC_OPERATION, BlockType.LOGIC_NEGATE],
@@ -1389,6 +1416,7 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 		program: "",
 		goal: <div>用意されたプログラムを改造し、グローバル変数Value1とValue2が無事に20になるようにする</div>,
 		editable: true,
+		blockCountLimit: -1,
 		blockList: {
 			behaviors: [BlockType.TEXT_PRINT, BlockType.WAIT_MS, BlockType.WAIT_S],
 			logic: [BlockType.CONTROLS_IF, BlockType.CONTROLS_IFELSE, BlockType.LOGIC_COMPARE, BlockType.LOGIC_OPERATION, BlockType.LOGIC_NEGATE],
@@ -1441,6 +1469,7 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 		program: "",
 		goal: <div>グローバル配列 "Array1" の値をすべて0にする</div>,
 		editable: true,
+		blockCountLimit: -1,
 		blockList: getAllBlockListXml (),
 		twoDimensionalArrays: twoDimensionalArrays,
 		oneDimensionalArrays: oneDimensionalArrays,

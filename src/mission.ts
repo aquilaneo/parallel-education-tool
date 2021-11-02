@@ -65,7 +65,8 @@ export interface MissionContent {
 	defaultProgram: string, // 最初に用意されているプログラム
 	program: string, // 作成途中のプログラム保持
 	goal: JSX.Element, // クリア条件
-	editable: boolean,
+	editable: boolean, // プログラム編集可能か
+	blockCountLimit: number, // ブロック数制限
 	blockList: BlockSettings.BlockList, // 命令ブロック一覧
 	twoDimensionalArrays: TwoDimensionalArrays; // グローバル2次元配列の初期値
 	oneDimensionalArrays: OneDimensionalArrays; // グローバル1次元配列の初期値
