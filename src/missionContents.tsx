@@ -183,7 +183,8 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 		chapterName: "1章",
 		missionTitle: "[1章 基本操作編 - 4.数値ブロックと計算]",
 		missionExplanation: <div>
-			<span className={"keyword"}>数値ブロック</span>と<span className={"keyword"}>計算ブロック</span>の使い方を学びます。
+			<div>「数学」カテゴリ内の<span className={"keyword"}>計算ブロック</span>を使うことで、四則演算を行うことができます。</div>
+			<div>これまでのミッションで使用した表示ブロックの中にこの計算ブロックを接続することで、計算結果をコンソールに表示することができます。</div>
 		</div>,
 		missionID: "mission1-04",
 		score: new Mission.MissionScore (),
@@ -233,8 +234,15 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 	missionContents.addMissionContent ({
 		chapterName: "1章",
 		missionTitle: "[1章 基本操作編 - 5.変数の使い方]",
-		missionExplanation: <div><span className={"keyword"}>変数の作り方</span>、<span className={"keyword"}>値の書き込み</span>/
-			<span className={"keyword"}>読み込み</span>/<span className={"keyword"}>加算</span>の方法を学びます。</div>,
+		missionExplanation: <div>
+			<div><span className={"keyword"}>変数</span>とは、値を記憶させておく機能のことです。</div>
+			<div>変数には値の<span className={"keyword"}>書き込み</span>や<span className={"keyword"}>読み込み</span>
+				といった処理を行うことができます。
+			</div>
+			<div>「ローカル変数」カテゴリ内の「数値型変数を作成」ボタンをクリックし、変数名を入力すると新しい変数が作成され、
+				その変数に対する各種操作ブロックが使えるようになります。
+			</div>
+		</div>,
 		missionID: "mission1-05",
 		score: new Mission.MissionScore (),
 		defaultProgram: "",
@@ -282,7 +290,15 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 	missionContents.addMissionContent ({
 		chapterName: "1章",
 		missionTitle: "[1章 基本操作編 - 6.関数の作り方と使い方]",
-		missionExplanation: <div><span className={"keyword"}>関数(サブルーチン)</span>の作り方と使い方を学びます。</div>,
+		missionExplanation: <div>
+			<div><span className={"keyword"}>関数(サブルーチン)</span>とは、プログラムの処理の一部分をまとめて再利用可能にする機能です。</div>
+			<div>
+				「関数」カテゴリ内のスタート関数と同じ形をしたブロックが関数定義のブロックで、その下にあるブロックが定義した関数を実行するブロックです。
+			</div>
+			<div>
+				このミッションでは「29+76を計算しコンソールに表示する」というプログラムを関数にし、その関数をスタート関数から呼び出す方法でクリアを目指してください。
+			</div>
+		</div>,
 		missionID: "mission1-06",
 		score: new Mission.MissionScore (),
 		defaultProgram: "",
@@ -330,8 +346,22 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 	missionContents.addMissionContent ({
 		chapterName: "1章",
 		missionTitle: "[1章 基本操作編 - 7.関数の引数と戻り値]",
-		missionExplanation: <div>関数に値を渡す<span className={"keyword"}>引数(ひきすう)</span>と
-			関数から結果を受け取る<span className={"keyword"}>戻り値</span>の使い方を学びます。</div>,
+		missionExplanation: <div>
+			<div>
+				呼び出し元から関数に値を渡す<span className={"keyword"}>引数(ひきすう)</span>と
+				関数から呼び出し元に結果を返す<span className={"keyword"}>戻り値</span>の使い方を学びます。
+			</div>
+			<div>
+				今回のミッションでは「関数」カテゴリ内に2つの実行ブロックがあります。1個目の実行ブロックは戻り値を受け取らず関数の実行のみ行うブロック、
+				2個目の実行ブロックは関数を実行し戻り値を受け取る実行ブロックです。
+			</div>
+			<div>
+				関数の中で戻り値を返すには「値を返す」ブロックを使います。
+			</div>
+			<div>
+				また、関数に引数を渡すには実行ブロックの「引数」の欄に値や変数を入れます。
+			</div>
+		</div>,
 		missionID: "mission1-07",
 		score: new Mission.MissionScore (),
 		defaultProgram: "",
@@ -379,7 +409,21 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 	missionContents.addMissionContent ({
 		chapterName: "1章",
 		missionTitle: "[1章 基本操作編 - 8.処理時間計測]",
-		missionExplanation: <div><span className={"keyword"}>ストップウォッチ</span>機能を使い、処理にかかった時間の計測を行います。</div>,
+		missionExplanation: <div>
+			<div>「計測」カテゴリ内の<span className={"keyword"}>ストップウォッチ</span>機能を使うと処理にかかった時間の計測を行います。</div>
+			<div>複数のストップウォッチを使い分けたい時は番号で区別します。</div>
+			<div>
+				使い方は、
+				<ol>
+					<li>「スタート」で計測開始</li>
+					<li>時間を測りたい処理を行う</li>
+					<li>「ストップ」で計測を止める</li>
+					<li>「読み取り」ブロックを表示ブロックにつなげ、処理時間を表示</li>
+				</ol>
+
+				という流れです。
+			</div>
+		</div>,
 		missionID: "mission1-08",
 		score: new Mission.MissionScore (),
 		defaultProgram: "",
