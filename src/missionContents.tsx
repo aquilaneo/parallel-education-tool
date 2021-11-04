@@ -445,7 +445,16 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 	missionContents.addMissionContent ({
 		chapterName: "1章",
 		missionTitle: "[1章 基本操作編 - 9.グローバル変数1]",
-		missionExplanation: <div><span className={"keyword"}>グローバル変数</span>の読み込み方を学習します。</div>,
+		missionExplanation: <div>
+			<div>
+				<span className={"keyword"}>ローカル変数</span>は定義した関数内でしかアクセスすることはできませんが、
+				<span className={"keyword"}>グローバル変数</span>は様々な関数内から同じ領域にアクセスすることができます。
+			</div>
+			<div>その分バグが発生したときに原因の特定が困難になりやすいので、使用する用途には注意するようにしましょう。</div>
+			<div>このツールではグローバル変数は必要なものが問題であらかじめ用意され、そこへ読み込み/書き込みしていくとう方法になっています。</div>
+			<div>まずはグローバル変数の読み込みを行ってみます。画面中央にグローバル変数の一覧があり、今回は「Value」という変数があります。</div>
+			<div>「グローバルデータ」カテゴリのグローバル変数読み込みブロックを使用し、この変数Valueの値を読み取りコンソールに表示してください。</div>
+		</div>,
 		missionID: "mission1-09",
 		score: new Mission.MissionScore (),
 		defaultProgram: "",
@@ -495,7 +504,9 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 	missionContents.addMissionContent ({
 		chapterName: "1章",
 		missionTitle: "[1章 基本操作編 - 10.グローバル変数2]",
-		missionExplanation: <div><span className={"keyword"}>グローバル変数</span>の書き込み方を学習します。</div>,
+		missionExplanation: <div>
+			次はグローバル変数の書き込みを行ってみます。読み込みの時と同じ「グローバルデータ」カテゴリにあるグローバル変数書き込みブロックを使用します。
+		</div>,
 		missionID: "mission1-10",
 		score: new Mission.MissionScore (),
 		defaultProgram: "",
@@ -539,7 +550,17 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 	missionContents.addMissionContent ({
 		chapterName: "1章",
 		missionTitle: "[1章 基本操作編 - 11.グローバル1次元配列1]",
-		missionExplanation: <div><span className={"keyword"}>グローバル1次元配列</span>の読み込み方を学習します。</div>,
+		missionExplanation: <div>
+			<div>
+				<span className={"keyword"}>配列</span>は画面中央に図示されているように複数の値を記憶できるデータ構造です。
+				値が入っているそれぞれの要素には<span className={"keyword"}>インデックス番号</span>を使ってアクセスします。
+			</div>
+			<div>このツールでは配列はグローバル領域のみで使用でき、グローバル変数と同じで各問題で必要なものが与えられます。</div>
+			<div>
+				グローバル配列の読み込みには「グローバルデータ」カテゴリの「グローバル配列読み込み」ブロックを使い、
+				読み込みたい配列の名前とインデックス番号を指定します。
+			</div>
+		</div>,
 		missionID: "mission1-11",
 		score: new Mission.MissionScore (),
 		defaultProgram: "",
@@ -589,7 +610,10 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 	missionContents.addMissionContent ({
 		chapterName: "1章",
 		missionTitle: "[1章 基本操作編 - 12.グローバル1次元配列2]",
-		missionExplanation: <div><span className={"keyword"}>グローバル1次元配列</span>の書き込み方を学習します。</div>,
+		missionExplanation: <div>
+			グローバル配列に値を書き込む際も読み込みと同じ「グローバルデータ」カテゴリを使用します。
+			書き込みには書き込む配列の名前、インデックス番号と書き込む値を指定して使用します。
+		</div>,
 		missionID: "mission1-12",
 		score: new Mission.MissionScore (),
 		defaultProgram: "",
@@ -634,7 +658,10 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 	missionContents.addMissionContent ({
 		chapterName: "1章",
 		missionTitle: "[1章 基本操作編 - 13.グローバル2次元配列]",
-		missionExplanation: <div><span className={"keyword"}>グローバル2次元配列</span>の使い方を学習します。</div>,
+		missionExplanation: <div>
+			<span className={"keyword"}>2次元配列</span>は行と列をインデックス番号として指定し値の読み書きを行うデータ構造です。
+			これまでの配列と同じように読み込みと書き込みのブロックがあります。
+		</div>,
 		missionID: "mission1-13",
 		score: new Mission.MissionScore (),
 		defaultProgram: "",
@@ -681,7 +708,10 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 	missionContents.addMissionContent ({
 		chapterName: "1章",
 		missionTitle: "[1章 基本操作編 - 14.ランダムな配列]",
-		missionExplanation: <div>グローバル2次元配列を使った計算です。今回は要素の値が<span className={"keyword"}>ランダム</span>で決まります。</div>,
+		missionExplanation: <div>
+			グローバル2次元配列を使った計算を行ってみます。今回は要素の値が<span className={"keyword"}>ランダム</span>で決まるため、
+			プログラムではなく自分で答えを計算しただ表示するという解法はできません。
+		</div>,
 		missionID: "mission1-14",
 		score: new Mission.MissionScore (),
 		defaultProgram: "",
@@ -739,7 +769,13 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 	missionContents.addMissionContent ({
 		chapterName: "1章",
 		missionTitle: "[1章 基本操作編 - 15.分岐]",
-		missionExplanation: <div><span className={"keyword"}>分岐</span>の使い方を学習します。</div>,
+		missionExplanation: <div>
+			<div><span className={"keyword"}>分岐</span>を使うと、条件に応じて実行する処理を変えることができます。</div>
+			<div>
+				分岐は「分岐/論理」カテゴリ内にあり、条件を満たしたときのみ特定の処理を行う分岐(if文に相当)と、
+				条件を満たしたときとそうでないときで別の処理を行わせる分岐(if-else文に相当)が存在します。
+			</div>
+		</div>,
 		missionID: "mission1-15",
 		score: new Mission.MissionScore (),
 		defaultProgram: "",
