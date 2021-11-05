@@ -833,7 +833,14 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 	missionContents.addMissionContent ({
 		chapterName: "2章",
 		missionTitle: "[2章 並列プログラミング入門編 - 1.スレッドの生成]",
-		missionExplanation: <div><span className={"keyword"}>スレッド</span>の作り方を学習します。</div>,
+		missionExplanation: <div>
+			<div>ここからいよいよ並列プログラミングに入ります。</div>
+			<div>並列処理を行うためには指定した関数を<span className={"keyword"}>スレッド</span>として生成し複数個同時実行する必要があります。</div>
+			<div>まずはHelloとコンソールに表示する関数を作りましょう。</div>
+			<div>その後、スタート関数内に「並列処理」カテゴリのスレッド作成ブロックを用意し、関数名に作成した関数の名前を入力します。スレッド名はそれぞれのスレッドを区別するための名前で、他のスレッドと名前が被ってはいけません。</div>
+			<div>「スレッド1」「スレッド2」というように何番目のスレッドかわかるようにすると良いでしょう。</div>
+			<div>今回は4つのスレッドを同時実行するので、スタート関数内にはスレッド作成ブロックを4つ並べる必要があります。</div>
+		</div>,
 		missionID: "mission2-01",
 		score: new Mission.MissionScore (),
 		defaultProgram: "",
@@ -884,7 +891,9 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 	missionContents.addMissionContent ({
 		chapterName: "2章",
 		missionTitle: "[2章 並列プログラミング入門編 - 2.スレッドの終了待ち1]",
-		missionExplanation: <div>実用的なスレッド処理について学びます。</div>,
+		missionExplanation: <div>
+			今回は各スレッドで10回Helloと表示する必要があります。このようにスレッド内である程度時間のかかる処理を行う場合はある困ったことが起こります。
+		</div>,
 		missionID: "mission2-02",
 		score: new Mission.MissionScore (),
 		defaultProgram: "",
@@ -923,7 +932,15 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 	missionContents.addMissionContent ({
 		chapterName: "2章",
 		missionTitle: "[2章 並列プログラミング入門編 - 3.スレッドの終了待ち2]",
-		missionExplanation: <div>スレッドの<span className={"keyword"}>終了待ち機能(Join)</span>について学びます。</div>,
+		missionExplanation: <div>
+			<div>前回では各スレッドの処理が終了する前にスタート関数が終了してしまったため、途中でプログラムが終了してしまいました。</div>
+			<div>これを防ぐためには、スタート関数に各スレッドの処理終了を待機してもらう必要があります。</div>
+			<div>
+				ここで使うのが<span className={"keyword"}>終了待ち機能(Join)</span>機能です。
+				「並列処理」カテゴリの終了待ちブロックを使うと、指定した名前のスレッドの処理が終了するまでそのブロックでプログラムの実行が停止します。
+			</div>
+			<div>今回は4つのスレッドを生成するため、スタート関数内の終了待ちブロックも4つ必要になります。</div>
+		</div>,
 		missionID: "mission2-03",
 		score: new Mission.MissionScore (),
 		defaultProgram: "",
@@ -974,7 +991,12 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 	missionContents.addMissionContent ({
 		chapterName: "2章",
 		missionTitle: "[2章 並列プログラミング入門編 - 4.スレッドの引数]",
-		missionExplanation: <div>スレッドに渡す<span className={"keyword"}>引数</span>について学びます。</div>,
+		missionExplanation: <div>
+			<div>関数と同じようにスレッドにも引数を渡すことができます。</div>
+			<div>引数を渡す際にはスレッド作成ブロックの引数1~3の部分に値を入れます。
+				スレッド内で引数を受け取るには関数の引数受け取りと同じように「関数」カテゴリの引数ブロックを使用します。
+			</div>
+		</div>,
 		missionID: "mission2-04",
 		score: new Mission.MissionScore (),
 		defaultProgram: "",
@@ -1019,7 +1041,10 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 	missionContents.addMissionContent ({
 		chapterName: "2章",
 		missionTitle: "[2章 並列プログラミング入門編 - 5.逐次処理と並列処理の比較1]",
-		missionExplanation: <div>逐次処理と並列処理の処理速度について比較します。</div>,
+		missionExplanation: <div>
+			<div>今回と次回のミッションでは並列処理を使わない逐次的なプログラムと並列プログラムでどのような処理速度の差が出るか比較します。</div>
+			<div>今回は並列処理は使用せず、通常の逐次プログラムで2次元配列を処理し、最後にその処理にかかった時間をストップウォッチで測り表示してください。</div>
+		</div>,
 		missionID: "mission2-05",
 		score: new Mission.MissionScore (),
 		defaultProgram: "",
@@ -1077,7 +1102,11 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 	missionContents.addMissionContent ({
 		chapterName: "2章",
 		missionTitle: "[2章 並列プログラミング入門編 - 6.逐次処理と並列処理の比較2]",
-		missionExplanation: <div>逐次処理と並列処理の処理速度について比較します。</div>,
+		missionExplanation: <div>
+			<div>続いて今回は4スレッドの並列プログラムを使用して2次元配列を処理してください。</div>
+			<div>配列の1行目を1スレッド目、2行目を2スレッド目...というように仕事を割り振り、処理させると良いでしょう。</div>
+			<div>前回と同じように最後に処理にかかった時間をコンソールに表示し、前回のミッションでの経過時間と比較してみてください。</div>
+		</div>,
 		missionID: "mission2-06",
 		score: new Mission.MissionScore (),
 		defaultProgram: "",
@@ -1145,7 +1174,10 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 	missionContents.addMissionContent ({
 		chapterName: "2章",
 		missionTitle: "[2章 並列プログラミング入門編 - 7.仕事の割り振り]",
-		missionExplanation: <div>各スレッドにどう仕事を割り振るかの学習です。</div>,
+		missionExplanation: <div>
+			<div>今回のミッションでは8行16列という大きいサイズの配列の処理に挑戦します。</div>
+			<div>最大4スレッドまでしか使えない中、各スレッドにどのように仕事を割り振れば良いでしょうか。</div>
+		</div>,
 		missionID: "mission2-07",
 		score: new Mission.MissionScore (),
 		defaultProgram: "",
@@ -1211,7 +1243,9 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 	missionContents.addMissionContent ({
 		chapterName: "2章",
 		missionTitle: "[2章 並列プログラミング入門編 - 8.行列計算1]",
-		missionExplanation: <div>並列処理を使って行列計算をしてみましょう</div>,
+		missionExplanation: <div>
+			並列処理を使用して行列計算を行ってみましょう。
+		</div>,
 		missionID: "mission2-08",
 		score: new Mission.MissionScore (),
 		defaultProgram: "",
