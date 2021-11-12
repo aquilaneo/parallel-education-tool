@@ -2,6 +2,7 @@ import {ConsoleOutputType} from "./playground";
 import Blockly from "blockly";
 import {missionContents} from "./missionContents";
 import * as BlockSettings from "./blockSettings";
+import {VariableCanvas} from "./variableCanvas";
 
 // ミッション一覧
 export class MissionList {
@@ -260,10 +261,10 @@ export class Mission {
 	currentTwoDimensionalArrays: { [key: string]: number[][] } = {};
 	currentOneDimensionalArrays: { [key: string]: number[] } = {};
 	currentVariables: { [key: string]: number } = {};
+	// キャンバス
+	variableCanvas: VariableCanvas;
 	// コンソール出力内容
 	consoleOutputs: string[] = [];
-	// キャンバス描画関数
-	drawVariableView: () => void;
 	// コンソール書き込み関数
 	writeConsoleView: (output: { text: string, type: ConsoleOutputType }) => void;
 	// コンソール全消去
@@ -273,11 +274,11 @@ export class Mission {
 	// スレッド削除
 	removeThreadView: (threadName: string) => void;
 
-	constructor (missionContent: MissionContent,
-				 drawVariableTable: () => void, writeConsole: (output: { text: string, type: ConsoleOutputType }) => void, clearConsole: () => void,
+	constructor (missionContent: MissionContent, variableCanvas: VariableCanvas,
+				 writeConsole: (output: { text: string, type: ConsoleOutputType }) => void, clearConsole: () => void,
 				 addThread: (threadInfo: { name: string, blocksXml: string }) => void, removeThread: (threadName: string) => void) {
 		this.missionContent = missionContent;
-		this.drawVariableView = drawVariableTable;
+		this.variableCanvas = variableCanvas;
 		this.writeConsoleView = writeConsole;
 		this.clearConsoleView = clearConsole;
 		this.addThreadView = addThread;
@@ -324,13 +325,23 @@ export class Mission {
 		if (array) {
 			if (row < array.length && col < array[0].length) {
 				array[row][col] = value;
-				this.drawVariableView ();
+				this.variableCanvas.drawTable (this.currentTwoDimensionalArrays, this.currentOneDimensionalArrays, this.currentVariables);
 			} else {
 				this.printError (`行 ${row} の値もしくは列 ${col} の値は2次元配列 ${arrayName} の要素数に対して大きすぎます！`);
 			}
 		} else {
 			this.printError (`"${arrayName}" という2次元配列は存在しません！`);
 		}
+	}
+
+	addTwoDimensionalArrayAccess (arrayName: string, row: number, col: number, color: string, read: boolean = true) {
+		this.variableCanvas.drawTable (this.currentTwoDimensionalArrays, this.currentOneDimensionalArrays, this.currentVariables);
+		this.variableCanvas.addTwoDimensionalArrayAccess (arrayName, row, col, color, read);
+	}
+
+	removeTwoDimensionalArrayAccess (arrayName: string, row: number, col: number, color: string, read: boolean = true) {
+		this.variableCanvas.removeTwoDimensionalArrayAccess (arrayName, row, col, color, read);
+		this.variableCanvas.drawTable (this.currentTwoDimensionalArrays, this.currentOneDimensionalArrays, this.currentVariables);
 	}
 
 	readOneDimensionalArray (arrayName: string, index: number) {
@@ -351,13 +362,23 @@ export class Mission {
 		if (array) {
 			if (index < array.length) {
 				array[index] = value;
-				this.drawVariableView ();
+				this.variableCanvas.drawTable (this.currentTwoDimensionalArrays, this.currentOneDimensionalArrays, this.currentVariables);
 			} else {
 				this.printError (`${index} の値が1次元配列 ${arrayName} の要素数に対して大きすぎます！`);
 			}
 		} else {
 			this.printError (`"${arrayName}" という1次元配列は存在しません！`);
 		}
+	}
+
+	addOneDimensionalArrayAccess (arrayName: string, index: number, color: string, read: boolean = true) {
+		this.variableCanvas.addOneDimensionalArrayAccess (arrayName, index, color, read);
+		this.variableCanvas.drawTable (this.currentTwoDimensionalArrays, this.currentOneDimensionalArrays, this.currentVariables);
+	}
+
+	removeOneDimensionalArrayAccess (arrayName: string, index: number, color: string, read: boolean = true) {
+		this.variableCanvas.removeOneDimensionalArrayAccess (arrayName, index, color, read);
+		this.variableCanvas.drawTable (this.currentTwoDimensionalArrays, this.currentOneDimensionalArrays, this.currentVariables);
 	}
 
 	readVariable (variableName: string) {
@@ -373,10 +394,20 @@ export class Mission {
 		const variable = this.currentVariables[variableName];
 		if (variable !== undefined) {
 			this.currentVariables[variableName] = value;
-			this.drawVariableView ();
+			this.variableCanvas.drawTable (this.currentTwoDimensionalArrays, this.currentOneDimensionalArrays, this.currentVariables);
 		} else {
 			this.printError (`"${variableName}" というグローバル変数は存在しません！`);
 		}
+	}
+
+	addGlobalVariableAccess (arrayName: string, color: string, read: boolean = true) {
+		this.variableCanvas.addGlobalVariableAccess (arrayName, color, read);
+		this.variableCanvas.drawTable (this.currentTwoDimensionalArrays, this.currentOneDimensionalArrays, this.currentVariables);
+	}
+
+	removeGlobalVariableAccess (arrayName: string, color: string, read: boolean = true) {
+		this.variableCanvas.removeGlobalVariableAccess (arrayName, color, read);
+		this.variableCanvas.drawTable (this.currentTwoDimensionalArrays, this.currentOneDimensionalArrays, this.currentVariables);
 	}
 
 	resetGlobalArray () {

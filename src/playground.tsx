@@ -42,10 +42,7 @@ const Playground: React.FC<{ missionID: string }> = (props) => {
 	const nextMissionID = missionContents.findNextMission (missionContent.missionID);
 
 	const [mission, setMission] = useState (() => {
-		return new Mission (missionContent,
-			() => {
-				variableCanvas.drawTable (mission.currentTwoDimensionalArrays, mission.currentOneDimensionalArrays, mission.currentVariables);
-			},
+		return new Mission (missionContent, variableCanvas,
 			(output: { text: string, type: ConsoleOutputType }) => {
 				if (consoleRef.current) {
 					consoleRef.current.writeConsole (output);

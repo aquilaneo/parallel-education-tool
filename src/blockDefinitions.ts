@@ -75,6 +75,8 @@ export class UserProgram {
 					await this.sleep1ms ();
 				}
 
+				block.finalizeBlock ();
+
 				block.setBlockColorToBase (); // 色を戻す
 			} else {
 				return;
@@ -105,6 +107,8 @@ export class UserProgram {
 			await this.sleep1ms ();
 			time = new Date ().getTime () - start.getTime ();
 		}
+
+		valueBlock.finalizeBlock ();
 
 		return result;
 	}
@@ -1146,7 +1150,7 @@ export const valueBlockDefinitions = [
 	// ========== 比較 ==========
 	{
 		type: "logic_compare",
-		wait: 20,
+		wait: 50,
 		instantiate: (blockXml: Element, userProgram: UserProgram, myRoutine: Routine, wait: number): ValueBlockBehaviors.ValueBlock => {
 			return new ValueBlockBehaviors.CompareBlock (blockXml, userProgram, myRoutine, wait);
 		}
@@ -1155,7 +1159,7 @@ export const valueBlockDefinitions = [
 	// ========== 論理演算 ==========
 	{
 		type: "logic_operation",
-		wait: 20,
+		wait: 50,
 		instantiate: (blockXml: Element, userProgram: UserProgram, myRoutine: Routine, wait: number): ValueBlockBehaviors.ValueBlock => {
 			return new ValueBlockBehaviors.LogicOperationBlock (blockXml, userProgram, myRoutine, wait);
 		}
@@ -1164,7 +1168,7 @@ export const valueBlockDefinitions = [
 	// ========== 否定 ==========
 	{
 		type: "logic_negate",
-		wait: 20,
+		wait: 50,
 		instantiate: (blockXml: Element, userProgram: UserProgram, myRoutine: Routine, wait: number): ValueBlockBehaviors.ValueBlock => {
 			return new ValueBlockBehaviors.NotBlock (blockXml, userProgram, myRoutine, wait);
 		}
@@ -1182,7 +1186,7 @@ export const valueBlockDefinitions = [
 	// ========== 四則演算 ==========
 	{
 		type: "math_arithmetic",
-		wait: 20,
+		wait: 50,
 		instantiate: (blockXml: Element, userProgram: UserProgram, myRoutine: Routine, wait: number): ValueBlockBehaviors.ValueBlock => {
 			return new ValueBlockBehaviors.CalculateBlock (blockXml, userProgram, myRoutine, wait);
 		}
@@ -1200,7 +1204,7 @@ export const valueBlockDefinitions = [
 	// ========== 文字列計算 ==========
 	{
 		type: "str_arithmetic",
-		wait: 20,
+		wait: 50,
 		instantiate: (blockXml: Element, userProgram: UserProgram, myRoutine: Routine, wait: number): ValueBlockBehaviors.ValueBlock => {
 			return new ValueBlockBehaviors.TextCalculateBlock (blockXml, userProgram, myRoutine, wait);
 		},
@@ -1238,7 +1242,7 @@ export const valueBlockDefinitions = [
 	// ========== 数値型変数読み込み ==========
 	{
 		type: "variables_get_number",
-		wait: 20,
+		wait: 50,
 		instantiate: (blockXml: Element, userProgram: UserProgram, myRoutine: Routine, wait: number): ValueBlockBehaviors.ValueBlock => {
 			return new ValueBlockBehaviors.VariablesGetNumber (blockXml, userProgram, myRoutine, wait);
 		},
@@ -1265,7 +1269,7 @@ export const valueBlockDefinitions = [
 	// ========== 文字列型変数読み込み ==========
 	{
 		type: "variables_get_string",
-		wait: 20,
+		wait: 50,
 		instantiate: (blockXml: Element, userProgram: UserProgram, myRoutine: Routine, wait: number): ValueBlockBehaviors.ValueBlock => {
 			return new ValueBlockBehaviors.VariablesGetString (blockXml, userProgram, myRoutine, wait);
 		},
@@ -1292,7 +1296,7 @@ export const valueBlockDefinitions = [
 	// ========== グローバル変数読み込み ==========
 	{
 		type: "global_variable_read",
-		wait: 20,
+		wait: 100,
 		instantiate: (blockXml: Element, userProgram: UserProgram, myRoutine: Routine, wait: number): ValueBlockBehaviors.ValueBlock => {
 			return new ValueBlockBehaviors.GlobalVariableReadBlock (blockXml, userProgram, myRoutine, wait);
 		},
@@ -1317,7 +1321,7 @@ export const valueBlockDefinitions = [
 	// ========== グローバル1次元配列読み込み ==========
 	{
 		type: "global_one_dimensional_array_read",
-		wait: 20,
+		wait: 100,
 		instantiate: (blockXml: Element, userProgram: UserProgram, myRoutine: Routine, wait: number): ValueBlockBehaviors.ValueBlock => {
 			return new ValueBlockBehaviors.GlobalOneDimensionalArrayRead (blockXml, userProgram, myRoutine, wait);
 		},
@@ -1350,7 +1354,7 @@ export const valueBlockDefinitions = [
 	// ========== グローバル2次元配列読み込み ==========
 	{
 		type: "global_two_dimensional_array_read",
-		wait: 20,
+		wait: 100,
 		instantiate: (blockXml: Element, userProgram: UserProgram, myRoutine: Routine, wait: number): ValueBlockBehaviors.ValueBlock => {
 			return new ValueBlockBehaviors.GlobalTwoDimensionalArrayRead (blockXml, userProgram, myRoutine, wait);
 		},
@@ -1388,7 +1392,7 @@ export const valueBlockDefinitions = [
 	// ========== 引数読み取り ==========
 	{
 		type: "get_argument",
-		wait: 20,
+		wait: 50,
 		instantiate: (blockXml: Element, userProgram: UserProgram, myRoutine: Routine, wait: number): ValueBlockBehaviors.ValueBlock => {
 			return new ValueBlockBehaviors.GetArgumentBlock (blockXml, userProgram, myRoutine, wait);
 		},
@@ -1425,7 +1429,7 @@ export const valueBlockDefinitions = [
 
 	{
 		type: "function_call_with_return",
-		wait: 100,
+		wait: 50,
 		instantiate: (blockXml: Element, userProgram: UserProgram, myRoutine: Routine, wait: number): ValueBlockBehaviors.ValueBlock => {
 			return new ValueBlockBehaviors.FunctionCallWithReturnBlock (blockXml, userProgram, myRoutine, wait);
 		},
@@ -1468,7 +1472,7 @@ export const valueBlockDefinitions = [
 	// ========== ストップウォッチ読み取り ==========
 	{
 		type: "stopwatch_read",
-		wait: 20,
+		wait: 50,
 		instantiate: (blockXml: Element, userProgram: UserProgram, myRoutine: Routine, wait: number): ValueBlockBehaviors.ValueBlock => {
 			return new ValueBlockBehaviors.StopwatchReadBlock (blockXml, userProgram, myRoutine, wait);
 		},

@@ -28,6 +28,9 @@ export class ValueBlock {
 		return 0;
 	}
 
+	finalizeBlock () {
+	}
+
 	// 指定した名前のパラメータ(block or shadow)を取得
 	getValue (type: string) {
 		// typeに合致するタグを探す
@@ -301,14 +304,20 @@ export class GlobalVariableReadBlock extends ValueBlock {
 	}
 
 	async executeBlock () {
+		this.userProgram.mission.addGlobalVariableAccess (this.name, "rgb(0, 255, 0)");
 		const result = this.userProgram.mission.readVariable (this.name);
 		return result ? result : 0;
+	}
+
+	finalizeBlock () {
+		this.userProgram.mission.removeGlobalVariableAccess (this.name, "rgb(0, 255, 0)");
 	}
 }
 
 export class GlobalOneDimensionalArrayRead extends ValueBlock {
 	name: string;
 	index: ValueBlock | null;
+	indexNumber: number = 0;
 
 	constructor (blocklyXml: Element, userProgram: BlockDefinitions.UserProgram, myRoutine: BlockDefinitions.Routine, wait: number) {
 		super (blocklyXml, userProgram, myRoutine, wait);
@@ -324,16 +333,24 @@ export class GlobalOneDimensionalArrayRead extends ValueBlock {
 
 		const index = await this.userProgram.executeValueBlock (this.index);
 		assertIsNumber (index);
+		this.indexNumber = index;
 
+		this.userProgram.mission.addOneDimensionalArrayAccess (this.name, this.indexNumber, "rgb(0, 255, 0)");
 		const result = this.userProgram.mission.readOneDimensionalArray (this.name, index);
 		return result ? result : 0;
+	}
+
+	finalizeBlock () {
+		this.userProgram.mission.removeOneDimensionalArrayAccess (this.name, this.indexNumber, "rgb(0, 255, 0)");
 	}
 }
 
 export class GlobalTwoDimensionalArrayRead extends ValueBlock {
 	name: string;
 	row: ValueBlock | null;
+	rowNumber: number = 0;
 	col: ValueBlock | null;
+	colNumber: number = 0;
 
 	constructor (blocklyXml: Element, userProgram: BlockDefinitions.UserProgram, myRoutine: BlockDefinitions.Routine, wait: number) {
 		super (blocklyXml, userProgram, myRoutine, wait);
@@ -354,9 +371,16 @@ export class GlobalTwoDimensionalArrayRead extends ValueBlock {
 		const col = await this.userProgram.executeValueBlock (this.col);
 		assertIsNumber (row);
 		assertIsNumber (col);
+		this.rowNumber = row;
+		this.colNumber = col;
 
+		this.userProgram.mission.addTwoDimensionalArrayAccess (this.name, this.rowNumber, this.colNumber, "rgb(0, 255, 0)");
 		const result = this.userProgram.mission.readTwoDimensionalArray (this.name, row, col);
 		return result ? result : 0;
+	}
+
+	finalizeBlock () {
+		this.userProgram.mission.removeTwoDimensionalArrayAccess (this.name, this.rowNumber, this.colNumber, "rgb(0, 255, 0)");
 	}
 }
 

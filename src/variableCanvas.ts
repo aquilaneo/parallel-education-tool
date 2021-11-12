@@ -3,6 +3,9 @@ export class VariableCanvas {
 	context: CanvasRenderingContext2D | null = null;
 	screenWidth: number = 0;
 	screenHeight: number = 0;
+	twoDimensionalArrayAccesses: { key: string, row: number, col: number, color: string, read: boolean }[] = [];
+	oneDimensionalArrayAccesses: { key: string, index: number, color: string, read: boolean }[] = [];
+	globalVariableAccesses: { key: string, color: string, read: boolean }[] = [];
 
 	initialize (canvas: HTMLCanvasElement) {
 		// Canvas関係
@@ -12,12 +15,43 @@ export class VariableCanvas {
 		this.resize ();
 	}
 
+	addTwoDimensionalArrayAccess (key: string, row: number, col: number, color: string, read: boolean = true) {
+		this.twoDimensionalArrayAccesses.push ({key, row, col, color, read});
+	}
+
+	removeTwoDimensionalArrayAccess (key: string, row: number, col: number, color: string, read: boolean = true) {
+		this.twoDimensionalArrayAccesses = this.twoDimensionalArrayAccesses.filter ((item) => {
+			return item.key !== key && item.row !== row && item.col !== col && item.color !== color && item.read !== read;
+		});
+	}
+
+	addOneDimensionalArrayAccess (key: string, index: number, color: string, read: boolean = true) {
+		this.oneDimensionalArrayAccesses.push ({key, index, color, read});
+	}
+
+	removeOneDimensionalArrayAccess (key: string, index: number, color: string, read: boolean = true) {
+		this.oneDimensionalArrayAccesses = this.oneDimensionalArrayAccesses.filter ((item) => {
+			return item.key !== key && item.index !== index && item.color !== color && item.read !== read;
+		});
+	}
+
+	addGlobalVariableAccess (key: string, color: string, read: boolean = true) {
+		this.globalVariableAccesses.push ({key, color, read});
+	}
+
+	removeGlobalVariableAccess (key: string, color: string, read: boolean = true) {
+		this.globalVariableAccesses = this.globalVariableAccesses.filter ((item) => {
+			return item.key !== key && item.color !== color && item.read !== read;
+		});
+	}
+
 	drawTable (twoDimensionalArrays: { [key: string]: number[][] }, oneDimensionalArrays: { [key: string]: number[] }, variables: { [key: string]: number }) {
 		if (this.context) {
 			this.context.clearRect (0, 0, this.screenWidth, this.screenHeight);
 
 			// 各種定数
 			const colors = ["rgb(240,240,240)", "rgb(224,224,224)"];
+			const defaultLineWidth = this.context.lineWidth;
 			const xOffset = 60;
 			const yOffset = 80;
 			const nameWidth = 220;
@@ -74,6 +108,28 @@ export class VariableCanvas {
 					}
 				}
 
+				// アクセスマークを表示
+				for (let row = 0; row < twoDimensionalArrays[key].length; row++) {
+					for (let col = 0; col < twoDimensionalArrays[key][row].length; col++) {
+						const accessesOfThisKey = this.twoDimensionalArrayAccesses.filter ((item) => {
+							return item.key === key;
+						});
+						const accesses = accessesOfThisKey.filter ((item) => {
+							return item.row === row && item.col === col;
+						});
+
+						if (accesses[0]) {
+							const cellX = cellWidth * col + originX + nameWidth;
+							const cellY = cellHeight * row + originY;
+
+							this.context.strokeStyle = accesses[0].color;
+							this.context.lineWidth = 4;
+							this.context.strokeRect (cellX, cellY, cellWidth, cellHeight);
+							this.context.lineWidth = defaultLineWidth;
+						}
+					}
+				}
+
 				originY += cellHeight * twoDimensionalArrays[key].length + yOffset; // 次の表に向けoriginYを加算
 			}
 
@@ -97,13 +153,13 @@ export class VariableCanvas {
 				// 表本体を描画
 				this.context.font = `${tableFontSize}px serif`;
 				this.context.textAlign = "center";
-				for (let col = 0; col < oneDimensionalArrays[key].length; col++) {
+				for (let index = 0; index < oneDimensionalArrays[key].length; index++) {
 					// セルの左上座標を定義
-					const cellX = cellWidth * col + originX + nameWidth;
+					const cellX = cellWidth * index + originX + nameWidth;
 					const cellY = originY;
 
 					// セルを描画
-					this.context.fillStyle = colors[col % 2];
+					this.context.fillStyle = colors[index % 2];
 					this.context.fillRect (cellX, cellY, cellWidth, cellHeight);
 
 					// 枠線描画
@@ -112,7 +168,27 @@ export class VariableCanvas {
 
 					// 値を描画
 					this.context.fillStyle = "black";
-					this.context.fillText (oneDimensionalArrays[key][col].toString (), cellX + cellWidth / 2, cellY + tableFontSize / 2 + cellHeight / 2);
+					this.context.fillText (oneDimensionalArrays[key][index].toString (), cellX + cellWidth / 2, cellY + tableFontSize / 2 + cellHeight / 2);
+				}
+
+				// アクセスマークを表示
+				for (let index = 0; index < oneDimensionalArrays[key].length; index++) {
+					const accessesOfThisKey = this.oneDimensionalArrayAccesses.filter ((item) => {
+						return item.key === key;
+					});
+					const accesses = accessesOfThisKey.filter ((item) => {
+						return item.index === index;
+					});
+
+					if (accesses[0]) {
+						const cellX = cellWidth * index + originX + nameWidth;
+						const cellY = originY;
+
+						this.context.strokeStyle = accesses[0].color;
+						this.context.lineWidth = 4;
+						this.context.strokeRect (cellX, cellY, cellWidth, cellHeight);
+						this.context.lineWidth = defaultLineWidth;
+					}
 				}
 			}
 			originY += cellHeight * Object.keys (oneDimensionalArrays).length + yOffset;
@@ -143,6 +219,21 @@ export class VariableCanvas {
 				// 値を描画
 				this.context.fillStyle = "black";
 				this.context.fillText (variables[key].toString (), cellX + cellWidth / 2, cellY + tableFontSize / 2 + cellHeight / 2);
+
+				// アクセスマークを表示
+				const accesses = this.globalVariableAccesses.filter ((item) => {
+					return item.key === key;
+				});
+
+				if (accesses[0]) {
+					const cellX = originX + nameWidth;
+					const cellY = originY;
+
+					this.context.strokeStyle = accesses[0].color;
+					this.context.lineWidth = 4;
+					this.context.strokeRect (cellX, cellY, cellWidth, cellHeight);
+					this.context.lineWidth = defaultLineWidth;
+				}
 
 				originY += yOffset;
 			}
