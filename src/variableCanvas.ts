@@ -57,6 +57,8 @@ export class VariableCanvas {
 			const nameWidth = 220;
 			const cellWidth = 100;
 			const cellHeight = 60;
+			const accessMarkWidth = 30;
+			const accessMarkHeight = 20;
 			const nameFontSize = 42;
 			const indexFontSize = 24;
 			const tableFontSize = 36;
@@ -126,6 +128,15 @@ export class VariableCanvas {
 							this.context.lineWidth = 4;
 							this.context.strokeRect (cellX, cellY, cellWidth, cellHeight);
 							this.context.lineWidth = defaultLineWidth;
+
+							// 読み書きマーク
+							let accessMarkX = cellX;
+							let accessMarkY = cellY;
+							if (!accesses[0].read) {
+								accessMarkX += cellWidth - accessMarkWidth;
+							}
+							this.context.fillStyle = accesses[0].color;
+							this.context.fillRect (accessMarkX, accessMarkY, accessMarkWidth, accessMarkHeight);
 						}
 					}
 				}
@@ -188,6 +199,15 @@ export class VariableCanvas {
 						this.context.lineWidth = 4;
 						this.context.strokeRect (cellX, cellY, cellWidth, cellHeight);
 						this.context.lineWidth = defaultLineWidth;
+
+						// 読み書きマーク
+						let accessMarkX = cellX;
+						let accessMarkY = cellY;
+						if (!accesses[0].read) {
+							accessMarkX += cellWidth - accessMarkWidth;
+						}
+						this.context.fillStyle = accesses[0].color;
+						this.context.fillRect (accessMarkX, accessMarkY, accessMarkWidth, accessMarkHeight);
 					}
 				}
 			}
@@ -233,6 +253,15 @@ export class VariableCanvas {
 					this.context.lineWidth = 4;
 					this.context.strokeRect (cellX, cellY, cellWidth, cellHeight);
 					this.context.lineWidth = defaultLineWidth;
+
+					// 読み書きマーク
+					let accessMarkX = cellX;
+					let accessMarkY = cellY;
+					if (!accesses[0].read) {
+						accessMarkX += cellWidth - accessMarkWidth;
+					}
+					this.context.fillStyle = accesses[0].color;
+					this.context.fillRect (accessMarkX, accessMarkY, accessMarkWidth, accessMarkHeight);
 				}
 
 				originY += yOffset;
