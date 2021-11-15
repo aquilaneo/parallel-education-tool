@@ -435,13 +435,13 @@ export class GlobalVariableWriteBlock extends CommandBlock {
 		const value = await this.userProgram.executeValueBlock (this.value);
 		assertIsNumber (value);
 
-		this.userProgram.mission.addGlobalVariableAccess (this.name, "rgb(255, 0, 0)", false);
+		this.userProgram.mission.addGlobalVariableAccess (this.name, this.myRoutine.routineColor, false);
 
 		this.userProgram.mission.writeVariable (this.name, value);
 	}
 
 	finalizeBlock () {
-		this.userProgram.mission.removeGlobalVariableAccess (this.name, "rgb(255, 0, 0)", false);
+		this.userProgram.mission.removeGlobalVariableAccess (this.name, this.myRoutine.routineColor, false);
 	}
 }
 
@@ -471,12 +471,12 @@ export class GlobalOneDimensionalArrayWrite extends CommandBlock {
 		this.indexNumber = index;
 		assertIsNumber (value);
 
-		this.userProgram.mission.addOneDimensionalArrayAccess (this.name, this.indexNumber, "rgb(255, 0, 0)", false);
+		this.userProgram.mission.addOneDimensionalArrayAccess (this.name, this.indexNumber, this.myRoutine.routineColor, false);
 		this.userProgram.mission.writeOneDimensionalArray (this.name, this.indexNumber, value);
 	}
 
 	finalizeBlock () {
-		this.userProgram.mission.removeOneDimensionalArrayAccess (this.name, this.indexNumber, "rgb(255, 0, 0)", false);
+		this.userProgram.mission.removeOneDimensionalArrayAccess (this.name, this.indexNumber, this.myRoutine.routineColor, false);
 	}
 }
 
@@ -514,12 +514,12 @@ export class GlobalTwoDimensionalArrayWrite extends CommandBlock {
 		this.colNumber = col;
 		assertIsNumber (value);
 
-		this.userProgram.mission.addTwoDimensionalArrayAccess (this.name, this.rowNumber, this.colNumber, "rgb(255, 0, 0)", false);
+		this.userProgram.mission.addTwoDimensionalArrayAccess (this.name, this.rowNumber, this.colNumber, this.myRoutine.routineColor, false);
 		this.userProgram.mission.writeTwoDimensionalArray (this.name, row, col, value);
 	}
 
 	finalizeBlock () {
-		this.userProgram.mission.removeTwoDimensionalArrayAccess (this.name, this.rowNumber, this.colNumber, "rgb(255, 0, 0)", false);
+		this.userProgram.mission.removeTwoDimensionalArrayAccess (this.name, this.rowNumber, this.colNumber, this.myRoutine.routineColor, false);
 	}
 }
 

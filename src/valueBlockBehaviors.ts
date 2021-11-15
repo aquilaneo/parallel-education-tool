@@ -304,13 +304,13 @@ export class GlobalVariableReadBlock extends ValueBlock {
 	}
 
 	async executeBlock () {
-		this.userProgram.mission.addGlobalVariableAccess (this.name, "rgb(0, 255, 0)");
+		this.userProgram.mission.addGlobalVariableAccess (this.name, this.myRoutine.routineColor);
 		const result = this.userProgram.mission.readVariable (this.name);
 		return result ? result : 0;
 	}
 
 	finalizeBlock () {
-		this.userProgram.mission.removeGlobalVariableAccess (this.name, "rgb(0, 255, 0)");
+		this.userProgram.mission.removeGlobalVariableAccess (this.name, this.myRoutine.routineColor);
 	}
 }
 
@@ -335,13 +335,13 @@ export class GlobalOneDimensionalArrayRead extends ValueBlock {
 		assertIsNumber (index);
 		this.indexNumber = index;
 
-		this.userProgram.mission.addOneDimensionalArrayAccess (this.name, this.indexNumber, "rgb(0, 255, 0)");
+		this.userProgram.mission.addOneDimensionalArrayAccess (this.name, this.indexNumber, this.myRoutine.routineColor);
 		const result = this.userProgram.mission.readOneDimensionalArray (this.name, index);
 		return result ? result : 0;
 	}
 
 	finalizeBlock () {
-		this.userProgram.mission.removeOneDimensionalArrayAccess (this.name, this.indexNumber, "rgb(0, 255, 0)");
+		this.userProgram.mission.removeOneDimensionalArrayAccess (this.name, this.indexNumber, this.myRoutine.routineColor);
 	}
 }
 
@@ -374,13 +374,13 @@ export class GlobalTwoDimensionalArrayRead extends ValueBlock {
 		this.rowNumber = row;
 		this.colNumber = col;
 
-		this.userProgram.mission.addTwoDimensionalArrayAccess (this.name, this.rowNumber, this.colNumber, "rgb(0, 255, 0)");
+		this.userProgram.mission.addTwoDimensionalArrayAccess (this.name, this.rowNumber, this.colNumber, this.myRoutine.routineColor);
 		const result = this.userProgram.mission.readTwoDimensionalArray (this.name, row, col);
 		return result ? result : 0;
 	}
 
 	finalizeBlock () {
-		this.userProgram.mission.removeTwoDimensionalArrayAccess (this.name, this.rowNumber, this.colNumber, "rgb(0, 255, 0)");
+		this.userProgram.mission.removeTwoDimensionalArrayAccess (this.name, this.rowNumber, this.colNumber, this.myRoutine.routineColor);
 	}
 }
 

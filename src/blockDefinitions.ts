@@ -37,12 +37,12 @@ export class UserProgram {
 
 		// エントリポイントと関数ブロックのXMLをパース
 		if (entryFunctionXml) {
-			this.entryFunction = new Function ("スタート", null, entryFunctionXml);
+			this.entryFunction = new Function ("スタート", "rgb(0, 0, 0)", null, entryFunctionXml);
 			const entryFunctionBlock = CommandBlockBehaviors.EntryPointBlock.constructBlock (entryFunctionXml, workspace, this, this.entryFunction)[0];
 			this.entryFunction.setDefinitionBlock (entryFunctionBlock);
 		}
 		for (const functionXml of functionsXml) {
-			const func = new Function ("", null, functionXml);
+			const func = new Function ("", "rgb(0,0,0)", null, functionXml);
 			const functionBlock = CommandBlockBehaviors.FunctionDefinitionBlock.constructBlock (functionXml, workspace, this, func)[0];
 			func.setDefinitionBlock (functionBlock);
 			func.setFunctionName (functionBlock.functionName);
@@ -189,7 +189,9 @@ export class UserProgram {
 			return false;
 		}
 
-		const thread = new Thread (routineName, threadID, null, this, functionStatementElement, argument1, argument2, argument3);
+		// 各スレッドの色
+		const threadColors = ["rgb(255, 0, 0)", "rgb(0, 255, 0)", "rgb(0, 0, 255)", "rgb(255, 255, 0)"];
+		const thread = new Thread (routineName, threadColors[this.threads.length], threadID, null, this, functionStatementElement, argument1, argument2, argument3);
 		const functionInstance = CommandBlockBehaviors.FunctionDefinitionBlock.constructBlock (functionStatementElement, null, this, thread)[0];
 		thread.setDefinitionBlock (functionInstance);
 		this.threads.push (thread);
@@ -343,6 +345,7 @@ export class Stopwatch {
 
 export class Routine {
 	routineName: string;
+	routineColor: string;
 	argument1: number = 0;
 	argument2: number = 0;
 	argument3: number = 0;
@@ -352,8 +355,9 @@ export class Routine {
 	localNumberVariables: NumberVariable[] = [];
 	localStringVariables: StringVariable[] = [];
 
-	constructor (routineName: string, definitionBlock: CommandBlockBehaviors.FunctionDefinitionBlock | CommandBlockBehaviors.EntryPointBlock | null, functionStatementElement: Element) {
+	constructor (routineName: string, routineColor: string, definitionBlock: CommandBlockBehaviors.FunctionDefinitionBlock | CommandBlockBehaviors.EntryPointBlock | null, functionStatementElement: Element) {
 		this.routineName = routineName;
+		this.routineColor = routineColor;
 		this.definitionBlock = definitionBlock;
 		this.functionStatementElement = functionStatementElement;
 	}
@@ -444,8 +448,8 @@ export class Routine {
 }
 
 export class Function extends Routine {
-	constructor (routineName: string, definitionBlock: CommandBlockBehaviors.FunctionDefinitionBlock | CommandBlockBehaviors.EntryPointBlock | null, functionStatementElement: Element) {
-		super (routineName, definitionBlock, functionStatementElement);
+	constructor (routineName: string, routineColor: string, definitionBlock: CommandBlockBehaviors.FunctionDefinitionBlock | CommandBlockBehaviors.EntryPointBlock | null, functionStatementElement: Element) {
+		super (routineName, routineColor, definitionBlock, functionStatementElement);
 	}
 }
 
@@ -454,9 +458,9 @@ export class Thread extends Routine {
 	userProgram: UserProgram;
 	isExecuting: boolean = false;
 
-	constructor (routineName: string, threadID: string, definitionBlock: CommandBlockBehaviors.FunctionDefinitionBlock | null, userProgram: UserProgram, functionStatementElement: Element,
+	constructor (routineName: string, routineColor: string, threadID: string, definitionBlock: CommandBlockBehaviors.FunctionDefinitionBlock | null, userProgram: UserProgram, functionStatementElement: Element,
 				 argument1: number, argument2: number, argument3: number) {
-		super (routineName, definitionBlock, functionStatementElement);
+		super (routineName, routineColor, definitionBlock, functionStatementElement);
 		this.threadID = threadID;
 		this.userProgram = userProgram;
 		this.argument1 = argument1;
