@@ -21,7 +21,7 @@ export class VariableCanvas {
 
 	removeTwoDimensionalArrayAccess (key: string, row: number, col: number, color: string, read: boolean = true) {
 		this.twoDimensionalArrayAccesses = this.twoDimensionalArrayAccesses.filter ((item) => {
-			return item.key !== key && item.row !== row && item.col !== col && item.color !== color && item.read !== read;
+			return item.key !== key || item.row !== row || item.col !== col || item.color !== color || item.read !== read;
 		});
 	}
 
@@ -260,7 +260,7 @@ export class VariableCanvas {
 					let accessMarkX = cellX;
 					let accessMarkY = cellY;
 					if (!accesses[i].read) {
-						accessMarkX += originX + nameWidth + cellWidth - accessMarkWidth - this.context.lineWidth * i;
+						accessMarkX = originX + nameWidth + cellWidth - accessMarkWidth - this.context.lineWidth * i;
 					}
 					this.context.fillStyle = accesses[i].color;
 					this.context.fillRect (accessMarkX, accessMarkY, accessMarkWidth, accessMarkHeight);

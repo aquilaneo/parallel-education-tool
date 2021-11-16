@@ -96,7 +96,7 @@ export class UserProgram {
 	}
 
 	async executeValueBlock (valueBlock: ValueBlockBehaviors.ValueBlock) {
-		const result = valueBlock.executeBlock ();
+		const result = await valueBlock.executeBlock ();
 
 		// 各ブロックの待機時間
 		const start = new Date ();
