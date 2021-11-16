@@ -335,8 +335,8 @@ export class Mission {
 	}
 
 	addTwoDimensionalArrayAccess (arrayName: string, row: number, col: number, color: string, read: boolean = true) {
-		this.variableCanvas.drawTable (this.currentTwoDimensionalArrays, this.currentOneDimensionalArrays, this.currentVariables);
 		this.variableCanvas.addTwoDimensionalArrayAccess (arrayName, row, col, color, read);
+		this.variableCanvas.drawTable (this.currentTwoDimensionalArrays, this.currentOneDimensionalArrays, this.currentVariables);
 	}
 
 	removeTwoDimensionalArrayAccess (arrayName: string, row: number, col: number, color: string, read: boolean = true) {

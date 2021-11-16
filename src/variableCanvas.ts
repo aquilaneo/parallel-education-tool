@@ -120,23 +120,25 @@ export class VariableCanvas {
 							return item.row === row && item.col === col;
 						});
 
-						if (accesses[0]) {
-							const cellX = cellWidth * col + originX + nameWidth;
-							const cellY = cellHeight * row + originY;
-
-							this.context.strokeStyle = accesses[0].color;
+						for (let i = 0; i < accesses.length; i++) {
+							this.context.strokeStyle = accesses[i].color;
 							this.context.lineWidth = 4;
-							this.context.strokeRect (cellX, cellY, cellWidth, cellHeight);
-							this.context.lineWidth = defaultLineWidth;
+
+							const cellX = cellWidth * col + originX + nameWidth + this.context.lineWidth * i;
+							const cellY = cellHeight * row + originY + this.context.lineWidth * i;
+
+							this.context.strokeRect (cellX, cellY, cellWidth - 2 * this.context.lineWidth * i, cellHeight - 2 * this.context.lineWidth * i);
 
 							// 読み書きマーク
 							let accessMarkX = cellX;
 							let accessMarkY = cellY;
-							if (!accesses[0].read) {
-								accessMarkX += cellWidth - accessMarkWidth;
+							if (!accesses[i].read) {
+								accessMarkX = cellWidth * col + originX + nameWidth + cellWidth - accessMarkWidth - this.context.lineWidth * i;
 							}
-							this.context.fillStyle = accesses[0].color;
+							this.context.fillStyle = accesses[i].color;
 							this.context.fillRect (accessMarkX, accessMarkY, accessMarkWidth, accessMarkHeight);
+
+							this.context.lineWidth = defaultLineWidth;
 						}
 					}
 				}
@@ -191,23 +193,24 @@ export class VariableCanvas {
 						return item.index === index;
 					});
 
-					if (accesses[0]) {
-						const cellX = cellWidth * index + originX + nameWidth;
-						const cellY = originY;
-
-						this.context.strokeStyle = accesses[0].color;
+					for (let i = 0; i < accesses.length; i++) {
+						this.context.strokeStyle = accesses[i].color;
 						this.context.lineWidth = 4;
-						this.context.strokeRect (cellX, cellY, cellWidth, cellHeight);
-						this.context.lineWidth = defaultLineWidth;
+
+						const cellX = cellWidth * index + originX + nameWidth + this.context.lineWidth * i;
+						const cellY = originY + this.context.lineWidth * i;
+						this.context.strokeRect (cellX, cellY, cellWidth - 2 * this.context.lineWidth * i, cellHeight - 2 * this.context.lineWidth * i);
 
 						// 読み書きマーク
 						let accessMarkX = cellX;
 						let accessMarkY = cellY;
-						if (!accesses[0].read) {
-							accessMarkX += cellWidth - accessMarkWidth;
+						if (!accesses[i].read) {
+							accessMarkX = cellWidth * index + originX + nameWidth + cellWidth - accessMarkWidth - this.context.lineWidth * i;
 						}
-						this.context.fillStyle = accesses[0].color;
+						this.context.fillStyle = accesses[i].color;
 						this.context.fillRect (accessMarkX, accessMarkY, accessMarkWidth, accessMarkHeight);
+
+						this.context.lineWidth = defaultLineWidth;
 					}
 				}
 			}
@@ -245,23 +248,24 @@ export class VariableCanvas {
 					return item.key === key;
 				});
 
-				if (accesses[0]) {
-					const cellX = originX + nameWidth;
-					const cellY = originY;
-
-					this.context.strokeStyle = accesses[0].color;
+				for (let i = 0; i < accesses.length; i++) {
+					this.context.strokeStyle = accesses[i].color;
 					this.context.lineWidth = 4;
-					this.context.strokeRect (cellX, cellY, cellWidth, cellHeight);
-					this.context.lineWidth = defaultLineWidth;
+
+					const cellX = originX + nameWidth + this.context.lineWidth * i;
+					const cellY = originY + this.context.lineWidth * i;
+					this.context.strokeRect (cellX, cellY, cellWidth - 2 * this.context.lineWidth * i, cellHeight - 2 * this.context.lineWidth * i);
 
 					// 読み書きマーク
 					let accessMarkX = cellX;
 					let accessMarkY = cellY;
-					if (!accesses[0].read) {
-						accessMarkX += cellWidth - accessMarkWidth;
+					if (!accesses[i].read) {
+						accessMarkX += originX + nameWidth + cellWidth - accessMarkWidth - this.context.lineWidth * i;
 					}
-					this.context.fillStyle = accesses[0].color;
+					this.context.fillStyle = accesses[i].color;
 					this.context.fillRect (accessMarkX, accessMarkY, accessMarkWidth, accessMarkHeight);
+
+					this.context.lineWidth = defaultLineWidth;
 				}
 
 				originY += yOffset;
