@@ -29,6 +29,7 @@ const Playground: React.FC<{ missionID: string }> = (props) => {
 
 	// 参照の取得
 	const editorRef = useRef<EditorView> (null);
+	const threadRefs: (ThreadView | null)[] = [];
 	const consoleRef = useRef<ConsoleView> (null);
 
 	// ミッション定義
@@ -80,6 +81,11 @@ const Playground: React.FC<{ missionID: string }> = (props) => {
 	function onCenterPanelResized () {
 		variableCanvas.resize ();
 		variableCanvas.drawTable (mission.currentTwoDimensionalArrays, mission.currentOneDimensionalArrays, mission.currentVariables);
+		for (const threadView of threadRefs) {
+			if (threadView) {
+				threadView.onResize ();
+			}
+		}
 	}
 
 	useEffect (() => {
@@ -209,7 +215,7 @@ const Playground: React.FC<{ missionID: string }> = (props) => {
 						<div id={"threads-container"}>
 							{
 								threadInfos.map ((threadInfo, index) => {
-									return <ThreadView key={threadInfo.name}
+									return <ThreadView ref={item => threadRefs.push (item)} key={threadInfo.name}
 													   threadNames={threadInfo.name} threadCount={threadCount}
 													   blocks={threadInfo.blocksXml}
 													   onDidMount={(workspace) => {
@@ -468,6 +474,10 @@ class ThreadView extends React.Component<{ threadNames: string, threadCount: num
 		this.props.onDidMount (this.workspace);
 	}
 
+	componentDidUpdate () {
+		this.onResize ();
+	}
+
 	render () {
 		const divWidth = `${100 / this.props.threadCount}%`;
 		return (
@@ -477,6 +487,12 @@ class ThreadView extends React.Component<{ threadNames: string, threadCount: num
 					 style={{width: "100%", height: "calc(100% - 24px)"}}/>
 			</div>
 		);
+	}
+
+	onResize () {
+		if (this.workspace) {
+			Blockly.svgResize (this.workspace);
+		}
 	}
 }
 
