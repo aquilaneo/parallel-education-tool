@@ -6,6 +6,22 @@ export class VariableCanvas {
 	twoDimensionalArrayAccesses: { key: string, row: number, col: number, color: string, read: boolean }[] = [];
 	oneDimensionalArrayAccesses: { key: string, index: number, color: string, read: boolean }[] = [];
 	globalVariableAccesses: { key: string, color: string, read: boolean }[] = [];
+	whiteReadAccessMark: HTMLImageElement;
+	blackReadAccessMark: HTMLImageElement;
+	whiteWriteAccessMark: HTMLImageElement;
+	blackWriteAccessMark: HTMLImageElement;
+
+	constructor () {
+		// アクセスマーク読み込み
+		this.whiteReadAccessMark = new Image ();
+		this.whiteReadAccessMark.src = `${process.env.PUBLIC_URL}/img/WhiteReadAccessMark.svg`;
+		this.blackReadAccessMark = new Image ();
+		this.blackReadAccessMark.src = `${process.env.PUBLIC_URL}/img/BlackReadAccessMark.svg`;
+		this.whiteWriteAccessMark = new Image ();
+		this.whiteWriteAccessMark.src = `${process.env.PUBLIC_URL}/img/WhiteWriteAccessMark.svg`;
+		this.blackWriteAccessMark = new Image ();
+		this.blackWriteAccessMark.src = `${process.env.PUBLIC_URL}/img/BlackWriteAccessMark.svg`;
+	}
 
 	initialize (canvas: HTMLCanvasElement) {
 		// Canvas関係
@@ -58,7 +74,7 @@ export class VariableCanvas {
 			const cellWidth = 100;
 			const cellHeight = 60;
 			const accessMarkWidth = 30;
-			const accessMarkHeight = 20;
+			const accessMarkHeight = 30;
 			const nameFontSize = 42;
 			const indexFontSize = 24;
 			const tableFontSize = 36;
@@ -137,6 +153,27 @@ export class VariableCanvas {
 							}
 							this.context.fillStyle = accesses[i].color;
 							this.context.fillRect (accessMarkX, accessMarkY, accessMarkWidth, accessMarkHeight);
+							if (accesses[i].read) {
+								if (this.decideAccessMark (accesses[i].color) === 0) {
+									const xOffset = (accessMarkWidth - this.whiteReadAccessMark.width) / 2;
+									const yOffset = (accessMarkHeight - this.whiteReadAccessMark.height) / 2;
+									this.context.drawImage (this.whiteReadAccessMark, accessMarkX + xOffset, accessMarkY + yOffset);
+								} else {
+									const xOffset = (accessMarkWidth - this.whiteWriteAccessMark.width) / 2;
+									const yOffset = (accessMarkHeight - this.whiteWriteAccessMark.height) / 2;
+									this.context.drawImage (this.blackReadAccessMark, accessMarkX + xOffset, accessMarkY + yOffset);
+								}
+							} else {
+								if (this.decideAccessMark (accesses[i].color) === 0) {
+									const xOffset = (accessMarkWidth - this.blackReadAccessMark.width) / 2;
+									const yOffset = (accessMarkHeight - this.blackReadAccessMark.height) / 2;
+									this.context.drawImage (this.whiteWriteAccessMark, accessMarkX + xOffset, accessMarkY + yOffset);
+								} else {
+									const xOffset = (accessMarkWidth - this.blackWriteAccessMark.width) / 2;
+									const yOffset = (accessMarkHeight - this.blackWriteAccessMark.height) / 2;
+									this.context.drawImage (this.blackWriteAccessMark, accessMarkX + xOffset, accessMarkY + yOffset);
+								}
+							}
 
 							this.context.lineWidth = defaultLineWidth;
 						}
@@ -209,6 +246,27 @@ export class VariableCanvas {
 						}
 						this.context.fillStyle = accesses[i].color;
 						this.context.fillRect (accessMarkX, accessMarkY, accessMarkWidth, accessMarkHeight);
+						if (accesses[i].read) {
+							if (this.decideAccessMark (accesses[i].color) === 0) {
+								const xOffset = (accessMarkWidth - this.whiteReadAccessMark.width) / 2;
+								const yOffset = (accessMarkHeight - this.whiteReadAccessMark.height) / 2;
+								this.context.drawImage (this.whiteReadAccessMark, accessMarkX + xOffset, accessMarkY + yOffset);
+							} else {
+								const xOffset = (accessMarkWidth - this.whiteWriteAccessMark.width) / 2;
+								const yOffset = (accessMarkHeight - this.whiteWriteAccessMark.height) / 2;
+								this.context.drawImage (this.blackReadAccessMark, accessMarkX + xOffset, accessMarkY + yOffset);
+							}
+						} else {
+							if (this.decideAccessMark (accesses[i].color) === 0) {
+								const xOffset = (accessMarkWidth - this.blackReadAccessMark.width) / 2;
+								const yOffset = (accessMarkHeight - this.blackReadAccessMark.height) / 2;
+								this.context.drawImage (this.whiteWriteAccessMark, accessMarkX + xOffset, accessMarkY + yOffset);
+							} else {
+								const xOffset = (accessMarkWidth - this.blackWriteAccessMark.width) / 2;
+								const yOffset = (accessMarkHeight - this.blackWriteAccessMark.height) / 2;
+								this.context.drawImage (this.blackWriteAccessMark, accessMarkX + xOffset, accessMarkY + yOffset);
+							}
+						}
 
 						this.context.lineWidth = defaultLineWidth;
 					}
@@ -264,12 +322,43 @@ export class VariableCanvas {
 					}
 					this.context.fillStyle = accesses[i].color;
 					this.context.fillRect (accessMarkX, accessMarkY, accessMarkWidth, accessMarkHeight);
+					if (accesses[i].read) {
+						if (this.decideAccessMark (accesses[i].color) === 0) {
+							const xOffset = (accessMarkWidth - this.whiteReadAccessMark.width) / 2;
+							const yOffset = (accessMarkHeight - this.whiteReadAccessMark.height) / 2;
+							this.context.drawImage (this.whiteReadAccessMark, accessMarkX + xOffset, accessMarkY + yOffset);
+						} else {
+							const xOffset = (accessMarkWidth - this.whiteWriteAccessMark.width) / 2;
+							const yOffset = (accessMarkHeight - this.whiteWriteAccessMark.height) / 2;
+							this.context.drawImage (this.blackReadAccessMark, accessMarkX + xOffset, accessMarkY + yOffset);
+						}
+					} else {
+						if (this.decideAccessMark (accesses[i].color) === 0) {
+							const xOffset = (accessMarkWidth - this.blackReadAccessMark.width) / 2;
+							const yOffset = (accessMarkHeight - this.blackReadAccessMark.height) / 2;
+							this.context.drawImage (this.whiteWriteAccessMark, accessMarkX + xOffset, accessMarkY + yOffset);
+						} else {
+							const xOffset = (accessMarkWidth - this.blackWriteAccessMark.width) / 2;
+							const yOffset = (accessMarkHeight - this.blackWriteAccessMark.height) / 2;
+							this.context.drawImage (this.blackWriteAccessMark, accessMarkX + xOffset, accessMarkY + yOffset);
+						}
+					}
 
 					this.context.lineWidth = defaultLineWidth;
 				}
 
 				originY += yOffset;
 			}
+		}
+	}
+
+	decideAccessMark (color: string) {
+		switch (color) {
+			case "rgb(0, 255, 0)":
+			case "rgb(255, 255, 0)":
+				return 1; // Black
+			default:
+				return 0; // White
 		}
 	}
 
