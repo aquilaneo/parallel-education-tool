@@ -40,7 +40,7 @@ const Playground: React.FC<{ missionID: string }> = (props) => {
 	} else {
 		missionContent = missionContents.missionContents[0].contents[0];
 	}
-	const nextMissionID = missionContents.findNextMission (missionContent.missionID);
+	const nextMission = missionContents.findNextMission (missionContent.missionID);
 
 	const [mission, setMission] = useState (() => {
 		return new Mission (missionContent, variableCanvas,
@@ -124,7 +124,7 @@ const Playground: React.FC<{ missionID: string }> = (props) => {
 												 missionContent={missionContent}/>
 			<PlaygroundModals.MissionClearModal isVisible={isClearVisible} close={() => {
 				setIsClearVisible (false)
-			}} missionContent={missionContent} nextMissionID={nextMissionID}/>
+			}} missionContent={missionContent} nextMission={nextMission}/>
 			<PlaygroundModals.MissionFailedModal isVisible={isFailedVisible} close={() => {
 				setIsFailedVisible (false)
 			}} missionContent={missionContent} failReason={missionFailReason}/>

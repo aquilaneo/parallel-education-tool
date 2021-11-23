@@ -26,8 +26,9 @@ export const MissionDetailModal: React.FC<{ isVisible: boolean, setIsVisible: (v
 };
 
 // ミッションクリアモーダル
-export const MissionClearModal: React.FC<{ isVisible: boolean, close: () => void, missionContent: MissionContent, nextMissionID: string | undefined }> = (props) => {
-	const nextMissionID = props.nextMissionID ? props.nextMissionID : "";
+export const MissionClearModal: React.FC<{ isVisible: boolean, close: () => void, missionContent: MissionContent, nextMission: { chapter: string, missionID: string } | null }> = (props) => {
+	const chapter = props.nextMission ? props.nextMission.chapter : "";
+	const missionID = props.nextMission ? props.nextMission.missionID : "";
 	return (
 		<div className={"modal-panel"} id={"mission-clear"} style={{display: props.isVisible ? "block" : "none"}}>
 			<h1 className={"center"}>Mission Clear!</h1>
@@ -48,7 +49,7 @@ export const MissionClearModal: React.FC<{ isVisible: boolean, close: () => void
 			</div>
 
 			<div style={{margin: "0 0 1rem 0"}} className={"center"}>
-				<div style={{display: props.nextMissionID ? "block" : "none"}}><Link to={nextMissionID}>
+				<div style={{display: props.nextMission ? "block" : "none"}}><Link to={`/missions/${chapter}/${missionID}`}>
 					次のミッションへ
 				</Link></div>
 				<button onClick={() => {

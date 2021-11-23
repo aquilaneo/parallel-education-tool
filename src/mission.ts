@@ -44,15 +44,24 @@ export class MissionList {
 			for (let missionIndex = 0; missionIndex < this.missionContents[chapterIndex].contents.length; missionIndex++) {
 				if (this.missionContents[chapterIndex].contents[missionIndex].missionID === currentMissionID) {
 					if (missionIndex + 1 < this.missionContents[chapterIndex].contents.length) {
-						return this.missionContents[chapterIndex].contents[missionIndex + 1].missionID;
+						// return this.missionContents[chapterIndex].contents[missionIndex + 1].missionID;
+						return {
+							chapter: this.missionContents[chapterIndex].chapterName,
+							missionID: this.missionContents[chapterIndex].contents[missionIndex + 1].missionID
+						}
 					} else if (chapterIndex + 1 < this.missionContents.length && this.missionContents[chapterIndex + 1].contents.length > 0) {
-						return this.missionContents[chapterIndex + 1].contents[0].missionID;
+						// return this.missionContents[chapterIndex + 1].contents[0].missionID;
+						return {
+							chapter: this.missionContents[chapterIndex + 1].chapterName,
+							missionID: this.missionContents[chapterIndex + 1].contents[0].missionID
+						}
 					} else {
-						return undefined;
+						return null;
 					}
 				}
 			}
 		}
+		return null;
 	}
 }
 
