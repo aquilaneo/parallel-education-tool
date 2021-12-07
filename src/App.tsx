@@ -4,30 +4,46 @@ import {missionContents} from "./missionContents";
 
 import Playground from "./playground";
 
+import HomeIcon from "./img/Home.svg";
+import ClearIcon from "./img/Clear.svg";
+
+import "./App.scss";
+
 function Top () {
 	const chapters = missionContents.missionContents.map ((chapter) => {
 		const missionLinks = chapter.contents.map ((missionContent) => {
 			return (
-				<li key={missionContent.missionID}>
-					<Link to={`./missions/${chapter.chapterName}/${missionContent.missionID}`}>
-						{missionContent.missionTitle}
-					</Link>
-					<span style={{display: missionContent.score.isClear () ? "inline" : "none"}}> [Clear!]</span>
-				</li>
+				<Link to={`./missions/${missionContent.chapterNameURL}/${missionContent.missionID}`}
+					  key={missionContent.missionID} className={"mission-panel"}>
+					<div className={"mission-title"}>{missionContent.missionTitle}</div>
+					<div className={"mission-text"}>このツールのグローバル変数や配列には、ステージごとにランダムな値が与えられる場合があります。</div>
+					<div style={{
+						display: missionContent.score.isClear () ? "block" : "none",
+						textAlign: "right",
+						width: "100%"
+					}}>
+						<img src={ClearIcon} className={"mission-clear-icon"}/>
+					</div>
+				</Link>
 			);
 		});
 
 		return (
-			<div key={chapter.chapterName}>
-				<h2>{chapter.chapterName}</h2>
-				<ul>{missionLinks}</ul>
+			<div className={"chapter-container"} key={chapter.chapterName}>
+				<div className={"chapter-title"}>{chapter.chapterName}</div>
+				<div style={{display: "flex", flexWrap: "wrap"}}>
+					{missionLinks}
+				</div>
 			</div>
 		)
 	});
 
 	return (
 		<div>
-			<h1>Top</h1>
+			<div id={"header"}>
+				<span><img src={HomeIcon} id={"home-icon"}/></span>
+				<span id={"title"}>ステージ一覧</span>
+			</div>
 			{chapters}
 		</div>
 	)
@@ -46,7 +62,7 @@ function App () {
 	for (const chapter of missionContents.missionContents) {
 		for (const missionContent of chapter.contents) {
 			missionRoutes.push ({
-				url: `/missions/${chapter.chapterName}/${missionContent.missionID}`,
+				url: `/missions/${missionContent.chapterNameURL}/${missionContent.missionID}`,
 				component: <Playground missionID={missionContent.missionID}/>
 			});
 		}

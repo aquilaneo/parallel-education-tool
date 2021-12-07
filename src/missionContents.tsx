@@ -17,8 +17,9 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 	const oneDimensionalArrays = new Mission.OneDimensionalArrays ();
 	const globalVariables = new Mission.GlobalVariables ();
 	missionContents.addMissionContent ({
-		chapterName: "1章",
-		missionTitle: "[1章 基本操作編 - 1.プログラムの作り方]",
+		chapterName: "1章 基本操作と逐次プログラミング",
+		chapterNameURL: "chapter1",
+		missionTitle: "1.プログラムの作り方",
 		missionExplanation: <div>
 			<div>まずは<span className={"keyword"}>コンソール</span>に文字列を表示するプログラムを作り、基本的なプログラミング方法を学びます。</div>
 			<div>
@@ -74,8 +75,9 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 	const oneDimensionalArrays = new Mission.OneDimensionalArrays ();
 	const globalVariables = new Mission.GlobalVariables ();
 	missionContents.addMissionContent ({
-		chapterName: "1章",
-		missionTitle: "[1章 基本操作編 - 2.複数のブロック]",
+		chapterName: "1章 基本操作と逐次プログラミング",
+		chapterNameURL: "chapter1",
+		missionTitle: "2.複数のブロック",
 		missionExplanation: <div>
 			<div>プログラムのブロックは複数個連ねることができます。今回はコンソールにHelloと3回表示したいので、表示ブロックを3つ連ねます。</div>
 			<div>配置し終わったら「ブロックを実行」ボタンからプログラムを実行してください。</div>
@@ -128,8 +130,9 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 	const oneDimensionalArrays = new Mission.OneDimensionalArrays ();
 	const globalVariables = new Mission.GlobalVariables ();
 	missionContents.addMissionContent ({
-		chapterName: "1章",
-		missionTitle: "[1章 基本操作編 - 3.繰り返し]",
+		chapterName: "1章 基本操作と逐次プログラミング",
+		chapterNameURL: "chapter1",
+		missionTitle: "3.繰り返し",
 		missionExplanation: <div>
 			<div>ある命令を指定した回数繰り返すには<span className={"keyword"}>繰り返しブロック</span>を使います。</div>
 			<div>繰り返しブロックは「ループ」カテゴリの中にあります。</div>
@@ -183,8 +186,9 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 	const oneDimensionalArrays = new Mission.OneDimensionalArrays ();
 	const globalVariables = new Mission.GlobalVariables ();
 	missionContents.addMissionContent ({
-		chapterName: "1章",
-		missionTitle: "[1章 基本操作編 - 4.数値ブロックと計算]",
+		chapterName: "1章 基本操作と逐次プログラミング",
+		chapterNameURL: "chapter1",
+		missionTitle: "4.数値ブロックと計算",
 		missionExplanation: <div>
 			<span className={"keyword"}>数値ブロック</span>と<span className={"keyword"}>計算ブロック</span>の使い方を学びます。
 		</div>,
@@ -235,8 +239,9 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 	const oneDimensionalArrays = new Mission.OneDimensionalArrays ();
 	const globalVariables = new Mission.GlobalVariables ();
 	missionContents.addMissionContent ({
-		chapterName: "1章",
-		missionTitle: "[1章 基本操作編 - 5.変数の使い方]",
+		chapterName: "1章 基本操作と逐次プログラミング",
+		chapterNameURL: "chapter1",
+		missionTitle: "5.変数の使い方",
 		missionExplanation: <div><span className={"keyword"}>変数の作り方</span>、<span className={"keyword"}>値の書き込み</span>/
 			<span className={"keyword"}>読み込み</span>/<span className={"keyword"}>加算</span>の方法を学びます。</div>,
 		missionID: "mission1-05",
@@ -285,8 +290,9 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 	const oneDimensionalArrays = new Mission.OneDimensionalArrays ();
 	const globalVariables = new Mission.GlobalVariables ();
 	missionContents.addMissionContent ({
-		chapterName: "1章",
-		missionTitle: "[1章 基本操作編 - 6.関数の作り方と使い方]",
+		chapterName: "1章 基本操作と逐次プログラミング",
+		chapterNameURL: "chapter1",
+		missionTitle: "6.関数の作り方と使い方",
 		missionExplanation: <div><span className={"keyword"}>関数(サブルーチン)</span>の作り方と使い方を学びます。</div>,
 		missionID: "mission1-06",
 		score: new Mission.MissionScore (),
@@ -334,8 +340,9 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 	const oneDimensionalArrays = new Mission.OneDimensionalArrays ();
 	const globalVariables = new Mission.GlobalVariables ();
 	missionContents.addMissionContent ({
-		chapterName: "1章",
-		missionTitle: "[1章 基本操作編 - 7.関数の引数と戻り値]",
+		chapterName: "1章 基本操作と逐次プログラミング",
+		chapterNameURL: "chapter1",
+		missionTitle: "7.関数の引数と戻り値",
 		missionExplanation: <div>関数に値を渡す<span className={"keyword"}>引数(ひきすう)</span>と
 			関数から結果を受け取る<span className={"keyword"}>戻り値</span>の使い方を学びます。</div>,
 		missionID: "mission1-07",
@@ -384,8 +391,9 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 	const oneDimensionalArrays = new Mission.OneDimensionalArrays ();
 	const globalVariables = new Mission.GlobalVariables ();
 	missionContents.addMissionContent ({
-		chapterName: "1章",
-		missionTitle: "[1章 基本操作編 - 8.処理時間計測]",
+		chapterName: "1章 基本操作と逐次プログラミング",
+		chapterNameURL: "chapter1",
+		missionTitle: "8.処理時間計測",
 		missionExplanation: <div><span className={"keyword"}>ストップウォッチ</span>機能を使い、処理にかかった時間の計測を行います。</div>,
 		missionID: "mission1-08",
 		score: new Mission.MissionScore (),
@@ -443,8 +451,9 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 	const globalVariables = new Mission.GlobalVariables ();
 	globalVariables.addConstValue ("Value", 2);
 	missionContents.addMissionContent ({
-		chapterName: "1章",
-		missionTitle: "[1章 基本操作編 - 9.グローバル変数1]",
+		chapterName: "1章 基本操作と逐次プログラミング",
+		chapterNameURL: "chapter1",
+		missionTitle: "9.グローバル変数1",
 		missionExplanation: <div>
 			<div>
 				<span className={"keyword"}>ローカル変数</span>は定義した関数内でしかアクセスすることはできませんが、
@@ -502,8 +511,9 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 	const globalVariables = new Mission.GlobalVariables ();
 	globalVariables.addConstValue ("Result", 0);
 	missionContents.addMissionContent ({
-		chapterName: "1章",
-		missionTitle: "[1章 基本操作編 - 10.グローバル変数2]",
+		chapterName: "1章 基本操作と逐次プログラミング",
+		chapterNameURL: "chapter1",
+		missionTitle: "10.グローバル変数2",
 		missionExplanation: <div>
 			次はグローバル変数の書き込みを行ってみます。読み込みの時と同じ「グローバルデータ」カテゴリにあるグローバル変数書き込みブロックを使用します。
 		</div>,
@@ -548,8 +558,9 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 	const globalVariables = new Mission.GlobalVariables ();
 	oneDimensionalArrays.addConstArray ("Data", [2, 4, 6, 8]);
 	missionContents.addMissionContent ({
-		chapterName: "1章",
-		missionTitle: "[1章 基本操作編 - 11.グローバル1次元配列1]",
+		chapterName: "1章 基本操作と逐次プログラミング",
+		chapterNameURL: "chapter1",
+		missionTitle: "11.グローバル1次元配列1",
 		missionExplanation: <div>
 			<div>
 				<span className={"keyword"}>配列</span>は画面中央に図示されているように複数の値を記憶できるデータ構造です。
@@ -608,8 +619,9 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 	const globalVariables = new Mission.GlobalVariables ();
 	oneDimensionalArrays.addConstArray ("Data", [2, 4, 6, 8]);
 	missionContents.addMissionContent ({
-		chapterName: "1章",
-		missionTitle: "[1章 基本操作編 - 12.グローバル1次元配列2]",
+		chapterName: "1章 基本操作と逐次プログラミング",
+		chapterNameURL: "chapter1",
+		missionTitle: "12.グローバル1次元配列2",
 		missionExplanation: <div>
 			グローバル配列に値を書き込む際も読み込みと同じ「グローバルデータ」カテゴリを使用します。
 			書き込みには書き込む配列の名前、インデックス番号と書き込む値を指定して使用します。
@@ -656,8 +668,9 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 	const globalVariables = new Mission.GlobalVariables ();
 	twoDimensionalArrays.addConstArray ("Data", [[1, 2, 3], [4, 5, 6]]);
 	missionContents.addMissionContent ({
-		chapterName: "1章",
-		missionTitle: "[1章 基本操作編 - 13.グローバル2次元配列]",
+		chapterName: "1章 基本操作と逐次プログラミング",
+		chapterNameURL: "chapter1",
+		missionTitle: "13.グローバル2次元配列",
 		missionExplanation: <div>
 			<span className={"keyword"}>2次元配列</span>は行と列をインデックス番号として指定し値の読み書きを行うデータ構造です。
 			これまでの配列と同じように読み込みと書き込みのブロックがあります。
@@ -706,8 +719,9 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 	const globalVariables = new Mission.GlobalVariables ();
 	twoDimensionalArrays.addRandomArray ("Data", 2, 3, 0, 99);
 	missionContents.addMissionContent ({
-		chapterName: "1章",
-		missionTitle: "[1章 基本操作編 - 14.ランダムな配列]",
+		chapterName: "1章 基本操作と逐次プログラミング",
+		chapterNameURL: "chapter1",
+		missionTitle: "14.ランダムな配列",
 		missionExplanation: <div>
 			グローバル2次元配列を使った計算を行ってみます。今回は要素の値が<span className={"keyword"}>ランダム</span>で決まるため、
 			プログラムではなく自分で答えを計算しただ表示するという解法はできません。
@@ -767,8 +781,9 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 	const globalVariables = new Mission.GlobalVariables ();
 	twoDimensionalArrays.addRandomArray ("Data", 2, 3, 0, 99);
 	missionContents.addMissionContent ({
-		chapterName: "1章",
-		missionTitle: "[1章 基本操作編 - 15.分岐]",
+		chapterName: "1章 基本操作と逐次プログラミング",
+		chapterNameURL: "chapter1",
+		missionTitle: "15.分岐",
 		missionExplanation: <div>
 			<div><span className={"keyword"}>分岐</span>を使うと、条件に応じて実行する処理を変えることができます。</div>
 			<div>
@@ -831,8 +846,9 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 	const oneDimensionalArrays = new Mission.OneDimensionalArrays ();
 	const globalVariables = new Mission.GlobalVariables ();
 	missionContents.addMissionContent ({
-		chapterName: "2章",
-		missionTitle: "[2章 並列プログラミング入門編 - 1.スレッドの生成]",
+		chapterName: "2章 並列プログラミング入門",
+		chapterNameURL: "chapter2",
+		missionTitle: "1.スレッドの生成",
 		missionExplanation: <div>
 			<div>ここからいよいよ並列プログラミングに入ります。</div>
 			<div>並列処理を行うためには指定した関数を<span className={"keyword"}>スレッド</span>として生成し複数個同時実行する必要があります。</div>
@@ -889,8 +905,9 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 	const oneDimensionalArrays = new Mission.OneDimensionalArrays ();
 	const globalVariables = new Mission.GlobalVariables ();
 	missionContents.addMissionContent ({
-		chapterName: "2章",
-		missionTitle: "[2章 並列プログラミング入門編 - 2.スレッドの終了待ち1]",
+		chapterName: "2章 並列プログラミング入門",
+		chapterNameURL: "chapter2",
+		missionTitle: "2.スレッドの終了待ち1",
 		missionExplanation: <div>
 			今回は各スレッドで10回Helloと表示する必要があります。このようにスレッド内である程度時間のかかる処理を行う場合はある困ったことが起こります。
 		</div>,
@@ -930,8 +947,9 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 	const oneDimensionalArrays = new Mission.OneDimensionalArrays ();
 	const globalVariables = new Mission.GlobalVariables ();
 	missionContents.addMissionContent ({
-		chapterName: "2章",
-		missionTitle: "[2章 並列プログラミング入門編 - 3.スレッドの終了待ち2]",
+		chapterName: "2章 並列プログラミング入門",
+		chapterNameURL: "chapter2",
+		missionTitle: "3.スレッドの終了待ち2",
 		missionExplanation: <div>
 			<div>前回では各スレッドの処理が終了する前にスタート関数が終了してしまったため、途中でプログラムが終了してしまいました。</div>
 			<div>これを防ぐためには、スタート関数に各スレッドの処理終了を待機してもらう必要があります。</div>
@@ -989,8 +1007,9 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 	const globalVariables = new Mission.GlobalVariables ();
 	oneDimensionalArrays.addConstArray ("Data", [1, 2, 3, 4]);
 	missionContents.addMissionContent ({
-		chapterName: "2章",
-		missionTitle: "[2章 並列プログラミング入門編 - 4.スレッドの引数]",
+		chapterName: "2章 並列プログラミング入門",
+		chapterNameURL: "chapter2",
+		missionTitle: "4.スレッドの引数",
 		missionExplanation: <div>
 			<div>関数と同じようにスレッドにも引数を渡すことができます。</div>
 			<div>引数を渡す際にはスレッド作成ブロックの引数1~3の部分に値を入れます。
@@ -1039,8 +1058,9 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 	const globalVariables = new Mission.GlobalVariables ();
 	twoDimensionalArrays.addConstArray ("Data", [[1, 2, 3, 4], [5, 6, 7, 8], [9, 10, 11, 12], [13, 14, 15, 16]]);
 	missionContents.addMissionContent ({
-		chapterName: "2章",
-		missionTitle: "[2章 並列プログラミング入門編 - 5.逐次処理と並列処理の比較1]",
+		chapterName: "2章 並列プログラミング入門",
+		chapterNameURL: "chapter2",
+		missionTitle: "5.逐次処理と並列処理の比較1",
 		missionExplanation: <div>
 			<div>今回と次回のミッションでは並列処理を使わない逐次的なプログラムと並列プログラムでどのような処理速度の差が出るか比較します。</div>
 			<div>今回は並列処理は使用せず、通常の逐次プログラムで2次元配列を処理し、最後にその処理にかかった時間をストップウォッチで測り表示してください。</div>
@@ -1100,8 +1120,9 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 	const globalVariables = new Mission.GlobalVariables ();
 	twoDimensionalArrays.addConstArray ("Data", [[1, 2, 3, 4], [5, 6, 7, 8], [9, 10, 11, 12], [13, 14, 15, 16]]);
 	missionContents.addMissionContent ({
-		chapterName: "2章",
-		missionTitle: "[2章 並列プログラミング入門編 - 6.逐次処理と並列処理の比較2]",
+		chapterName: "2章 並列プログラミング入門",
+		chapterNameURL: "chapter2",
+		missionTitle: "6.逐次処理と並列処理の比較2",
 		missionExplanation: <div>
 			<div>続いて今回は4スレッドの並列プログラムを使用して2次元配列を処理してください。</div>
 			<div>配列の1行目を1スレッド目、2行目を2スレッド目...というように仕事を割り振り、処理させると良いでしょう。</div>
@@ -1172,8 +1193,9 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 	}
 	twoDimensionalArrays.addConstArray ("Data", array);
 	missionContents.addMissionContent ({
-		chapterName: "2章",
-		missionTitle: "[2章 並列プログラミング入門編 - 7.仕事の割り振り]",
+		chapterName: "2章 並列プログラミング入門",
+		chapterNameURL: "chapter2",
+		missionTitle: "7.仕事の割り振り",
 		missionExplanation: <div>
 			<div>今回のミッションでは8行16列という大きいサイズの配列の処理に挑戦します。</div>
 			<div>最大4スレッドまでしか使えない中、各スレッドにどのように仕事を割り振れば良いでしょうか。</div>
@@ -1241,8 +1263,9 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 	array.fill (row);
 	twoDimensionalArrays.addConstArray ("A+B", array);
 	missionContents.addMissionContent ({
-		chapterName: "2章",
-		missionTitle: "[2章 並列プログラミング入門編 - 8.行列計算1]",
+		chapterName: "2章 並列プログラミング入門",
+		chapterNameURL: "chapter2",
+		missionTitle: "8.行列計算1",
 		missionExplanation: <div>
 			並列処理を使用して行列計算を行ってみましょう。
 		</div>,
@@ -1291,8 +1314,9 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 	const globalVariables = new Mission.GlobalVariables ();
 	oneDimensionalArrays.addConstArray ("fib", [0, 0, 0, 0, 0, 0, 0, 0]);
 	missionContents.addMissionContent ({
-		chapterName: "3章",
-		missionTitle: "[3章 並列プログラミング基礎編 - 1.並列化できないアルゴリズム]",
+		chapterName: "3章 並列プログラミング基礎",
+		chapterNameURL: "chapter3",
+		missionTitle: "1.並列化できないアルゴリズム",
 		missionExplanation: <div>
 			<div>世の中には並列化が難しいアルゴリズムも存在します。</div>
 			<div>今回使用するフィボナッチ数列は有名な例です。フィボナッチ数列は、</div>
@@ -1346,8 +1370,9 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 	twoDimensionalArrays.addRandomArray ("Data", 4, 4, 1, 9);
 	globalVariables.addConstValue ("Sum", 0);
 	missionContents.addMissionContent ({
-		chapterName: "3章",
-		missionTitle: "[3章 並列プログラミング基礎編 - 4.排他制御1]",
+		chapterName: "3章 並列プログラミング基礎",
+		chapterNameURL: "chapter3",
+		missionTitle: "4.排他制御1",
 		missionExplanation: <div>複数スレッドからグローバル領域の同じ場所に書き込みを行う時には注意が必要です。</div>,
 		missionID: "mission3-04",
 		score: new Mission.MissionScore (),
@@ -1391,8 +1416,9 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 	twoDimensionalArrays.addRandomArray ("Data", 4, 4, 1, 9);
 	globalVariables.addConstValue ("Sum", 0);
 	missionContents.addMissionContent ({
-		chapterName: "3章",
-		missionTitle: "[3章 並列プログラミング基礎編 - 5.排他制御2]",
+		chapterName: "3章 並列プログラミング基礎",
+		chapterNameURL: "chapter3",
+		missionTitle: "5.排他制御2",
 		missionExplanation: <div>
 			<div>前回のミッションでは変数「Sum」への加算処理が各スレッドで衝突してしまい、誤った結果が計算されてしまいました。</div>
 			<div>ミューテックスを使うと複数スレッドから安全にグローバル領域に書き込みを行うことができます。</div>
@@ -1445,8 +1471,9 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 	globalVariables.addConstValue ("Value1", 0);
 	globalVariables.addConstValue ("Value2", 0);
 	missionContents.addMissionContent ({
-		chapterName: "3章",
-		missionTitle: "[3章 並列プログラミング基礎編 - 6.デッドロック1]",
+		chapterName: "3章 並列プログラミング基礎",
+		chapterNameURL: "chapter3",
+		missionTitle: "6.デッドロック1",
 		missionExplanation: <div>
 			<div>ミューテックスは便利な機能ですが、使い方に注意しないとプログラムがフリーズする原因となります。</div>
 			<div>このミッションではあらかじめ用意されたプログラムを実行し、その現象を確認してみます。プログラムは編集不可になっています。</div>
@@ -1489,8 +1516,9 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 	globalVariables.addConstValue ("Value1", 0);
 	globalVariables.addConstValue ("Value2", 0);
 	missionContents.addMissionContent ({
-		chapterName: "3章",
-		missionTitle: "[3章 並列プログラミング基礎編 - 7.デッドロック2]",
+		chapterName: "3章 並列プログラミング基礎",
+		chapterNameURL: "chapter3",
+		missionTitle: "7.デッドロック2",
 		missionExplanation: <div>
 			<div>
 				先ほどのような、お互いに相手のスレッドのロック解除を待ってしまいプログラムが先に進まなくなる現象を
@@ -1549,7 +1577,8 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 	globalVariables.addRandomValue ("Value2", 0, 99);
 	missionContents.addMissionContent ({
 		chapterName: "サンプル",
-		missionTitle: "[サンプルミッション - グローバル配列]",
+		chapterNameURL: "sample",
+		missionTitle: "グローバル配列",
 		missionExplanation: <div>グローバル配列について学びます。</div>,
 		missionID: "sample",
 		score: new Mission.MissionScore (),

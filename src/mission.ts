@@ -6,7 +6,7 @@ import {VariableCanvas} from "./variableCanvas";
 
 // ミッション一覧
 export class MissionList {
-	missionContents: { chapterName: string, contents: MissionContent[] }[] = [];
+	missionContents: { chapterName: string, chapterNameURL: string, contents: MissionContent[] }[] = [];
 
 	addMissionContent (missionContent: MissionContent) {
 		const chapter = this.missionContents.find ((item) => {
@@ -17,7 +17,11 @@ export class MissionList {
 			chapter.contents.push (missionContent);
 		} else {
 			// なかったら新しいチャプター追加
-			this.missionContents.push ({chapterName: missionContent.chapterName, contents: [missionContent]});
+			this.missionContents.push ({
+				chapterName: missionContent.chapterName,
+				chapterNameURL: missionContent.chapterNameURL,
+				contents: [missionContent]
+			});
 		}
 	}
 
@@ -44,15 +48,13 @@ export class MissionList {
 			for (let missionIndex = 0; missionIndex < this.missionContents[chapterIndex].contents.length; missionIndex++) {
 				if (this.missionContents[chapterIndex].contents[missionIndex].missionID === currentMissionID) {
 					if (missionIndex + 1 < this.missionContents[chapterIndex].contents.length) {
-						// return this.missionContents[chapterIndex].contents[missionIndex + 1].missionID;
 						return {
-							chapter: this.missionContents[chapterIndex].chapterName,
+							chapterNameURL: this.missionContents[chapterIndex].chapterNameURL,
 							missionID: this.missionContents[chapterIndex].contents[missionIndex + 1].missionID
 						}
 					} else if (chapterIndex + 1 < this.missionContents.length && this.missionContents[chapterIndex + 1].contents.length > 0) {
-						// return this.missionContents[chapterIndex + 1].contents[0].missionID;
 						return {
-							chapter: this.missionContents[chapterIndex + 1].chapterName,
+							chapterNameURL: this.missionContents[chapterIndex + 1].chapterNameURL,
 							missionID: this.missionContents[chapterIndex + 1].contents[0].missionID
 						}
 					} else {
@@ -68,6 +70,7 @@ export class MissionList {
 // ミッション内容
 export interface MissionContent {
 	chapterName: string; // チャプター名
+	chapterNameURL: string; // URLになるチャプター名
 	missionTitle: string, // ミッション名
 	missionExplanation: JSX.Element, // ミッションの説明
 	missionID: string, // ミッションID
