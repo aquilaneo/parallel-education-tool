@@ -73,6 +73,7 @@ export interface MissionContent {
 	chapterNameURL: string; // URLになるチャプター名
 	missionTitle: string, // ミッション名
 	missionExplanation: JSX.Element, // ミッションの説明
+	missionSummary: string, // ステージ一覧に載せるミッション要約
 	missionID: string, // ミッションID
 	score: MissionScore, // スコア
 	defaultProgram: string, // 最初に用意されているプログラム

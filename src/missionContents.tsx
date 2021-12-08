@@ -30,6 +30,7 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 				「ブロックを実行」ボタンを押すとプログラムがスタートします。
 			</div>
 		</div>,
+		missionSummary: "まずはこのビジュアルプログラミングの使い方を学習します。",
 		missionID: "mission1-01",
 		score: new Mission.MissionScore (),
 		defaultProgram: "",
@@ -82,6 +83,7 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 			<div>プログラムのブロックは複数個連ねることができます。今回はコンソールにHelloと3回表示したいので、表示ブロックを3つ連ねます。</div>
 			<div>配置し終わったら「ブロックを実行」ボタンからプログラムを実行してください。</div>
 		</div>,
+		missionSummary: "複数の命令ブロックを並べる方法を知っておきましょう。",
 		missionID: "mission1-02",
 		score: new Mission.MissionScore (),
 		defaultProgram: "",
@@ -138,6 +140,7 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 			<div>繰り返しブロックは「ループ」カテゴリの中にあります。</div>
 			<div>このミッションは使用するブロック数の制限があるため、ただ表示ブロックを50個並べる方法ではクリアできません。</div>
 		</div>,
+		missionSummary: "同じ操作を何回も繰り返すには「繰り返し(ループ)」を使うと便利です。",
 		missionID: "mission1-03",
 		score: new Mission.MissionScore (),
 		defaultProgram: "",
@@ -192,6 +195,7 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 		missionExplanation: <div>
 			<span className={"keyword"}>数値ブロック</span>と<span className={"keyword"}>計算ブロック</span>の使い方を学びます。
 		</div>,
+		missionSummary: "プログラムに四則演算などの計算を行わせることができます。",
 		missionID: "mission1-04",
 		score: new Mission.MissionScore (),
 		defaultProgram: "",
@@ -244,6 +248,7 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 		missionTitle: "5.変数の使い方",
 		missionExplanation: <div><span className={"keyword"}>変数の作り方</span>、<span className={"keyword"}>値の書き込み</span>/
 			<span className={"keyword"}>読み込み</span>/<span className={"keyword"}>加算</span>の方法を学びます。</div>,
+		missionSummary: "値を記憶しておくことのできる「変数」の使い方を学習します。",
 		missionID: "mission1-05",
 		score: new Mission.MissionScore (),
 		defaultProgram: "",
@@ -294,6 +299,7 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 		chapterNameURL: "chapter1",
 		missionTitle: "6.関数の作り方と使い方",
 		missionExplanation: <div><span className={"keyword"}>関数(サブルーチン)</span>の作り方と使い方を学びます。</div>,
+		missionSummary: "同じ処理が複数回登場するときは「関数」を使いましょう。",
 		missionID: "mission1-06",
 		score: new Mission.MissionScore (),
 		defaultProgram: "",
@@ -345,6 +351,7 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 		missionTitle: "7.関数の引数と戻り値",
 		missionExplanation: <div>関数に値を渡す<span className={"keyword"}>引数(ひきすう)</span>と
 			関数から結果を受け取る<span className={"keyword"}>戻り値</span>の使い方を学びます。</div>,
+		missionSummary: "関数には値の入力である「引数」と出力である「戻り値」があります。",
 		missionID: "mission1-07",
 		score: new Mission.MissionScore (),
 		defaultProgram: "",
@@ -395,6 +402,7 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 		chapterNameURL: "chapter1",
 		missionTitle: "8.処理時間計測",
 		missionExplanation: <div><span className={"keyword"}>ストップウォッチ</span>機能を使い、処理にかかった時間の計測を行います。</div>,
+		missionSummary: "処理にかかった時間を計測するストップウォッチ機能の使い方を学習します。",
 		missionID: "mission1-08",
 		score: new Mission.MissionScore (),
 		defaultProgram: "",
@@ -464,6 +472,7 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 			<div>まずはグローバル変数の読み込みを行ってみます。画面中央にグローバル変数の一覧があり、今回は「Value」という変数があります。</div>
 			<div>「グローバルデータ」カテゴリのグローバル変数読み込みブロックを使用し、この変数Valueの値を読み取りコンソールに表示してください。</div>
 		</div>,
+		missionSummary: "どの関数からもアクセスできる変数から値を読み取ってみましょう。",
 		missionID: "mission1-09",
 		score: new Mission.MissionScore (),
 		defaultProgram: "",
@@ -517,6 +526,7 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 		missionExplanation: <div>
 			次はグローバル変数の書き込みを行ってみます。読み込みの時と同じ「グローバルデータ」カテゴリにあるグローバル変数書き込みブロックを使用します。
 		</div>,
+		missionSummary: "どの関数からもアクセスできる変数に値を書き込んでみましょう。",
 		missionID: "mission1-10",
 		score: new Mission.MissionScore (),
 		defaultProgram: "",
@@ -572,6 +582,7 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 				読み込みたい配列の名前とインデックス番号を指定します。
 			</div>
 		</div>,
+		missionSummary: "どの関数からもアクセスできる1次元配列から値を読み取ってみましょう。",
 		missionID: "mission1-11",
 		score: new Mission.MissionScore (),
 		defaultProgram: "",
@@ -626,6 +637,7 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 			グローバル配列に値を書き込む際も読み込みと同じ「グローバルデータ」カテゴリを使用します。
 			書き込みには書き込む配列の名前、インデックス番号と書き込む値を指定して使用します。
 		</div>,
+		missionSummary: "どの関数からもアクセスできる1次元配列に値を書き込んでみましょう。",
 		missionID: "mission1-12",
 		score: new Mission.MissionScore (),
 		defaultProgram: "",
@@ -675,6 +687,7 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 			<span className={"keyword"}>2次元配列</span>は行と列をインデックス番号として指定し値の読み書きを行うデータ構造です。
 			これまでの配列と同じように読み込みと書き込みのブロックがあります。
 		</div>,
+		missionSummary: "どの関数からもアクセスできる2次元配列に値を読み書きしてみましょう。",
 		missionID: "mission1-13",
 		score: new Mission.MissionScore (),
 		defaultProgram: "",
@@ -726,6 +739,7 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 			グローバル2次元配列を使った計算を行ってみます。今回は要素の値が<span className={"keyword"}>ランダム</span>で決まるため、
 			プログラムではなく自分で答えを計算しただ表示するという解法はできません。
 		</div>,
+		missionSummary: "このツールのグローバル変数や配列には、ステージごとにランダムな値が与えられる場合があります。",
 		missionID: "mission1-14",
 		score: new Mission.MissionScore (),
 		defaultProgram: "",
@@ -791,6 +805,7 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 				条件を満たしたときとそうでないときで別の処理を行わせる分岐(if-else文に相当)が存在します。
 			</div>
 		</div>,
+		missionSummary: "条件によって処理を変えることができる「分岐」を学習します。",
 		missionID: "mission1-15",
 		score: new Mission.MissionScore (),
 		defaultProgram: "",
@@ -857,6 +872,7 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 			<div>「スレッド1」「スレッド2」というように何番目のスレッドかわかるようにすると良いでしょう。</div>
 			<div>今回は4つのスレッドを同時実行するので、スタート関数内にはスレッド作成ブロックを4つ並べる必要があります。</div>
 		</div>,
+		missionSummary: "並列プログラミングの処理単位である「スレッド」の作成を行なってみます。",
 		missionID: "mission2-01",
 		score: new Mission.MissionScore (),
 		defaultProgram: "",
@@ -911,6 +927,7 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 		missionExplanation: <div>
 			今回は各スレッドで10回Helloと表示する必要があります。このようにスレッド内である程度時間のかかる処理を行う場合はある困ったことが起こります。
 		</div>,
+		missionSummary: "複数スレッドを作成する際に気をつけなければならないことがあります。",
 		missionID: "mission2-02",
 		score: new Mission.MissionScore (),
 		defaultProgram: "",
@@ -959,6 +976,7 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 			</div>
 			<div>今回は4つのスレッドを生成するため、スタート関数内の終了待ちブロックも4つ必要になります。</div>
 		</div>,
+		missionSummary: "複数スレッド間で同期を取る方法を学習します。",
 		missionID: "mission2-03",
 		score: new Mission.MissionScore (),
 		defaultProgram: "",
@@ -1016,6 +1034,7 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 				スレッド内で引数を受け取るには関数の引数受け取りと同じように「関数」カテゴリの引数ブロックを使用します。
 			</div>
 		</div>,
+		missionSummary: "スレッド生成時、通常の関数呼び出しと同じように引数を渡すことができます。",
 		missionID: "mission2-04",
 		score: new Mission.MissionScore (),
 		defaultProgram: "",
@@ -1065,6 +1084,7 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 			<div>今回と次回のミッションでは並列処理を使わない逐次的なプログラムと並列プログラムでどのような処理速度の差が出るか比較します。</div>
 			<div>今回は並列処理は使用せず、通常の逐次プログラムで2次元配列を処理し、最後にその処理にかかった時間をストップウォッチで測り表示してください。</div>
 		</div>,
+		missionSummary: "通常の逐次処理と並列処理のプログラムで処理時間を比較します。まずは逐次処理を作ってみます。",
 		missionID: "mission2-05",
 		score: new Mission.MissionScore (),
 		defaultProgram: "",
@@ -1128,6 +1148,7 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 			<div>配列の1行目を1スレッド目、2行目を2スレッド目...というように仕事を割り振り、処理させると良いでしょう。</div>
 			<div>前回と同じように最後に処理にかかった時間をコンソールに表示し、前回のミッションでの経過時間と比較してみてください。</div>
 		</div>,
+		missionSummary: "通常の逐次処理と並列処理のプログラムで処理時間を比較します。並列処理で同じ動きを作ってみます。",
 		missionID: "mission2-06",
 		score: new Mission.MissionScore (),
 		defaultProgram: "",
@@ -1200,6 +1221,7 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 			<div>今回のミッションでは8行16列という大きいサイズの配列の処理に挑戦します。</div>
 			<div>最大4スレッドまでしか使えない中、各スレッドにどのように仕事を割り振れば良いでしょうか。</div>
 		</div>,
+		missionSummary: "大量のデータを並列処理するとき、各スレッドにどのように仕事を割り振れば良いでしょうか。",
 		missionID: "mission2-07",
 		score: new Mission.MissionScore (),
 		defaultProgram: "",
@@ -1269,6 +1291,7 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 		missionExplanation: <div>
 			並列処理を使用して行列計算を行ってみましょう。
 		</div>,
+		missionSummary: "実践的な並列プログラミングを練習してみましょう。",
 		missionID: "mission2-08",
 		score: new Mission.MissionScore (),
 		defaultProgram: "",
@@ -1325,6 +1348,7 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 			<div>Fn+2 = Fn + Fn+1</div>
 			<div>で与えられる数列です。</div>
 		</div>,
+		missionSummary: "世の中には並列化が難しいアルゴリズムも存在します。",
 		missionID: "mission3-01",
 		score: new Mission.MissionScore (),
 		defaultProgram: "",
@@ -1374,6 +1398,7 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 		chapterNameURL: "chapter3",
 		missionTitle: "4.排他制御1",
 		missionExplanation: <div>複数スレッドからグローバル領域の同じ場所に書き込みを行う時には注意が必要です。</div>,
+		missionSummary: "複数スレッドからグローバル領域の同じ場所に書き込みを行う際、逐次プログラミングでは起こらないある現象に注意が必要です。",
 		missionID: "mission3-04",
 		score: new Mission.MissionScore (),
 		defaultProgram: "",
@@ -1423,6 +1448,7 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 			<div>前回のミッションでは変数「Sum」への加算処理が各スレッドで衝突してしまい、誤った結果が計算されてしまいました。</div>
 			<div>ミューテックスを使うと複数スレッドから安全にグローバル領域に書き込みを行うことができます。</div>
 		</div>,
+		missionSummary: "安全に複数スレッドからグローバル領域に書き込みを行うにはどうしたら良いでしょうか。",
 		missionID: "mission3-05",
 		score: new Mission.MissionScore (),
 		defaultProgram: "",
@@ -1478,6 +1504,7 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 			<div>ミューテックスは便利な機能ですが、使い方に注意しないとプログラムがフリーズする原因となります。</div>
 			<div>このミッションではあらかじめ用意されたプログラムを実行し、その現象を確認してみます。プログラムは編集不可になっています。</div>
 		</div>,
+		missionSummary: "ミューテックスは便利な機能ですが、使い方に注意しないとプログラムがフリーズする原因となります。",
 		missionID: "mission3-06",
 		score: new Mission.MissionScore (),
 		defaultProgram: "<xml xmlns=\"https://developers.google.com/blockly/xml\"><block type=\"entry_point\" id=\"5e{JeNdzKRK}Nyg(x2Ul\" x=\"58\" y=\"59\"><statement name=\"routine\"><block type=\"thread_create\" id=\"M-u)d9Kj*Y0/p(xZa|?@\"><field name=\"thread_function_name\">スレッドA</field><value name=\"thread_name\"><shadow type=\"text\" id=\"b3V,_dF.((/@2N[?,}ai\"><field name=\"TEXT\">スレッド1</field></shadow></value><value name=\"argument1\"><shadow type=\"math_number\" id=\"/hk3C)59^~}gn1tdebqQ\"><field name=\"NUM\">0</field></shadow></value><value name=\"argument2\"><shadow type=\"math_number\" id=\"sKJQMZNlyr(WidSgzrxU\"><field name=\"NUM\">0</field></shadow></value><value name=\"argument3\"><shadow type=\"math_number\" id=\"p{{-gLjtOJ.ZmC3m3[+s\"><field name=\"NUM\">0</field></shadow></value><next><block type=\"thread_create\" id=\"]7i*2m~H-f?,G#}EkOM5\"><field name=\"thread_function_name\">スレッドB</field><value name=\"thread_name\"><shadow type=\"text\" id=\"~fgy!ViH%TLLg?TE/][#\"><field name=\"TEXT\">スレッド2</field></shadow></value><value name=\"argument1\"><shadow type=\"math_number\" id=\"mBzH?(v~goBow8|`n90O\"><field name=\"NUM\">0</field></shadow></value><value name=\"argument2\"><shadow type=\"math_number\" id=\"pho}#mIGcCjwW,nmS?:A\"><field name=\"NUM\">0</field></shadow></value><value name=\"argument3\"><shadow type=\"math_number\" id=\"sZ`sj+xw?X7{#f8hz9Md\"><field name=\"NUM\">0</field></shadow></value><next><block type=\"thread_join\" id=\"+ozu|.Uvf2wuBGQrPk/0\"><value name=\"thread_name\"><shadow type=\"text\" id=\"r5c{3j/+plxClP{*0sa*\"><field name=\"TEXT\">スレッド1</field></shadow></value><next><block type=\"thread_join\" id=\"D@`ZWgGn/),/PPZ%Da]z\"><value name=\"thread_name\"><shadow type=\"text\" id=\"?Awa9y@$}Rp/|Kk1{{y$\"><field name=\"TEXT\">スレッド2</field></shadow></value></block></next></block></next></block></next></block></statement></block><block type=\"function_definition\" id=\"uf]-n=qS=[Vr3;LnO^[,\" x=\"60\" y=\"306\"><field name=\"name\">スレッドA</field><statement name=\"routine\"><block type=\"controls_repeat_ext\" id=\"Mupq}=Zy`:XL4yjbHE]-\"><value name=\"TIMES\"><shadow type=\"math_number\" id=\"k7y-97P3^N/(Bhh1g%Dn\"><field name=\"NUM\">10</field></shadow></value><statement name=\"DO\"><block type=\"mutex_lock\" id=\"~LQ3KvQ%HXSr?+(,dncg\"><value name=\"mutex_id\"><shadow type=\"text\" id=\"GIa!2HaLbxqsA{tG%NP2\"><field name=\"TEXT\">Value1</field></shadow></value><next><block type=\"global_variable_write\" id=\"gUnjd.Q_N,N}cQ$4S@5r\"><field name=\"name\">Value1</field><value name=\"value\"><shadow type=\"math_number\" id=\"t#TDnVY9)Wp3:W7DVlh7\"><field name=\"NUM\">0</field></shadow><block type=\"math_arithmetic\" id=\"Z}`!9,U30Ks;KVkW_=r+\"><field name=\"OP\">ADD</field><value name=\"A\"><shadow type=\"math_number\" id=\"OaA0qK:[_vk~a$Zo-J,~\"><field name=\"NUM\">0</field></shadow><block type=\"global_variable_read\" id=\"Q+9Z%(pn5n@8@zQ*O:Y)\"><field name=\"name\">Value1</field></block></value><value name=\"B\"><shadow type=\"math_number\" id=\"0=dbF)3y::1D$AvqYxj{\"><field name=\"NUM\">1</field></shadow></value></block></value><next><block type=\"mutex_lock\" id=\"PfTJ}wsEc$duOCE}.C6P\"><value name=\"mutex_id\"><shadow type=\"text\" id=\"{,RhKFK@WS8vm]-i?D$a\"><field name=\"TEXT\">Value2</field></shadow></value><next><block type=\"global_variable_write\" id=\"*eP0cs;iTrb_E2:cIGeK\"><field name=\"name\">Value2</field><value name=\"value\"><shadow type=\"math_number\"><field name=\"NUM\">0</field></shadow><block type=\"math_arithmetic\" id=\"6RORErS-`-R~IV@aH~CY\"><field name=\"OP\">ADD</field><value name=\"A\"><shadow type=\"math_number\"><field name=\"NUM\">0</field></shadow><block type=\"global_variable_read\" id=\"NaSG4hOaj3kmKHlAMm!h\"><field name=\"name\">Value2</field></block></value><value name=\"B\"><shadow type=\"math_number\" id=\"wY9bHW.;KUY|+Ko=ex4]\"><field name=\"NUM\">1</field></shadow></value></block></value><next><block type=\"mutex_unlock\" id=\"M*5{g$gJBP@$OEjpe.7@\"><value name=\"mutex_id\"><shadow type=\"text\" id=\"y*5}tO=)dU^GQEy6#:AJ\"><field name=\"TEXT\">Value1</field></shadow></value><next><block type=\"mutex_unlock\" id=\"aaGJ8;pJ/dkTp}pyhRGd\"><value name=\"mutex_id\"><shadow type=\"text\" id=\"Kcy!4Q]oo52+mc2^4na3\"><field name=\"TEXT\">Value2</field></shadow></value></block></next></block></next></block></next></block></next></block></next></block></statement></block></statement></block><block type=\"function_definition\" id=\"aUCR?li!A[up^OHB)jOL\" x=\"58\" y=\"718\"><field name=\"name\">スレッドB</field><statement name=\"routine\"><block type=\"controls_repeat_ext\" id=\"$nrcvf$r_xi(|48Gl/_y\"><value name=\"TIMES\"><shadow type=\"math_number\" id=\"[JWavU]@MY#e=/K#$|6R\"><field name=\"NUM\">10</field></shadow></value><statement name=\"DO\"><block type=\"mutex_lock\" id=\"8d79oZE?F#zllNK4MH30\"><value name=\"mutex_id\"><shadow type=\"text\" id=\"`|uv_51`=ok;Dp6D!ch=\"><field name=\"TEXT\">Value2</field></shadow></value><next><block type=\"global_variable_write\" id=\"/gw98b(]sXhl9nwHex[`\"><field name=\"name\">Value2</field><value name=\"value\"><shadow type=\"math_number\"><field name=\"NUM\">0</field></shadow><block type=\"math_arithmetic\" id=\"0?{WuOu@cs[?qy~nNhz{\"><field name=\"OP\">ADD</field><value name=\"A\"><shadow type=\"math_number\"><field name=\"NUM\">0</field></shadow><block type=\"global_variable_read\" id=\"hU-xleuOFO+qD^nd/e0p\"><field name=\"name\">Value2</field></block></value><value name=\"B\"><shadow type=\"math_number\" id=\"*[4+1nr9C/;MWTjw(tBk\"><field name=\"NUM\">1</field></shadow></value></block></value><next><block type=\"mutex_lock\" id=\"gXO.n~jgmhq_d^vz28so\"><value name=\"mutex_id\"><shadow type=\"text\" id=\";wm9.jLUa}KUBX|b$1/H\"><field name=\"TEXT\">Value1</field></shadow></value><next><block type=\"global_variable_write\" id=\"J%;WuZwa}NkolQb,X}Fb\"><field name=\"name\">Value1</field><value name=\"value\"><shadow type=\"math_number\"><field name=\"NUM\">0</field></shadow><block type=\"math_arithmetic\" id=\"5{e|@0aE;+GOwDC.x`~e\"><field name=\"OP\">ADD</field><value name=\"A\"><shadow type=\"math_number\"><field name=\"NUM\">0</field></shadow><block type=\"global_variable_read\" id=\"!*+^F}f(g-thw9(YaiD*\"><field name=\"name\">Value1</field></block></value><value name=\"B\"><shadow type=\"math_number\" id=\"n?9Q/`2#T;SeqAp@9i,9\"><field name=\"NUM\">1</field></shadow></value></block></value><next><block type=\"mutex_unlock\" id=\"Y~.[l(bmK5A{3xQr(qJ9\"><value name=\"mutex_id\"><shadow type=\"text\" id=\"@I#/5v!nB1p-^=;o_gNY\"><field name=\"TEXT\">Value2</field></shadow></value><next><block type=\"mutex_unlock\" id=\"Fz~zI.XOyC-Q}v8Q1jgo\"><value name=\"mutex_id\"><shadow type=\"text\" id=\"/(05zQx#,.Y3^sB7OJoW\"><field name=\"TEXT\">Value1</field></shadow></value></block></next></block></next></block></next></block></next></block></next></block></statement></block></statement></block></xml>",
@@ -1526,6 +1553,7 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 			</div>
 			<div>このような現象を防止するにはどのようにすれば良いでしょうか。先ほどのプログラムを改造して動作を改善してみましょう。</div>
 		</div>,
+		missionSummary: "デッドロックを防止するにはどのようにすれば良いでしょうか。",
 		missionID: "mission3-07",
 		score: new Mission.MissionScore (),
 		defaultProgram: "<xml xmlns=\"https://developers.google.com/blockly/xml\"><block type=\"entry_point\" id=\"5e{JeNdzKRK}Nyg(x2Ul\" x=\"58\" y=\"59\"><statement name=\"routine\"><block type=\"thread_create\" id=\"M-u)d9Kj*Y0/p(xZa|?@\"><field name=\"thread_function_name\">スレッドA</field><value name=\"thread_name\"><shadow type=\"text\" id=\"b3V,_dF.((/@2N[?,}ai\"><field name=\"TEXT\">スレッド1</field></shadow></value><value name=\"argument1\"><shadow type=\"math_number\" id=\"/hk3C)59^~}gn1tdebqQ\"><field name=\"NUM\">0</field></shadow></value><value name=\"argument2\"><shadow type=\"math_number\" id=\"sKJQMZNlyr(WidSgzrxU\"><field name=\"NUM\">0</field></shadow></value><value name=\"argument3\"><shadow type=\"math_number\" id=\"p{{-gLjtOJ.ZmC3m3[+s\"><field name=\"NUM\">0</field></shadow></value><next><block type=\"thread_create\" id=\"]7i*2m~H-f?,G#}EkOM5\"><field name=\"thread_function_name\">スレッドB</field><value name=\"thread_name\"><shadow type=\"text\" id=\"~fgy!ViH%TLLg?TE/][#\"><field name=\"TEXT\">スレッド2</field></shadow></value><value name=\"argument1\"><shadow type=\"math_number\" id=\"mBzH?(v~goBow8|`n90O\"><field name=\"NUM\">0</field></shadow></value><value name=\"argument2\"><shadow type=\"math_number\" id=\"pho}#mIGcCjwW,nmS?:A\"><field name=\"NUM\">0</field></shadow></value><value name=\"argument3\"><shadow type=\"math_number\" id=\"sZ`sj+xw?X7{#f8hz9Md\"><field name=\"NUM\">0</field></shadow></value><next><block type=\"thread_join\" id=\"+ozu|.Uvf2wuBGQrPk/0\"><value name=\"thread_name\"><shadow type=\"text\" id=\"r5c{3j/+plxClP{*0sa*\"><field name=\"TEXT\">スレッド1</field></shadow></value><next><block type=\"thread_join\" id=\"D@`ZWgGn/),/PPZ%Da]z\"><value name=\"thread_name\"><shadow type=\"text\" id=\"?Awa9y@$}Rp/|Kk1{{y$\"><field name=\"TEXT\">スレッド2</field></shadow></value></block></next></block></next></block></next></block></statement></block><block type=\"function_definition\" id=\"uf]-n=qS=[Vr3;LnO^[,\" x=\"60\" y=\"306\"><field name=\"name\">スレッドA</field><statement name=\"routine\"><block type=\"controls_repeat_ext\" id=\"Mupq}=Zy`:XL4yjbHE]-\"><value name=\"TIMES\"><shadow type=\"math_number\" id=\"k7y-97P3^N/(Bhh1g%Dn\"><field name=\"NUM\">10</field></shadow></value><statement name=\"DO\"><block type=\"mutex_lock\" id=\"~LQ3KvQ%HXSr?+(,dncg\"><value name=\"mutex_id\"><shadow type=\"text\" id=\"GIa!2HaLbxqsA{tG%NP2\"><field name=\"TEXT\">Value1</field></shadow></value><next><block type=\"global_variable_write\" id=\"gUnjd.Q_N,N}cQ$4S@5r\"><field name=\"name\">Value1</field><value name=\"value\"><shadow type=\"math_number\" id=\"t#TDnVY9)Wp3:W7DVlh7\"><field name=\"NUM\">0</field></shadow><block type=\"math_arithmetic\" id=\"Z}`!9,U30Ks;KVkW_=r+\"><field name=\"OP\">ADD</field><value name=\"A\"><shadow type=\"math_number\" id=\"OaA0qK:[_vk~a$Zo-J,~\"><field name=\"NUM\">0</field></shadow><block type=\"global_variable_read\" id=\"Q+9Z%(pn5n@8@zQ*O:Y)\"><field name=\"name\">Value1</field></block></value><value name=\"B\"><shadow type=\"math_number\" id=\"0=dbF)3y::1D$AvqYxj{\"><field name=\"NUM\">1</field></shadow></value></block></value><next><block type=\"mutex_lock\" id=\"PfTJ}wsEc$duOCE}.C6P\"><value name=\"mutex_id\"><shadow type=\"text\" id=\"{,RhKFK@WS8vm]-i?D$a\"><field name=\"TEXT\">Value2</field></shadow></value><next><block type=\"global_variable_write\" id=\"*eP0cs;iTrb_E2:cIGeK\"><field name=\"name\">Value2</field><value name=\"value\"><shadow type=\"math_number\"><field name=\"NUM\">0</field></shadow><block type=\"math_arithmetic\" id=\"6RORErS-`-R~IV@aH~CY\"><field name=\"OP\">ADD</field><value name=\"A\"><shadow type=\"math_number\"><field name=\"NUM\">0</field></shadow><block type=\"global_variable_read\" id=\"NaSG4hOaj3kmKHlAMm!h\"><field name=\"name\">Value2</field></block></value><value name=\"B\"><shadow type=\"math_number\" id=\"wY9bHW.;KUY|+Ko=ex4]\"><field name=\"NUM\">1</field></shadow></value></block></value><next><block type=\"mutex_unlock\" id=\"M*5{g$gJBP@$OEjpe.7@\"><value name=\"mutex_id\"><shadow type=\"text\" id=\"y*5}tO=)dU^GQEy6#:AJ\"><field name=\"TEXT\">Value1</field></shadow></value><next><block type=\"mutex_unlock\" id=\"aaGJ8;pJ/dkTp}pyhRGd\"><value name=\"mutex_id\"><shadow type=\"text\" id=\"Kcy!4Q]oo52+mc2^4na3\"><field name=\"TEXT\">Value2</field></shadow></value></block></next></block></next></block></next></block></next></block></next></block></statement></block></statement></block><block type=\"function_definition\" id=\"aUCR?li!A[up^OHB)jOL\" x=\"58\" y=\"718\"><field name=\"name\">スレッドB</field><statement name=\"routine\"><block type=\"controls_repeat_ext\" id=\"$nrcvf$r_xi(|48Gl/_y\"><value name=\"TIMES\"><shadow type=\"math_number\" id=\"[JWavU]@MY#e=/K#$|6R\"><field name=\"NUM\">10</field></shadow></value><statement name=\"DO\"><block type=\"mutex_lock\" id=\"8d79oZE?F#zllNK4MH30\"><value name=\"mutex_id\"><shadow type=\"text\" id=\"`|uv_51`=ok;Dp6D!ch=\"><field name=\"TEXT\">Value2</field></shadow></value><next><block type=\"global_variable_write\" id=\"/gw98b(]sXhl9nwHex[`\"><field name=\"name\">Value2</field><value name=\"value\"><shadow type=\"math_number\"><field name=\"NUM\">0</field></shadow><block type=\"math_arithmetic\" id=\"0?{WuOu@cs[?qy~nNhz{\"><field name=\"OP\">ADD</field><value name=\"A\"><shadow type=\"math_number\"><field name=\"NUM\">0</field></shadow><block type=\"global_variable_read\" id=\"hU-xleuOFO+qD^nd/e0p\"><field name=\"name\">Value2</field></block></value><value name=\"B\"><shadow type=\"math_number\" id=\"*[4+1nr9C/;MWTjw(tBk\"><field name=\"NUM\">1</field></shadow></value></block></value><next><block type=\"mutex_lock\" id=\"gXO.n~jgmhq_d^vz28so\"><value name=\"mutex_id\"><shadow type=\"text\" id=\";wm9.jLUa}KUBX|b$1/H\"><field name=\"TEXT\">Value1</field></shadow></value><next><block type=\"global_variable_write\" id=\"J%;WuZwa}NkolQb,X}Fb\"><field name=\"name\">Value1</field><value name=\"value\"><shadow type=\"math_number\"><field name=\"NUM\">0</field></shadow><block type=\"math_arithmetic\" id=\"5{e|@0aE;+GOwDC.x`~e\"><field name=\"OP\">ADD</field><value name=\"A\"><shadow type=\"math_number\"><field name=\"NUM\">0</field></shadow><block type=\"global_variable_read\" id=\"!*+^F}f(g-thw9(YaiD*\"><field name=\"name\">Value1</field></block></value><value name=\"B\"><shadow type=\"math_number\" id=\"n?9Q/`2#T;SeqAp@9i,9\"><field name=\"NUM\">1</field></shadow></value></block></value><next><block type=\"mutex_unlock\" id=\"Y~.[l(bmK5A{3xQr(qJ9\"><value name=\"mutex_id\"><shadow type=\"text\" id=\"@I#/5v!nB1p-^=;o_gNY\"><field name=\"TEXT\">Value2</field></shadow></value><next><block type=\"mutex_unlock\" id=\"Fz~zI.XOyC-Q}v8Q1jgo\"><value name=\"mutex_id\"><shadow type=\"text\" id=\"/(05zQx#,.Y3^sB7OJoW\"><field name=\"TEXT\">Value1</field></shadow></value></block></next></block></next></block></next></block></next></block></next></block></statement></block></statement></block></xml>",
@@ -1580,6 +1608,7 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 		chapterNameURL: "sample",
 		missionTitle: "グローバル配列",
 		missionExplanation: <div>グローバル配列について学びます。</div>,
+		missionSummary: "サンプルミッションです。",
 		missionID: "sample",
 		score: new Mission.MissionScore (),
 		defaultProgram: "",

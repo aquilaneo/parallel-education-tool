@@ -40,6 +40,10 @@
     height: 7rem;
 
     border-radius: 8px;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
 }
 
 .mission-title {
@@ -51,6 +55,11 @@
 
 .mission-text {
     font-size: 14px;
+}
+
+.mission-clear-icon-container {
+    width: 100%;
+    text-align: right;
 }
 
 .mission-clear-icon {

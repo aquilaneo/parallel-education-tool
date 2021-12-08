@@ -16,12 +16,9 @@ function Top () {
 				<Link to={`./missions/${missionContent.chapterNameURL}/${missionContent.missionID}`}
 					  key={missionContent.missionID} className={"mission-panel"}>
 					<div className={"mission-title"}>{missionContent.missionTitle}</div>
-					<div className={"mission-text"}>このツールのグローバル変数や配列には、ステージごとにランダムな値が与えられる場合があります。</div>
-					<div style={{
-						display: missionContent.score.isClear () ? "block" : "none",
-						textAlign: "right",
-						width: "100%"
-					}}>
+					<div className={"mission-text"}>{missionContent.missionSummary}</div>
+					<div style={{visibility: missionContent.score.isClear () ? "visible" : "hidden",}}
+						 className={"mission-clear-icon-container"}>
 						<img src={ClearIcon} className={"mission-clear-icon"}/>
 					</div>
 				</Link>
