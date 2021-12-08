@@ -1,14 +1,8 @@
-$top-menu-height: 2rem;
-
-#top-menu {
-    display: flex;
-    justify-content: space-between;
-    height: $top-menu-height;
-}
+@import "_variables";
 
 #main-view {
     width: 100vw;
-    height: calc(100vh - #{$top-menu-height});
+    height: calc(100vh - #{$header-height});
 
     display: flex;
 

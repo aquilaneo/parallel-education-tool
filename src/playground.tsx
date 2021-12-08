@@ -13,6 +13,11 @@ import {UserProgram} from "./blockDefinitions";
 import * as SplitView from "./splitView";
 
 import "./playground.scss";
+import HomeIcon from "./img/Home.svg";
+import NextIcon from "./img/Next.svg";
+import ClearSmallIcon from "./img/Clear_small.svg";
+import NotClearPurpleIcon from "./img/NotClear_purple.svg";
+import NotClearWhiteIcon from "./img/NotClear_white.svg";
 
 const Playground: React.FC<{ missionID: string }> = (props) => {
 	// state定義
@@ -108,16 +113,56 @@ const Playground: React.FC<{ missionID: string }> = (props) => {
 
 	return (
 		<div style={{width: "100vw", height: "100vh"}}>
-			<div id={"top-menu"}>
-				<Link to={"/"}>トップへ</Link>
-				<div>
-					<span>{missionContent.missionTitle}</span>
-					<button onClick={() => {
-						setIsDetailVisible (!isDetailVisible);
-					}}>i
-					</button>
+			{/*<div id={"top-menu"}>*/}
+			{/*	<Link to={"/"}>トップへ</Link>*/}
+			{/*	<div>*/}
+			{/*		<span>{missionContent.missionTitle}</span>*/}
+			{/*		<button onClick={() => {*/}
+			{/*			setIsDetailVisible (!isDetailVisible);*/}
+			{/*		}}>i*/}
+			{/*		</button>*/}
+			{/*	</div>*/}
+			{/*	<div>ユーザアイコン</div>*/}
+			{/*</div>*/}
+			<div id={"header"}>
+				<div id={"header-left"}>
+					<span><img src={HomeIcon} id={"home-icon"}/></span>
+					<span id={"title"}>{missionContent.chapterName}</span>
 				</div>
-				<div>ユーザアイコン</div>
+
+				<div id={"header-center"}>
+					{
+						missionContents.missionContents.filter ((mission) => {
+							return mission.chapterName === missionContent.chapterName;
+						})[0].contents.map ((item, index) => {
+							// アイコン選択
+							const currentMission = item.missionID === missionContent.missionID;
+							let icon;
+							if (item.score.isClear ()) {
+								icon = ClearSmallIcon;
+							} else if (currentMission) {
+								icon = NotClearPurpleIcon;
+							} else {
+								icon = NotClearWhiteIcon;
+							}
+
+							return <div className={"header-mission-list-item"}
+										id={currentMission ? "header-mission-list-item-current" : ""}
+										key={item.missionID}>
+								<div>{index + 1}</div>
+								<div>
+									<img src={icon}
+										 className={"Icon"}/>
+								</div>
+							</div>;
+						})
+					}
+				</div>
+
+				<div id={"header-right"}>
+					<span>次のミッションへ</span>
+					<span><img src={NextIcon}/></span>
+				</div>
 			</div>
 
 			<PlaygroundModals.MissionDetailModal isVisible={isDetailVisible} setIsVisible={setIsDetailVisible}

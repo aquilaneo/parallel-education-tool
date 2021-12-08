@@ -8,6 +8,7 @@ import HomeIcon from "./img/Home.svg";
 import ClearIcon from "./img/Clear.svg";
 
 import "./App.scss";
+import "./common.scss";
 
 function Top () {
 	const chapters = missionContents.missionContents.map ((chapter) => {
@@ -38,8 +39,10 @@ function Top () {
 	return (
 		<div>
 			<div id={"header"}>
-				<span><img src={HomeIcon} id={"home-icon"}/></span>
-				<span id={"title"}>ステージ一覧</span>
+				<div id={"header-left"}>
+					<span><img src={HomeIcon} id={"home-icon"}/></span>
+					<span id={"title"}>ステージ一覧</span>
+				</div>
 			</div>
 			{chapters}
 		</div>
