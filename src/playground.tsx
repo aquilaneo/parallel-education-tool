@@ -18,6 +18,8 @@ import NextIcon from "./img/Next.svg";
 import ClearSmallIcon from "./img/Clear_small.svg";
 import NotClearPurpleIcon from "./img/NotClear_purple.svg";
 import NotClearWhiteIcon from "./img/NotClear_white.svg";
+import FlagIcon from "./img/Flag.svg";
+import InfoIcon from "./img/Info.svg";
 
 const Playground: React.FC<{ missionID: string }> = (props) => {
 	// state定義
@@ -151,8 +153,7 @@ const Playground: React.FC<{ missionID: string }> = (props) => {
 										key={item.missionID}>
 								<div>{index + 1}</div>
 								<div>
-									<img src={icon}
-										 className={"Icon"}/>
+									<img src={icon} className={"Icon"}/>
 								</div>
 							</div>;
 						})
@@ -163,6 +164,16 @@ const Playground: React.FC<{ missionID: string }> = (props) => {
 					<span>次のミッションへ</span>
 					<span><img src={NextIcon}/></span>
 				</div>
+			</div>
+
+			<div id={"mission-detail-bar"}>
+				<div id={"mission-title"}>{missionContent.missionTitle}</div>
+				<div id={"mission-goal"}>
+					<div><img src={FlagIcon} className={"icon"}/></div>
+					<div>{missionContent.goal}</div>
+					<div><img src={InfoIcon} className={"icon"}/></div>
+				</div>
+				<div id={"spacer"}></div>
 			</div>
 
 			<PlaygroundModals.MissionDetailModal isVisible={isDetailVisible} setIsVisible={setIsDetailVisible}

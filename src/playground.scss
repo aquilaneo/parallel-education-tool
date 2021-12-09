@@ -1,8 +1,39 @@
 @import "_variables";
 
+#mission-detail-bar {
+    width: 100%;
+    height: $mission-detail-bar-height;
+    background-color: $panel-background-color;
+    font-size: 18px;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    #mission-title {
+        padding: 0 1rem;
+        width: 15rem;
+    }
+
+    #mission-goal {
+        display: flex;
+        align-items: center;
+
+        .icon {
+            height: 1.4rem;
+            margin: 0 0.2rem;
+        }
+    }
+
+    #spacer {
+        padding: 0 1rem;
+        width: 15rem;
+    }
+}
+
 #main-view {
     width: 100vw;
-    height: calc(100vh - #{$header-height});
+    height: calc(100vh - (#{$header-height} + #{$mission-detail-bar-height}));
 
     display: flex;
 
