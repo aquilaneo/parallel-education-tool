@@ -105,14 +105,6 @@ const Playground: React.FC<{ missionID: string }> = (props) => {
 		window.addEventListener ("resize", onCenterPanelResized);
 	});
 
-	// 幅の指定
-	const editorInitialWidth = "30%";
-	const editorMinWidth = "20%";
-	const centerInitialWidth = "55%";
-	const centerMinWidth = "30%";
-	const consoleInitialWidth = "15%";
-	const consoleMinWidth = "5%";
-
 	return (
 		<div style={{width: "100vw", height: "100vh"}}>
 			{/*<div id={"top-menu"}>*/}
@@ -185,113 +177,130 @@ const Playground: React.FC<{ missionID: string }> = (props) => {
 				setIsFailedVisible (false)
 			}} missionContent={missionContent} failReason={missionFailReason}/>
 
-			<SplitView.SplitView id={"main-view"}>
-				<SplitView.SplitPanel id={"left-panel"} initialWidth={editorInitialWidth} minWidth={editorMinWidth}
-									  onresize={onEditorPanelResized}>
-					<EditorView ref={editorRef} missionContent={missionContent} closeDetailModal={() => {
-						setIsDetailVisible (false);
-					}} showClearModal={() => {
-						setIsClearVisible (true);
-					}} showFailedModal={(failReason: string) => {
-						setMissionFailReason (failReason);
-						setIsFailedVisible (true);
-					}}/>
-				</SplitView.SplitPanel>
 
-				<SplitView.SplitPanel id={"center-panel"} initialWidth={centerInitialWidth}
-									  minWidth={centerMinWidth}
-									  onresize={onCenterPanelResized}>
-					<div id={"variables-panel"}>
-						<div>変数</div>
-						<canvas id={"variable-canvas"}/>
-						<div>
-							<button onClick={() => {
-								if (editorRef.current) {
-									editorRef.current.parseBlocks (variableCanvas, mission);
-								}
-							}}>
-								ブロックをパース
-							</button>
-							<button onClick={() => {
-								if (editorRef.current && !editorRef.current.isExecuting && consoleRef.current) {
-									mission.clearConsole ();
-									editorRef.current.executeUserProgram (variableCanvas, mission, parseFloat (programSpeed));
-								}
-							}}>
-								ブロックを実行
-							</button>
-							<button onClick={() => {
-								if (editorRef.current) {
-									editorRef.current.stopUserProgram ();
-								}
-							}}>
-								実行を停止
-							</button>
-							<button onClick={() => {
-								if (editorRef.current) {
-									console.log (editorRef.current.getXml ());
-								}
-							}}>
-								XML出力
-							</button>
-							<button onClick={() => {
-								if (editorRef.current) {
-									const xml = window.prompt ("XMLを入力");
-									if (xml) {
-										editorRef.current.xmlToWorkspace (xml);
-									}
-								}
-							}}>
-								XML入力
-							</button>
-							<input type={"range"} name={"speed"} min={"0.2"} max={"4"} value={programSpeed} step={"0.1"}
-								   onChange={(event) => {
-									   if (editorRef.current) {
-										   setProgramSpeed (event.target.value);
-										   editorRef.current.setProgramSpeed (parseFloat (programSpeed));
-									   }
-								   }}/>
-							<span>x{programSpeed}</span>
+			<div id={"main-view"}>
+				<div id={"center-panel"}>
+					<div id={"upper-panel"}>
+						<div id={"program-view"}>
+							<div>プログラム</div>
+							<EditorView ref={editorRef} missionContent={missionContent} closeDetailModal={() => {
+								setIsDetailVisible (false);
+							}} showClearModal={() => {
+								setIsClearVisible (true);
+							}} showFailedModal={(failReason: string) => {
+								setMissionFailReason (failReason);
+								setIsFailedVisible (true);
+							}}/>
 						</div>
-						<div>
-							<button onClick={() => {
-								if (consoleRef.current) {
-									consoleRef.current.writeConsole ({text: "ABC", type: ConsoleOutputType.Log});
-								}
-							}}>コンソール追加
-							</button>
-							<button onClick={() => {
-								mission.clearConsole ();
-							}}>コンソール削除
-							</button>
+
+						<div id={"visualizer-view"}>
+							<div>ビジュアライザ</div>
+							<canvas id={"variable-canvas"}/>
 						</div>
 					</div>
-					<div id={"threads-panel"}>
-						<div>スレッド</div>
-						<div id={"threads-container"}>
-							{
-								threadInfos.map ((threadInfo, index) => {
-									return <ThreadView ref={item => threadRefs.push (item)} key={threadInfo.name}
-													   threadNames={threadInfo.name} threadCount={threadCount}
-													   blocks={threadInfo.blocksXml}
-													   onDidMount={(workspace) => {
-														   if (editorRef.current && editorRef.current.userProgram) {
-															   editorRef.current.userProgram.setWorkspaceToThread (index, workspace);
-														   }
-													   }}
-									/>
-								})
-							}
+
+					<div id={"lower-panel"}>
+						<div id={"thread-view"}>
+							<div>スレッドビュー</div>
+							<div id={"threads-container"}>
+								{
+									threadInfos.map ((threadInfo, index) => {
+										return <ThreadView ref={item => threadRefs.push (item)} key={threadInfo.name}
+														   threadNames={threadInfo.name} threadCount={threadCount}
+														   blocks={threadInfo.blocksXml}
+														   onDidMount={(workspace) => {
+															   if (editorRef.current && editorRef.current.userProgram) {
+																   editorRef.current.userProgram.setWorkspaceToThread (index, workspace);
+															   }
+														   }}
+										/>
+									})
+								}
+							</div>
 						</div>
 					</div>
-				</SplitView.SplitPanel>
+				</div>
 
-				<SplitView.SplitPanel id={"right-panel"} initialWidth={consoleInitialWidth}
-									  minWidth={consoleMinWidth}>
-					<div>コンソール</div>
-					<ConsoleView ref={consoleRef}/>
-				</SplitView.SplitPanel>
-			</SplitView.SplitView>
+				<div id={"right-panel"}>
+					<div id={"console-view"}>
+						<div>コンソール</div>
+						<ConsoleView ref={consoleRef}/>
+					</div>
+				</div>
+
+				{/*<div id={"center-panel"}>*/}
+				{/*	<div id={"variables-panel"}>*/}
+				{/*<div>*/}
+				{/*	<button onClick={() => {*/}
+				{/*		if (editorRef.current) {*/}
+				{/*			editorRef.current.parseBlocks (variableCanvas, mission);*/}
+				{/*		}*/}
+				{/*	}}>*/}
+				{/*		ブロックをパース*/}
+				{/*	</button>*/}
+				{/*	<button onClick={() => {*/}
+				{/*		if (editorRef.current && !editorRef.current.isExecuting && consoleRef.current) {*/}
+				{/*			mission.clearConsole ();*/}
+				{/*			editorRef.current.executeUserProgram (variableCanvas, mission, parseFloat (programSpeed));*/}
+				{/*		}*/}
+				{/*	}}>*/}
+				{/*		ブロックを実行*/}
+				{/*	</button>*/}
+				{/*	<button onClick={() => {*/}
+				{/*		if (editorRef.current) {*/}
+				{/*			editorRef.current.stopUserProgram ();*/}
+				{/*		}*/}
+				{/*	}}>*/}
+				{/*		実行を停止*/}
+				{/*	</button>*/}
+				{/*	<button onClick={() => {*/}
+				{/*		if (editorRef.current) {*/}
+				{/*			console.log (editorRef.current.getXml ());*/}
+				{/*		}*/}
+				{/*	}}>*/}
+				{/*		XML出力*/}
+				{/*	</button>*/}
+				{/*	<button onClick={() => {*/}
+				{/*		if (editorRef.current) {*/}
+				{/*			const xml = window.prompt ("XMLを入力");*/}
+				{/*			if (xml) {*/}
+				{/*				editorRef.current.xmlToWorkspace (xml);*/}
+				{/*			}*/}
+				{/*		}*/}
+				{/*	}}>*/}
+				{/*		XML入力*/}
+				{/*	</button>*/}
+				{/*	<input type={"range"} name={"speed"} min={"0.2"} max={"4"} value={programSpeed} step={"0.1"}*/}
+				{/*		   onChange={(event) => {*/}
+				{/*			   if (editorRef.current) {*/}
+				{/*				   setProgramSpeed (event.target.value);*/}
+				{/*				   editorRef.current.setProgramSpeed (parseFloat (programSpeed));*/}
+				{/*			   }*/}
+				{/*		   }}/>*/}
+				{/*	<span>x{programSpeed}</span>*/}
+				{/*</div>*/}
+				{/*<div>*/}
+				{/*	<button onClick={() => {*/}
+				{/*		if (consoleRef.current) {*/}
+				{/*			consoleRef.current.writeConsole ({text: "ABC", type: ConsoleOutputType.Log});*/}
+				{/*		}*/}
+				{/*	}}>コンソール追加*/}
+				{/*	</button>*/}
+				{/*	<button onClick={() => {*/}
+				{/*		mission.clearConsole ();*/}
+				{/*	}}>コンソール削除*/}
+				{/*	</button>*/}
+				{/*</div>*/}
+				{/*	</div>*/}
+				{/*	<div id={"threads-panel"}>*/}
+
+				{/*	</div>*/}
+				{/*</div>*/}
+
+				{/*<div id={"right-panel"}>*/}
+
+				{/*</div>*/}
+			</div>
 		</div>
 	)
 }
@@ -508,7 +517,7 @@ class EditorView extends React.Component<{ missionContent: MissionContent, close
 	}
 
 	render () {
-		return <div id="blocklyDiv" style={{width: "100%", height: "100%"}}/>;
+		return <div id="blocklyDiv" style={{width: "100%", height: "90%"}}/>;
 	}
 }
 

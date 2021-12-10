@@ -34,63 +34,134 @@
 #main-view {
     width: 100vw;
     height: calc(100vh - (#{$header-height} + #{$mission-detail-bar-height}));
-
     display: flex;
 
-    #left-panel {
-        height: 100%;
-    }
-
     #center-panel {
+        width: 80%;
         height: 100%;
 
-        $threads-height: 40%;
-
-        #variables-panel {
+        #upper-panel {
+            display: flex;
             width: 100%;
-            height: calc(100% - #{$threads-height});
+            height: 60%;
+
+            #program-view {
+                width: calc(100% - 1.5rem);
+                height: calc(100% - 1.5rem);
+                margin: 1rem 0.5rem 0.5rem 1rem;
+                padding: 0.5rem;
+                background-color: $view-background-color;
+                border: 1px solid $view-border-color;
+                box-sizing: border-box;
+            }
+
+            #visualizer-view {
+                width: calc(100% - 1rem);
+                height: calc(100% - 1.5rem);
+                margin: 1rem 0.5rem 0.5rem 0.5rem;
+                padding: 0.5rem;
+                background-color: $view-background-color;
+                border: 1px solid $view-border-color;
+                box-sizing: border-box;
+
+                #variable-canvas {
+                    width: 100%;
+                    height: 90%;
+                }
+            }
         }
 
-        #variable-canvas {
-            width: 100%;
-            height: 80%;
-            border: 1px solid black;
-            box-sizing: border-box;
-        }
+        #lower-panel {
+            width: calc(100% - 1.5rem);
+            height: calc(40% - 1.5rem);
+            margin: 0.5rem 0.5rem 1rem 1rem;
 
-        #threads-panel {
-            width: 100%;
-            height: $threads-height;
-
-            #threads-container {
-                height: calc(100% - 24px);
-
-                display: flex;
-                justify-content: space-between;
+            #thread-view {
+                width: 100%;
+                height: 100%;
+                padding: 0.5rem;
+                background-color: $view-background-color;
+                border: 1px solid $view-border-color;
+                box-sizing: border-box;
             }
         }
     }
 
     #right-panel {
-        height: 100%;
+        width: 40%;
 
-        #console {
-            padding: 0;
-            margin: 0.4rem 0;
-            list-style: none;
-            font-size: 0.9rem;
-        }
-
-        .console-log {
-            color: black;
-            padding: 0 0.6rem;
-            background-color: rgb(245, 245, 245);
-        }
-
-        .console-error {
-            color: red;
-            background-color: rgb(255, 240, 240);
-            padding: 0 0.6rem;
+        #console-view {
+            width: calc(100% - 1.5rem);
+            height: calc(100% - 2rem);
+            margin: 1rem 1rem 1rem 0.5rem;
+            padding: 0.5rem;
+            box-sizing: border-box;
+            background-color: $view-background-color;
+            border: 1px solid $view-border-color;
         }
     }
 }
+
+//#main-view {
+//    width: 100vw;
+//    height: calc(100vh - (#{$header-height} + #{$mission-detail-bar-height}));
+//
+//    display: flex;
+//
+//    #left-panel {
+//        height: 100%;
+//    }
+//
+//    #center-panel {
+//        height: 100%;
+//
+//        $threads-height: 40%;
+//
+//        #variables-panel {
+//            width: 100%;
+//            height: calc(100% - #{$threads-height});
+//        }
+//
+//        #variable-canvas {
+//            width: 100%;
+//            height: 80%;
+//            border: 1px solid black;
+//            box-sizing: border-box;
+//        }
+//
+//        #threads-panel {
+//            width: 100%;
+//            height: $threads-height;
+//
+//            #threads-container {
+//                height: calc(100% - 24px);
+//
+//                display: flex;
+//                justify-content: space-between;
+//            }
+//        }
+//    }
+//
+//    #right-panel {
+//        height: 100%;
+//
+//        #console {
+//            padding: 0;
+//            margin: 0.4rem 0;
+//            list-style: none;
+//            font-size: 0.9rem;
+//        }
+//
+//        .console-log {
+//            color: black;
+//            padding: 0 0.6rem;
+//            background-color: rgb(245, 245, 245);
+//        }
+//
+//        .console-error {
+//            color: red;
+//            background-color: rgb(255, 240, 240);
+//            padding: 0 0.6rem;
+//        }
+//    }
+//}
