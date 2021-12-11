@@ -40,8 +40,8 @@ function Top () {
 		<div>
 			<div id={"header"}>
 				<div id={"header-left"}>
-					<span><img src={HomeIcon} id={"home-icon"}/></span>
-					<span id={"title"}>ステージ一覧</span>
+					<Link to={"/"} id={"home-icon-container"}><img src={HomeIcon} id={"home-icon"}/></Link>
+					<div id={"title"}>ステージ一覧</div>
 				</div>
 			</div>
 			{chapters}

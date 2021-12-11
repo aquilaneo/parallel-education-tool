@@ -6,8 +6,6 @@
     background-color: $header-background-color;
     color: $header-main-color;
 
-    //padding: 0.4rem 0;
-
     display: flex;
     justify-content: space-between;
 
@@ -17,7 +15,22 @@
         align-items: center;
 
         #title {
+            margin: 0 0.5rem;
             font-size: 24px;
+        }
+
+        #home-icon-container {
+            height: 100%;
+            display: flex;
+            align-items: center;
+        }
+
+        #home-icon-container:hover {
+            background-color: $header-button-hover-color;
+        }
+
+        #home-icon-container:active {
+            background-color: $header-button-click-color;
         }
 
         #home-icon {
@@ -34,6 +47,7 @@
 
         .header-mission-list-item {
             height: 100%;
+            padding: 0 0.4rem;
 
             display: flex;
             flex-direction: column;
@@ -42,29 +56,49 @@
 
             font-size: 18px;
             text-align: center;
-            padding: 0 0.4rem;
+
+            color: $header-main-color;
+            text-decoration: none;
         }
 
-        #header-mission-list-item-current {
+        .header-mission-list-item:hover {
+            background-color: $header-button-hover-color;
+        }
+
+        .header-mission-list-item:active {
+            background-color: $header-button-click-color;
+        }
+
+        #header-mission-list-item-selected {
             color: $header-background-color;
             background-color: white;
         }
 
-        .Icon {
+        .icon {
             width: 1.4rem;
         }
     }
 
     #header-right {
+        width: 15rem;
         height: 100%;
         padding: 0 1.5rem;
 
         display: flex;
-        justify-content: left;
+        justify-content: center;
         align-items: center;
 
         font-size: 24px;
         color: $emphasis-color;
         background-color: white;
+        text-decoration: none;
+    }
+
+    #header-right:hover {
+        background-color: $header-right-button-hover-color;
+    }
+
+    #header-right:active {
+        background-color: $header-right-button-click-color;
     }
 }

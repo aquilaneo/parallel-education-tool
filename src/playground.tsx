@@ -125,8 +125,8 @@ const Playground: React.FC<{ missionID: string }> = (props) => {
 			{/*</div>*/}
 			<div id={"header"}>
 				<div id={"header-left"}>
-					<span><img src={HomeIcon} id={"home-icon"}/></span>
-					<span id={"title"}>{missionContent.chapterName}</span>
+					<Link to={"/"} id={"home-icon-container"}><img src={HomeIcon} id={"home-icon"}/></Link>
+					<div id={"title"}>{missionContent.chapterName}</div>
 				</div>
 
 				<div id={"header-center"}>
@@ -145,22 +145,45 @@ const Playground: React.FC<{ missionID: string }> = (props) => {
 								icon = NotClearWhiteIcon;
 							}
 
-							return <div className={"header-mission-list-item"}
-										id={currentMission ? "header-mission-list-item-current" : ""}
-										key={item.missionID}>
+							const content = <div>
 								<div>{index + 1}</div>
 								<div>
-									<img src={icon} className={"Icon"}/>
+									<img src={icon} className={"icon"}/>
 								</div>
 							</div>;
+
+							if (currentMission) {
+								return <div className={"header-mission-list-item"}
+											id={"header-mission-list-item-selected"}
+											key={item.missionID}>
+									{content}
+								</div>;
+							} else {
+								return <Link to={`/missions/${item.chapterNameURL}/${item.missionID}`}
+											 className={"header-mission-list-item"}
+											 key={item.missionID}>
+									{content}
+								</Link>;
+							}
 						})
 					}
 				</div>
 
-				<div id={"header-right"}>
-					<span>次のミッションへ</span>
-					<span><img src={NextIcon}/></span>
-				</div>
+				{
+					missionContent.score.isClear() && nextMission ?
+						<Link to={`/missions/${nextMission.chapterNameURL}/${nextMission.missionID}`}
+							  id={"header-right"}>
+							<div>次のミッションへ</div>
+							<div><img src={NextIcon}/></div>
+						</Link> :
+						<div id={"header-right"} style={{visibility: "hidden"}}/>
+				}
+
+				{/*<Link to={`/missions/${nextMission.chapterNameURL}/${nextMission.missionID}`}*/}
+				{/*	  id={"header-right"} style={{visibility: missionContent.score.isClear () ? "visible" : "hidden"}}>*/}
+				{/*	<div>次のミッションへ</div>*/}
+				{/*	<div><img src={NextIcon}/></div>*/}
+				{/*</Link>*/}
 			</div>
 
 			<div id={"mission-detail-bar"}>
