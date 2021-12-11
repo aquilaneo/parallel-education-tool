@@ -10,7 +10,6 @@ import * as BlockDefinitions from "./blockDefinitions";
 import * as VariableCanvas from "./variableCanvas";
 import * as PlaygroundModals from "./playground-modals";
 import {UserProgram} from "./blockDefinitions";
-import * as SplitView from "./splitView";
 
 import "./playground.scss";
 import HomeIcon from "./img/Home.svg";
@@ -20,6 +19,12 @@ import NotClearPurpleIcon from "./img/NotClear_purple.svg";
 import NotClearWhiteIcon from "./img/NotClear_white.svg";
 import FlagIcon from "./img/Flag.svg";
 import InfoIcon from "./img/Info.svg";
+import ProgramIcon from "./img/Program.svg";
+import VisualizerIcon from "./img/Visualizer.svg";
+import ConsoleIcon from "./img/Console.svg";
+import ThreadIcon from "./img/Threads.svg";
+import PlayIcon from "./img/Play.svg";
+import BinIcon from "./img/Bin.svg";
 
 const Playground: React.FC<{ missionID: string }> = (props) => {
 	// state定義
@@ -32,7 +37,7 @@ const Playground: React.FC<{ missionID: string }> = (props) => {
 	const [threadInfos, setThreadInfos] = useState ([] as { name: string, blocksXml: string }[]);
 	const [threadCount, setThreadCount] = useState (threadInfos.length);
 	const [missionFailReason, setMissionFailReason] = useState ("");
-	const [programSpeed, setProgramSpeed] = useState ("1");
+	const [programSpeed, setProgramSpeed] = useState (1);
 
 	// 参照の取得
 	const editorRef = useRef<EditorView> (null);
@@ -182,27 +187,91 @@ const Playground: React.FC<{ missionID: string }> = (props) => {
 				<div id={"center-panel"}>
 					<div id={"upper-panel"}>
 						<div id={"program-view"}>
-							<div>プログラム</div>
-							<EditorView ref={editorRef} missionContent={missionContent} closeDetailModal={() => {
-								setIsDetailVisible (false);
-							}} showClearModal={() => {
-								setIsClearVisible (true);
-							}} showFailedModal={(failReason: string) => {
-								setMissionFailReason (failReason);
-								setIsFailedVisible (true);
-							}}/>
+							<div className={"view-label"}>
+								<div className={"view-title"}>
+									<div><img src={ProgramIcon} className={"view-icon"}/></div>
+									<div>プログラム</div>
+								</div>
+								<div className={"view-title"}>
+									<div>
+										<button onClick={() => {
+											// [デバッグ用]XML入力
+											if (editorRef.current) {
+												const xml = window.prompt ("XMLを入力");
+												if (xml) {
+													editorRef.current.xmlToWorkspace (xml);
+												}
+											}
+										}}>XML入力
+										</button>
+									</div>
+									<div>
+										<button onClick={() => {
+											// [デバッグ用]XML出力
+											if (editorRef.current) {
+												console.log (editorRef.current.getXml ());
+											}
+										}}>XML出力
+										</button>
+									</div>
+									<div id={"speed-slider"}>
+										<input type={"range"} name={"speed"} min={"0.2"} max={"4"}
+											   value={programSpeed} step={"0.1"}
+											   onChange={(event) => {
+												   if (editorRef.current) {
+													   setProgramSpeed (parseFloat (event.target.value));
+													   editorRef.current.setProgramSpeed (programSpeed);
+												   }
+											   }}/>
+										<span>x{programSpeed.toFixed (1)}</span>
+									</div>
+									<div className={"icon-button"} onClick={() => {
+										// プログラム実行ボタン
+										if (editorRef.current && !editorRef.current.isExecuting && consoleRef.current) {
+											mission.clearConsole ();
+											editorRef.current.executeUserProgram (variableCanvas, mission, programSpeed);
+										}
+									}}>
+										<img src={PlayIcon} className={"view-icon"}/>
+									</div>
+								</div>
+							</div>
+							<div className={"view-content"}>
+								<EditorView ref={editorRef} missionContent={missionContent} closeDetailModal={() => {
+									setIsDetailVisible (false);
+								}} showClearModal={() => {
+									setIsClearVisible (true);
+								}} showFailedModal={(failReason: string) => {
+									setMissionFailReason (failReason);
+									setIsFailedVisible (true);
+								}}/>
+							</div>
 						</div>
 
 						<div id={"visualizer-view"}>
-							<div>ビジュアライザ</div>
-							<canvas id={"variable-canvas"}/>
+							<div className={"view-label"}>
+								<div className={"view-title"}>
+									<div><img src={VisualizerIcon} className={"view-icon"}/></div>
+									<div>ビジュアライザ</div>
+								</div>
+								<div/>
+							</div>
+							<div className={"view-content"}>
+								<canvas id={"variable-canvas"}/>
+							</div>
 						</div>
 					</div>
 
 					<div id={"lower-panel"}>
 						<div id={"thread-view"}>
-							<div>スレッドビュー</div>
-							<div id={"threads-container"}>
+							<div className={"view-label"}>
+								<div className={"view-title"}>
+									<div><img src={ThreadIcon} className={"view-icon"}/></div>
+									<div>スレッドビュー</div>
+								</div>
+								<div/>
+							</div>
+							<div className={"view-content"}>
 								{
 									threadInfos.map ((threadInfo, index) => {
 										return <ThreadView ref={item => threadRefs.push (item)} key={threadInfo.name}
@@ -223,8 +292,23 @@ const Playground: React.FC<{ missionID: string }> = (props) => {
 
 				<div id={"right-panel"}>
 					<div id={"console-view"}>
-						<div>コンソール</div>
-						<ConsoleView ref={consoleRef}/>
+						<div className={"view-label"}>
+							<div className={"view-title"}>
+								<div><img src={ConsoleIcon} className={"view-icon"}/></div>
+								<div>コンソール</div>
+							</div>
+							<div className={"view-title"}>
+								<div className={"icon-button"} onClick={() => {
+									// コンソール削除
+									mission.clearConsole ();
+								}}>
+									<img src={BinIcon} className={"view-icon"}/>
+								</div>
+							</div>
+						</div>
+						<div className={"view-content"}>
+							<ConsoleView ref={consoleRef}/>
+						</div>
 					</div>
 				</div>
 
@@ -517,7 +601,7 @@ class EditorView extends React.Component<{ missionContent: MissionContent, close
 	}
 
 	render () {
-		return <div id="blocklyDiv" style={{width: "100%", height: "90%"}}/>;
+		return <div id="blocklyDiv" style={{width: "100%", height: "100%"}}/>;
 	}
 }
 

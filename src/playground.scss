@@ -1,5 +1,9 @@
 @import "_variables";
 
+body {
+    background-color: $body-background-color;
+}
+
 #mission-detail-bar {
     width: 100%;
     height: $mission-detail-bar-height;
@@ -52,7 +56,16 @@
                 padding: 0.5rem;
                 background-color: $view-background-color;
                 border: 1px solid $view-border-color;
+                border-radius: 8px;
                 box-sizing: border-box;
+
+                #speed-slider {
+                    width: 10rem;
+                    display: flex;
+                    align-items: center;
+                    margin: 0 1rem;
+                    font-weight: normal;
+                }
             }
 
             #visualizer-view {
@@ -62,11 +75,12 @@
                 padding: 0.5rem;
                 background-color: $view-background-color;
                 border: 1px solid $view-border-color;
+                border-radius: 8px;
                 box-sizing: border-box;
 
                 #variable-canvas {
                     width: 100%;
-                    height: 90%;
+                    height: 100%;
                 }
             }
         }
@@ -82,6 +96,7 @@
                 padding: 0.5rem;
                 background-color: $view-background-color;
                 border: 1px solid $view-border-color;
+                border-radius: 8px;
                 box-sizing: border-box;
             }
         }
@@ -98,7 +113,47 @@
             box-sizing: border-box;
             background-color: $view-background-color;
             border: 1px solid $view-border-color;
+            border-radius: 8px;
         }
+    }
+
+    $view-title-height: 2rem;
+
+    .view-label {
+        width: 100%;
+        height: $view-title-height;
+        border-bottom: 1px solid $view-border-color;
+        font-weight: bold;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .view-title {
+        display: flex;
+        align-items: center;
+    }
+
+    .view-icon {
+        height: 1.5rem;
+        margin: 0 0.2rem;
+    }
+
+    .view-content {
+        width: 100%;
+        height: calc(100% - #{$view-title-height});
+    }
+
+    .icon-button {
+        border-radius: 4px;
+    }
+
+    .icon-button:hover {
+        background-color: $icon-button-hover-color;
+    }
+
+    .icon-button:active {
+        background-color: $icon-button-click-color;
     }
 }
 
