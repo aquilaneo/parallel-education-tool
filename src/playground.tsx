@@ -170,7 +170,7 @@ const Playground: React.FC<{ missionID: string }> = (props) => {
 				</div>
 
 				{
-					missionContent.score.isClear() && nextMission ?
+					missionContent.score.isClear () && nextMission ?
 						<Link to={`/missions/${nextMission.chapterNameURL}/${nextMission.missionID}`}
 							  id={"header-right"}>
 							<div>次のミッションへ</div>
@@ -294,12 +294,12 @@ const Playground: React.FC<{ missionID: string }> = (props) => {
 								</div>
 								<div/>
 							</div>
-							<div className={"view-content"}>
+							<div className={"view-content"} id={"threads-container"}>
 								{
 									threadInfos.map ((threadInfo, index) => {
 										return <ThreadView ref={item => threadRefs.push (item)} key={threadInfo.name}
 														   threadNames={threadInfo.name} threadCount={threadCount}
-														   blocks={threadInfo.blocksXml}
+														   threadIndex={index} blocks={threadInfo.blocksXml}
 														   onDidMount={(workspace) => {
 															   if (editorRef.current && editorRef.current.userProgram) {
 																   editorRef.current.userProgram.setWorkspaceToThread (index, workspace);
@@ -628,8 +628,9 @@ class EditorView extends React.Component<{ missionContent: MissionContent, close
 	}
 }
 
-class ThreadView extends React.Component<{ threadNames: string, threadCount: number, blocks: string, onDidMount: (workspace: Blockly.Workspace) => void }, { workspace: WorkspaceSvg }> {
+class ThreadView extends React.Component<{ threadNames: string, threadIndex: number, threadCount: number, blocks: string, onDidMount: (workspace: Blockly.Workspace) => void }, { workspace: WorkspaceSvg }> {
 	workspace: WorkspaceSvg | null = null;
+	threadColors = ["rgb(234, 57, 25)", "rgb(36, 234, 25)", "rgb(25, 36, 234)", "rgb(237, 185, 24)"];
 
 	componentDidMount () {
 		this.workspace = Blockly.inject (`thread${this.props.threadNames}`, {
@@ -654,9 +655,13 @@ class ThreadView extends React.Component<{ threadNames: string, threadCount: num
 		const divWidth = `${100 / this.props.threadCount}%`;
 		return (
 			<div style={{width: divWidth}}>
-				<div>{this.props.threadNames}</div>
 				<div id={`thread${this.props.threadNames}`}
 					 style={{width: "100%", height: "calc(100% - 24px)"}}/>
+				<div className={"thread-name-container"}>
+					<div className={"thread-name-icon"}
+						 style={{backgroundColor: this.threadColors[this.props.threadIndex]}}/>
+					<div>{this.props.threadNames}</div>
+				</div>
 			</div>
 		);
 	}

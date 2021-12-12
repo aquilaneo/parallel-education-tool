@@ -353,13 +353,7 @@ export class VariableCanvas {
 	}
 
 	decideAccessMark (color: string) {
-		switch (color) {
-			case "rgb(0, 255, 0)":
-			case "rgb(255, 255, 0)":
-				return 1; // Black
-			default:
-				return 0; // White
-		}
+		return color === "rgb(36, 234, 25)" || color === "rgb(237, 185, 24)" ? 1 : 0;
 	}
 
 	resize () {

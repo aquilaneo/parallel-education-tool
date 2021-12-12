@@ -190,7 +190,7 @@ export class UserProgram {
 		}
 
 		// 各スレッドの色
-		const threadColors = ["rgb(255, 0, 0)", "rgb(0, 255, 0)", "rgb(0, 0, 255)", "rgb(255, 255, 0)"];
+		const threadColors = ["rgb(234, 57, 25)", "rgb(36, 234, 25)", "rgb(25, 36, 234)", "rgb(237, 185, 24)"];
 		const thread = new Thread (routineName, threadColors[this.threads.length], threadID, null, this, functionStatementElement, argument1, argument2, argument3);
 		const functionInstance = CommandBlockBehaviors.FunctionDefinitionBlock.constructBlock (functionStatementElement, null, this, thread)[0];
 		thread.setDefinitionBlock (functionInstance);

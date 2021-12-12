@@ -16,7 +16,7 @@ body {
 
     #mission-title {
         padding: 0 1rem;
-        width: 15rem;
+        width: 18rem;
     }
 
     #mission-goal {
@@ -31,7 +31,7 @@ body {
 
     #spacer {
         padding: 0 1rem;
-        width: 15rem;
+        width: 18rem;
     }
 }
 
@@ -98,6 +98,22 @@ body {
                 border: 1px solid $view-border-color;
                 border-radius: 8px;
                 box-sizing: border-box;
+
+                #threads-container {
+                    display: flex;
+                }
+
+                .thread-name-container {
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                }
+
+                .thread-name-icon {
+                    width: 1rem;
+                    height: 1rem;
+                    margin: 0.5rem;
+                }
             }
         }
     }
