@@ -703,7 +703,7 @@ class ConsoleView extends React.Component<{}, { outputs: { text: string, type: C
 		});
 
 		return (
-			<div>
+			<div id={"console-container"}>
 				<ul id={"console"}>{outputs}</ul>
 			</div>
 		);

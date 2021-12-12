@@ -114,6 +114,29 @@ body {
             background-color: $view-background-color;
             border: 1px solid $view-border-color;
             border-radius: 8px;
+
+            #console-container {
+                height: 100%;
+                overflow: auto;
+            }
+
+            #console {
+                padding: 0.2rem 0;
+                margin: 0;
+            }
+
+            .console-log {
+                color: black;
+                padding: 0 0.6rem;
+                list-style: none;
+            }
+
+            .console-error {
+                color: red;
+                background-color: rgb(255, 240, 240);
+                padding: 0 0.6rem;
+                list-style: none;
+            }
         }
     }
 
