@@ -113,6 +113,7 @@ const Playground: React.FC<{ missionID: string }> = (props) => {
 	const isGlobalDataExists = Object.keys (missionContent.globalVariables.variables).length > 0 ||
 		Object.keys (missionContent.oneDimensionalArrays.arrays).length > 0 ||
 		Object.keys (missionContent.twoDimensionalArrays.arrays).length > 0;
+	const isMutexExists = false;
 	const isThreadsExists = threadCount > 0;
 
 	return (
@@ -285,9 +286,30 @@ const Playground: React.FC<{ missionID: string }> = (props) => {
 								<div/>
 							</div>
 							<div className={"view-content"}>
-								<canvas id={"variable-canvas"} style={{display: isGlobalDataExists ? "block" : "none"}}/>
-								<div className={"light-color-text"} style={{display: isGlobalDataExists ? "none" : "flex"}}>
-									<div>グローバルデータはありません</div>
+								<div id={"visualizer-view-content-container"}>
+									<div id={"global-data-view"}>
+										<canvas id={"variable-canvas"}
+												style={{display: isGlobalDataExists ? "block" : "none"}}/>
+										<div className={"light-color-text"}
+											 style={{display: isGlobalDataExists ? "none" : "flex"}}>
+											<div>グローバルデータはありません</div>
+										</div>
+									</div>
+									<div id={"mutex-view"}>
+										<div style={{display: isMutexExists ? "block" : "none"}}></div>
+										<div className={"light-color-text"}
+											 style={{display: isMutexExists ? "none" : "flex"}}>
+											<div>ミューテックス<br/>はありません</div>
+										</div>
+									</div>
+								</div>
+								<div id={"visualizer-title"}>
+									<div id={"global-data-title"}>
+										グローバルデータ
+									</div>
+									<div id={"mutex-title"}>
+										ミューテックス
+									</div>
 								</div>
 							</div>
 						</div>
@@ -316,7 +338,8 @@ const Playground: React.FC<{ missionID: string }> = (props) => {
 										/>
 									})
 								}
-								<div className={"light-color-text"} style={{display: isThreadsExists ? "none" : "flex"}}>
+								<div className={"light-color-text"}
+									 style={{display: isThreadsExists ? "none" : "flex"}}>
 									<div>スレッドはありません</div>
 								</div>
 							</div>

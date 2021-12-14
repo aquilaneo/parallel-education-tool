@@ -40,14 +40,17 @@ body {
     height: calc(100vh - (#{$header-height} + #{$mission-detail-bar-height}));
     display: flex;
 
+    $console-view-width: 20%;
+    $thread-view-height: 40%;
+
     #center-panel {
-        width: 80%;
+        width: calc(100% - #{$console-view-width});
         height: 100%;
 
         #upper-panel {
             display: flex;
             width: 100%;
-            height: 60%;
+            height: calc(100% - #{$thread-view-height});
 
             #program-view {
                 width: calc(100% - 1.5rem);
@@ -78,16 +81,53 @@ body {
                 border-radius: 8px;
                 box-sizing: border-box;
 
-                #variable-canvas {
+                $global-data-width: 70%;
+                $mutex-width: calc(100% - #{$global-data-width});
+                $visualizer-view-title-height: 1.2rem;
+
+                #visualizer-view-content-container {
+                    display: flex;
                     width: 100%;
-                    height: 100%;
+                    height: calc(100% - #{$visualizer-view-title-height});
+
+                    #global-data-view {
+                        width: $global-data-width;
+                        border-right: 1px solid $view-border-color;
+
+                        #variable-canvas {
+                            width: 100%;
+                            height: 100%;
+                        }
+                    }
+
+                    #mutex-view {
+                        width: $mutex-width;
+                    }
+                }
+
+                #visualizer-title {
+                    width: 100%;
+                    height: $visualizer-view-title-height;
+                    border-top: 1px solid $view-border-color;
+                    display: flex;
+                    font-size: 14px;
+
+                    #global-data-title {
+                        width: $global-data-width;
+                        text-align: center;
+                    }
+
+                    #mutex-title {
+                        width: $mutex-width;
+                        text-align: center;
+                    }
                 }
             }
         }
 
         #lower-panel {
             width: calc(100% - 1.5rem);
-            height: calc(40% - 1.5rem);
+            height: calc(#{$thread-view-height} - 1.5rem);
             margin: 0.5rem 0.5rem 1rem 1rem;
 
             #thread-view {
@@ -119,7 +159,7 @@ body {
     }
 
     #right-panel {
-        width: 40%;
+        width: 20%;
 
         #console-view {
             width: calc(100% - 1.5rem);
@@ -187,6 +227,7 @@ body {
             height: 100%;
             justify-content: center;
             align-items: center;
+            text-align: center;
             color: $view-light-color;
             font-size: 20px;
         }
