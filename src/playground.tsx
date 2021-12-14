@@ -110,6 +110,11 @@ const Playground: React.FC<{ missionID: string }> = (props) => {
 		window.addEventListener ("resize", onCenterPanelResized);
 	});
 
+	const isGlobalDataExists = Object.keys (missionContent.globalVariables.variables).length > 0 ||
+		Object.keys (missionContent.oneDimensionalArrays.arrays).length > 0 ||
+		Object.keys (missionContent.twoDimensionalArrays.arrays).length > 0;
+	const isThreadsExists = threadCount > 0;
+
 	return (
 		<div style={{width: "100vw", height: "100vh"}}>
 			{/*<div id={"top-menu"}>*/}
@@ -280,7 +285,10 @@ const Playground: React.FC<{ missionID: string }> = (props) => {
 								<div/>
 							</div>
 							<div className={"view-content"}>
-								<canvas id={"variable-canvas"}/>
+								<canvas id={"variable-canvas"} style={{display: isGlobalDataExists ? "block" : "none"}}/>
+								<div className={"light-color-text"} style={{display: isGlobalDataExists ? "none" : "flex"}}>
+									<div>グローバルデータはありません</div>
+								</div>
 							</div>
 						</div>
 					</div>
@@ -308,6 +316,9 @@ const Playground: React.FC<{ missionID: string }> = (props) => {
 										/>
 									})
 								}
+								<div className={"light-color-text"} style={{display: isThreadsExists ? "none" : "flex"}}>
+									<div>スレッドはありません</div>
+								</div>
 							</div>
 						</div>
 					</div>
