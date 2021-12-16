@@ -59,6 +59,7 @@
 
             color: $header-main-color;
             text-decoration: none;
+            cursor: default;
         }
 
         .header-mission-list-item:hover {
@@ -92,6 +93,7 @@
         color: $emphasis-color;
         background-color: white;
         text-decoration: none;
+        cursor: default;
     }
 
     #header-right:hover {

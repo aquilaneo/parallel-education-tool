@@ -197,9 +197,11 @@ const Playground: React.FC<{ missionID: string }> = (props) => {
 				<div id={"mission-goal"}>
 					<div><img src={FlagIcon} className={"icon"}/></div>
 					<div>{missionContent.goal}</div>
-					<div><img src={InfoIcon} className={"icon"}/></div>
+					<div><img src={InfoIcon} className={"icon info-icon"} onClick={() => {
+						setIsDetailVisible (!isDetailVisible);
+					}}/></div>
 				</div>
-				<div id={"spacer"}></div>
+				<div id={"spacer"}/>
 			</div>
 
 			<PlaygroundModals.MissionDetailModal isVisible={isDetailVisible} setIsVisible={setIsDetailVisible}

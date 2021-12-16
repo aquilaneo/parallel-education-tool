@@ -2,6 +2,8 @@
 
 body {
     background-color: $body-background-color;
+    cursor: default;
+    user-select: none;
 }
 
 #mission-detail-bar {
@@ -26,6 +28,18 @@ body {
         .icon {
             height: 1.4rem;
             margin: 0 0.2rem;
+        }
+
+        .info-icon {
+            border-radius: 4px;
+        }
+
+        .info-icon:hover {
+            background-color: $panel-button-hover-color;
+        }
+
+        .info-icon:active {
+            background-color: $panel-button-click-color;
         }
     }
 

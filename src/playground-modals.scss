@@ -1,13 +1,113 @@
+@import "_variables";
+
 .modal-panel {
     position: absolute;
-    background-color: white;
-    border: solid thin black;
+    background-color: $view-background-color;
+    border: 1px solid $view-border-color;
+    border-radius: 8px;
     left: 50%;
-    transform: translate(-50%, 0);
-    padding: 0.2rem 1rem;
+    transform: translate(-50%, 50%);
 
     .center {
         text-align: center;
+    }
+}
+
+.modal-header {
+    background-color: $header-background-color;
+    color: $header-main-color;
+    border-radius: 8px 8px 0 0;
+    padding: 1.2rem;
+    text-align: center;
+
+    .modal-header-chapter-name {
+        font-size: 16px;
+        margin-bottom: 0.5rem;
+    }
+
+    .modal-header-title {
+        font-size: 20px;
+        font-weight: bold;
+    }
+}
+
+.modal-content {
+    margin: 0.4rem 1rem;
+
+    .modal-item {
+        padding: 0.6rem 0;
+
+        .modal-subtitle {
+            margin: 0.5rem 0;
+            font-weight: bold;
+            text-align: center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+    }
+
+    .modal-clear-text {
+        color: $emphasis-color;
+        text-align: center;
+        font-size: 24px;
+        font-weight: bold;
+    }
+
+    .modal-failed-text {
+        color: black;
+        text-align: center;
+        font-size: 24px;
+        font-weight: bold;
+    }
+
+    .modal-icon {
+        height: 1.4rem;
+        margin: 0 0.2rem;
+    }
+
+    .modal-buttons {
+        display: flex;
+        justify-content: space-around;
+    }
+
+    .modal-button {
+        padding: 0.2rem 0.6rem;
+        border-radius: 4px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        cursor: default;
+    }
+
+    .modal-button:hover {
+        background-color: $icon-button-hover-color;
+    }
+
+    .modal-button:active {
+        background-color: $icon-button-click-color;
+    }
+
+    .modal-button-link {
+        color: black;
+        text-decoration: none;
+    }
+
+    .modal-button-text {
+        height: 1.7rem;
+    }
+
+    .modal-button-spacer {
+        width: 5rem;
+    }
+
+    #next-mission-button {
+        font-weight: bold;
+    }
+
+    .score-row {
+        display: flex;
+        justify-content: space-around;
     }
 }
 
@@ -17,11 +117,6 @@
 
 #mission-clear {
     z-index: 100;
-
-    .score-row {
-        display: flex;
-        justify-content: space-between;
-    }
 }
 
 #mission-failed {
