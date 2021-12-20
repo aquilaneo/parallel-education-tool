@@ -54,7 +54,7 @@ export const MissionClearModal: React.FC<{ isVisible: boolean, close: () => void
 	const chapter = props.nextMission ? props.nextMission.chapterNameURL : "";
 	const missionID = props.nextMission ? props.nextMission.missionID : "";
 	return (
-		<div className={"modal-panel"} style={{display: props.isVisible ? "block" : "none"}}>
+		<div className={"modal-panel"} id={"mission-clear"} style={{display: props.isVisible ? "block" : "none"}}>
 			<div className={"modal-header"}>
 				<div className={"modal-header-chapter-name"}>{props.missionContent.chapterName}</div>
 				<div className={"modal-header-title"}>{props.missionContent.missionTitle}</div>
@@ -109,7 +109,7 @@ export const MissionClearModal: React.FC<{ isVisible: boolean, close: () => void
 // ミッション失敗モーダル
 export const MissionFailedModal: React.FC<{ isVisible: boolean, close: () => void, missionContent: MissionContent, failReason: string }> = (props) => {
 	return (
-		<div className={"modal-panel"} style={{display: props.isVisible ? "block" : "none"}}>
+		<div className={"modal-panel"} id={"mission-failed"} style={{display: props.isVisible ? "block" : "none"}}>
 			<div className={"modal-header"}>
 				<div className={"modal-header-chapter-name"}>{props.missionContent.chapterName}</div>
 				<div className={"modal-header-title"}>{props.missionContent.missionTitle}</div>
