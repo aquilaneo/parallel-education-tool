@@ -1,5 +1,13 @@
 @import "_variables";
 
+.modal-background {
+    width: 100%;
+    height: calc(100% - #{$header-height + $mission-detail-bar-height});
+    background-color: rgba(0, 0, 0, 0.5);
+    position: absolute;
+    z-index: 80;
+}
+
 .modal-panel {
     position: absolute;
     background-color: $view-background-color;
