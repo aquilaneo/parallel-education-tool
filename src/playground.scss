@@ -95,8 +95,10 @@ body {
                 border-radius: 8px;
                 box-sizing: border-box;
 
-                $global-data-width: 70%;
-                $mutex-width: calc(100% - #{$global-data-width});
+                $global-data-width: 100%;
+                //$global-data-width: 70%;
+                $mutex-width: 0;
+                //$mutex-width: calc(100% - #{$global-data-width});
                 $visualizer-view-title-height: 1.2rem;
 
                 #visualizer-view-content-container {
@@ -106,7 +108,6 @@ body {
 
                     #global-data-view {
                         width: $global-data-width;
-                        border-right: 1px solid $view-border-color;
 
                         #variable-canvas {
                             width: 100%;
@@ -116,6 +117,8 @@ body {
 
                     #mutex-view {
                         width: $mutex-width;
+                        border-left: 1px solid $view-border-color;
+                        display: none;
                     }
                 }
 
@@ -134,6 +137,7 @@ body {
                     #mutex-title {
                         width: $mutex-width;
                         text-align: center;
+                        display: none;
                     }
                 }
             }
