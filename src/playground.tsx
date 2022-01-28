@@ -44,7 +44,7 @@ const Playground: React.FC<{ missionID: string }> = (props) => {
 	const threadRefs: (ThreadView | null)[] = [];
 	const consoleRef = useRef<ConsoleView> (null);
 
-	// ミッション定義
+	// ステージ定義
 	const foundMission = missionContents.findMissionByID (props.missionID);
 	let missionContent: MissionContent;
 	if (foundMission) {
@@ -179,7 +179,7 @@ const Playground: React.FC<{ missionID: string }> = (props) => {
 					missionContent.score.isClear () && nextMission ?
 						<Link to={`/missions/${nextMission.chapterNameURL}/${nextMission.missionID}`}
 							  id={"header-right"}>
-							<div>次のミッションへ</div>
+							<div>次のステージへ</div>
 							<div><img src={NextIcon}/></div>
 						</Link> :
 						<div id={"header-right"} style={{visibility: "hidden"}}/>
@@ -187,7 +187,7 @@ const Playground: React.FC<{ missionID: string }> = (props) => {
 
 				{/*<Link to={`/missions/${nextMission.chapterNameURL}/${nextMission.missionID}`}*/}
 				{/*	  id={"header-right"} style={{visibility: missionContent.score.isClear () ? "visible" : "hidden"}}>*/}
-				{/*	<div>次のミッションへ</div>*/}
+				{/*	<div>次のステージへ</div>*/}
 				{/*	<div><img src={NextIcon}/></div>*/}
 				{/*</Link>*/}
 			</div>
@@ -623,16 +623,16 @@ class EditorView extends React.Component<{ missionContent: MissionContent, close
 			await this.userProgram.executeUserProgram ();
 			const time = this.userProgram.getCurrentMilliSecond ();
 
-			// ミッションクリア条件判断
+			// ステージクリア条件判断
 			this.props.closeDetailModal ();
 			const missionResult = mission.judge ();
 			if (missionResult.cleared) {
 				// スコア記録
 				mission.missionContent.score.setClear (time, this.workspace ? this.workspace.getAllBlocks (false).length : -1);
 
-				this.props.showClearModal (); // ミッション成功
+				this.props.showClearModal (); // ステージ成功
 			} else {
-				this.props.showFailedModal (missionResult.failReason); // ミッション失敗
+				this.props.showFailedModal (missionResult.failReason); // ステージ失敗
 			}
 		}
 		this.isExecuting = false;

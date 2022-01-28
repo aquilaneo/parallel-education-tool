@@ -11,7 +11,7 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 	return !isNaN (number) && Math.abs (correctValue - number) < Number.EPSILON;
 }
 
-// ミッション1-1
+// ステージ1-1
 {
 	const twoDimensionalArrays = new Mission.TwoDimensionalArrays ();
 	const oneDimensionalArrays = new Mission.OneDimensionalArrays ();
@@ -70,7 +70,7 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 	});
 }
 
-// ミッション1-2
+// ステージ1-2
 {
 	const twoDimensionalArrays = new Mission.TwoDimensionalArrays ();
 	const oneDimensionalArrays = new Mission.OneDimensionalArrays ();
@@ -126,7 +126,7 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 	});
 }
 
-// ミッション1-3
+// ステージ1-3
 {
 	const twoDimensionalArrays = new Mission.TwoDimensionalArrays ();
 	const oneDimensionalArrays = new Mission.OneDimensionalArrays ();
@@ -138,7 +138,7 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 		missionExplanation: <div>
 			<div>ある命令を指定した回数繰り返すには<span className={"keyword"}>繰り返しブロック</span>を使います。</div>
 			<div>繰り返しブロックは「ループ」カテゴリの中にあります。</div>
-			<div>このミッションは使用するブロック数の制限があるため、ただ表示ブロックを50個並べる方法ではクリアできません。</div>
+			<div>このステージは使用するブロック数の制限があるため、ただ表示ブロックを50個並べる方法ではクリアできません。</div>
 		</div>,
 		missionSummary: "同じ操作を何回も繰り返すには「繰り返し(ループ)」を使うと便利です。",
 		missionID: "mission1-03",
@@ -183,7 +183,7 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 	});
 }
 
-// ミッション1-4
+// ステージ1-4
 {
 	const twoDimensionalArrays = new Mission.TwoDimensionalArrays ();
 	const oneDimensionalArrays = new Mission.OneDimensionalArrays ();
@@ -237,7 +237,7 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 	});
 }
 
-// ミッション1-5
+// ステージ1-5
 {
 	const twoDimensionalArrays = new Mission.TwoDimensionalArrays ();
 	const oneDimensionalArrays = new Mission.OneDimensionalArrays ();
@@ -289,7 +289,7 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 	});
 }
 
-// ミッション1-6
+// ステージ1-6
 {
 	const twoDimensionalArrays = new Mission.TwoDimensionalArrays ();
 	const oneDimensionalArrays = new Mission.OneDimensionalArrays ();
@@ -340,7 +340,7 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 	});
 }
 
-// ミッション1-7
+// ステージ1-7
 {
 	const twoDimensionalArrays = new Mission.TwoDimensionalArrays ();
 	const oneDimensionalArrays = new Mission.OneDimensionalArrays ();
@@ -392,7 +392,7 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 	});
 }
 
-// ミッション1-8
+// ステージ1-8
 {
 	const twoDimensionalArrays = new Mission.TwoDimensionalArrays ();
 	const oneDimensionalArrays = new Mission.OneDimensionalArrays ();
@@ -452,7 +452,7 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 	});
 }
 
-// ミッション1-9
+// ステージ1-9
 {
 	const twoDimensionalArrays = new Mission.TwoDimensionalArrays ();
 	const oneDimensionalArrays = new Mission.OneDimensionalArrays ();
@@ -513,7 +513,7 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 	});
 }
 
-// ミッション1-10
+// ステージ1-10
 {
 	const twoDimensionalArrays = new Mission.TwoDimensionalArrays ();
 	const oneDimensionalArrays = new Mission.OneDimensionalArrays ();
@@ -561,7 +561,7 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 	});
 }
 
-// ミッション1-11
+// ステージ1-11
 {
 	const twoDimensionalArrays = new Mission.TwoDimensionalArrays ();
 	const oneDimensionalArrays = new Mission.OneDimensionalArrays ();
@@ -623,7 +623,7 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 	});
 }
 
-// ミッション1-12
+// ステージ1-12
 {
 	const twoDimensionalArrays = new Mission.TwoDimensionalArrays ();
 	const oneDimensionalArrays = new Mission.OneDimensionalArrays ();
@@ -673,7 +673,7 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 	});
 }
 
-// ミッション1-13
+// ステージ1-13
 {
 	const twoDimensionalArrays = new Mission.TwoDimensionalArrays ();
 	const oneDimensionalArrays = new Mission.OneDimensionalArrays ();
@@ -725,7 +725,7 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 	});
 }
 
-// ミッション1-14
+// ステージ1-14
 {
 	const twoDimensionalArrays = new Mission.TwoDimensionalArrays ();
 	const oneDimensionalArrays = new Mission.OneDimensionalArrays ();
@@ -788,7 +788,7 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 	});
 }
 
-// ミッション1-15
+// ステージ1-15
 {
 	const twoDimensionalArrays = new Mission.TwoDimensionalArrays ();
 	const oneDimensionalArrays = new Mission.OneDimensionalArrays ();
@@ -855,7 +855,7 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 	});
 }
 
-// ミッション2-1
+// ステージ2-1
 {
 	const twoDimensionalArrays = new Mission.TwoDimensionalArrays ();
 	const oneDimensionalArrays = new Mission.OneDimensionalArrays ();
@@ -915,7 +915,7 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 	});
 }
 
-// ミッション2-2
+// ステージ2-2
 {
 	const twoDimensionalArrays = new Mission.TwoDimensionalArrays ();
 	const oneDimensionalArrays = new Mission.OneDimensionalArrays ();
@@ -958,7 +958,7 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 	});
 }
 
-// ミッション2-3
+// ステージ2-3
 {
 	const twoDimensionalArrays = new Mission.TwoDimensionalArrays ();
 	const oneDimensionalArrays = new Mission.OneDimensionalArrays ();
@@ -1018,7 +1018,7 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 	});
 }
 
-// ミッション2-4
+// ステージ2-4
 {
 	const twoDimensionalArrays = new Mission.TwoDimensionalArrays ();
 	const oneDimensionalArrays = new Mission.OneDimensionalArrays ();
@@ -1070,7 +1070,7 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 	});
 }
 
-// ミッション2-5
+// ステージ2-5
 {
 	const twoDimensionalArrays = new Mission.TwoDimensionalArrays ();
 	const oneDimensionalArrays = new Mission.OneDimensionalArrays ();
@@ -1081,7 +1081,7 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 		chapterNameURL: "chapter2",
 		missionTitle: "5.逐次処理と並列処理の比較1",
 		missionExplanation: <div>
-			<div>今回と次回のミッションでは並列処理を使わない逐次的なプログラムと並列プログラムでどのような処理速度の差が出るか比較します。</div>
+			<div>今回と次回のステージでは並列処理を使わない逐次的なプログラムと並列プログラムでどのような処理速度の差が出るか比較します。</div>
 			<div>今回は並列処理は使用せず、通常の逐次プログラムで2次元配列を処理し、最後にその処理にかかった時間をストップウォッチで測り表示してください。</div>
 		</div>,
 		missionSummary: "通常の逐次処理と並列処理のプログラムで処理時間を比較します。まずは逐次処理を作ってみます。",
@@ -1133,7 +1133,7 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 	});
 }
 
-// ミッション2-6
+// ステージ2-6
 {
 	const twoDimensionalArrays = new Mission.TwoDimensionalArrays ();
 	const oneDimensionalArrays = new Mission.OneDimensionalArrays ();
@@ -1146,7 +1146,7 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 		missionExplanation: <div>
 			<div>続いて今回は4スレッドの並列プログラムを使用して2次元配列を処理してください。</div>
 			<div>配列の1行目を1スレッド目、2行目を2スレッド目...というように仕事を割り振り、処理させると良いでしょう。</div>
-			<div>前回と同じように最後に処理にかかった時間をコンソールに表示し、前回のミッションでの経過時間と比較してみてください。</div>
+			<div>前回と同じように最後に処理にかかった時間をコンソールに表示し、前回のステージでの経過時間と比較してみてください。</div>
 		</div>,
 		missionSummary: "通常の逐次処理と並列処理のプログラムで処理時間を比較します。並列処理で同じ動きを作ってみます。",
 		missionID: "mission2-06",
@@ -1197,7 +1197,7 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 	});
 }
 
-// ミッション2-7
+// ステージ2-7
 {
 	const twoDimensionalArrays = new Mission.TwoDimensionalArrays ();
 	const oneDimensionalArrays = new Mission.OneDimensionalArrays ();
@@ -1218,7 +1218,7 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 		chapterNameURL: "chapter2",
 		missionTitle: "7.仕事の割り振り",
 		missionExplanation: <div>
-			<div>今回のミッションでは8行16列という大きいサイズの配列の処理に挑戦します。</div>
+			<div>今回のステージでは8行16列という大きいサイズの配列の処理に挑戦します。</div>
 			<div>最大4スレッドまでしか使えない中、各スレッドにどのように仕事を割り振れば良いでしょうか。</div>
 		</div>,
 		missionSummary: "大量のデータを並列処理するとき、各スレッドにどのように仕事を割り振れば良いでしょうか。",
@@ -1270,7 +1270,7 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 	});
 }
 
-// ミッション2-8
+// ステージ2-8
 {
 	const twoDimensionalArrays = new Mission.TwoDimensionalArrays ();
 	const oneDimensionalArrays = new Mission.OneDimensionalArrays ();
@@ -1330,7 +1330,7 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 	});
 }
 
-// ミッション3-1
+// ステージ3-1
 {
 	const twoDimensionalArrays = new Mission.TwoDimensionalArrays ();
 	const oneDimensionalArrays = new Mission.OneDimensionalArrays ();
@@ -1386,7 +1386,7 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 	});
 }
 
-// ミッション3-4
+// ステージ3-4
 {
 	const twoDimensionalArrays = new Mission.TwoDimensionalArrays ();
 	const oneDimensionalArrays = new Mission.OneDimensionalArrays ();
@@ -1433,7 +1433,7 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 	});
 }
 
-// ミッション3-5
+// ステージ3-5
 {
 	const twoDimensionalArrays = new Mission.TwoDimensionalArrays ();
 	const oneDimensionalArrays = new Mission.OneDimensionalArrays ();
@@ -1445,7 +1445,7 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 		chapterNameURL: "chapter3",
 		missionTitle: "5.排他制御2",
 		missionExplanation: <div>
-			<div>前回のミッションでは変数「Sum」への加算処理が各スレッドで衝突してしまい、誤った結果が計算されてしまいました。</div>
+			<div>前回のステージでは変数「Sum」への加算処理が各スレッドで衝突してしまい、誤った結果が計算されてしまいました。</div>
 			<div>ミューテックスを使うと複数スレッドから安全にグローバル領域に書き込みを行うことができます。</div>
 		</div>,
 		missionSummary: "安全に複数スレッドからグローバル領域に書き込みを行うにはどうしたら良いでしょうか。",
@@ -1489,7 +1489,7 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 	});
 }
 
-// ミッション3-6
+// ステージ3-6
 {
 	const twoDimensionalArrays = new Mission.TwoDimensionalArrays ();
 	const oneDimensionalArrays = new Mission.OneDimensionalArrays ();
@@ -1502,7 +1502,7 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 		missionTitle: "6.デッドロック1",
 		missionExplanation: <div>
 			<div>ミューテックスは便利な機能ですが、使い方に注意しないとプログラムがフリーズする原因となります。</div>
-			<div>このミッションではあらかじめ用意されたプログラムを実行し、その現象を確認してみます。プログラムは編集不可になっています。</div>
+			<div>このステージではあらかじめ用意されたプログラムを実行し、その現象を確認してみます。プログラムは編集不可になっています。</div>
 		</div>,
 		missionSummary: "ミューテックスは便利な機能ですが、使い方に注意しないとプログラムがフリーズする原因となります。",
 		missionID: "mission3-06",
@@ -1535,7 +1535,7 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 	});
 }
 
-// ミッション3-7
+// ステージ3-7
 {
 	const twoDimensionalArrays = new Mission.TwoDimensionalArrays ();
 	const oneDimensionalArrays = new Mission.OneDimensionalArrays ();
@@ -1590,7 +1590,7 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 	});
 }
 
-// サンプルミッション
+// サンプルステージ
 {
 	const twoDimensionalArrays = new Mission.TwoDimensionalArrays ();
 	twoDimensionalArrays.addConstArray ("Array1", [
@@ -1608,7 +1608,7 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 		chapterNameURL: "sample",
 		missionTitle: "グローバル配列",
 		missionExplanation: <div>グローバル配列について学びます。</div>,
-		missionSummary: "サンプルミッションです。",
+		missionSummary: "サンプルステージです。",
 		missionID: "sample",
 		score: new Mission.MissionScore (),
 		defaultProgram: "",

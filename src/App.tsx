@@ -57,7 +57,7 @@ function App () {
 			component: <Top/>
 		}
 	];
-	// 既存ミッションのRoutes
+	// 既存ステージのRoutes
 	const missionRoutes = [];
 	for (const chapter of missionContents.missionContents) {
 		for (const missionContent of chapter.contents) {

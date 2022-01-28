@@ -11,7 +11,7 @@ import ScoreIcon from "./img/Score.svg";
 import NextIcon from "./img/Next.svg";
 import BackIcon from "./img/Back.svg";
 
-// ミッション説明モーダル
+// ステージ説明モーダル
 export const MissionDetailModal: React.FC<{ isVisible: boolean, setIsVisible: (value: boolean) => void, missionContent: MissionContent }> = (props) => {
 	return (
 		<div className={"modal-background"} style={{display: props.isVisible ? "block" : "none"}}>
@@ -32,7 +32,7 @@ export const MissionDetailModal: React.FC<{ isVisible: boolean, setIsVisible: (v
 					<div className={"modal-item"}>
 						<div className={"modal-subtitle"}>
 							<div><img src={ExplanationIcon} className={"modal-icon"}/></div>
-							<div>ミッション説明</div>
+							<div>ステージ説明</div>
 						</div>
 						<div>{props.missionContent.missionExplanation}</div>
 					</div>
@@ -51,7 +51,7 @@ export const MissionDetailModal: React.FC<{ isVisible: boolean, setIsVisible: (v
 	);
 };
 
-// ミッションクリアモーダル
+// ステージクリアモーダル
 export const MissionClearModal: React.FC<{ isVisible: boolean, close: () => void, missionContent: MissionContent, nextMission: { chapterNameURL: string, missionID: string } | null }> = (props) => {
 	const chapter = props.nextMission ? props.nextMission.chapterNameURL : "";
 	const missionID = props.nextMission ? props.nextMission.missionID : "";
@@ -99,7 +99,7 @@ export const MissionClearModal: React.FC<{ isVisible: boolean, close: () => void
 							  to={`/missions/${chapter}/${missionID}`}>
 							<div className={"modal-button"}>
 								<div><img src={NextIcon} className={"modal-icon"}/></div>
-								<div className={"modal-button-text"} id={"next-mission-button"}>次のミッションへ</div>
+								<div className={"modal-button-text"} id={"next-mission-button"}>次のステージへ</div>
 							</div>
 						</Link>
 						<div style={{display: props.nextMission ? "block" : "none"}} className={"modal-button-spacer"}/>
@@ -110,7 +110,7 @@ export const MissionClearModal: React.FC<{ isVisible: boolean, close: () => void
 	);
 };
 
-// ミッション失敗モーダル
+// ステージ失敗モーダル
 export const MissionFailedModal: React.FC<{ isVisible: boolean, close: () => void, missionContent: MissionContent, failReason: string }> = (props) => {
 	return (
 		<div className={"modal-background"} style={{display: props.isVisible ? "block" : "none"}}>
@@ -142,7 +142,7 @@ export const MissionFailedModal: React.FC<{ isVisible: boolean, close: () => voi
 							<div><img src={BackIcon} className={"modal-icon"}/></div>
 							<div className={"modal-button-text"} onClick={() => {
 								props.close ();
-							}}>ミッションに戻る
+							}}>ステージに戻る
 							</div>
 						</div>
 					</div>
