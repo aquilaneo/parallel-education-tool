@@ -11,6 +11,8 @@ import "./App.scss";
 import "./common.scss";
 
 function Top () {
+	console.log("Start");
+
 	const chapters = missionContents.missionContents.map ((chapter) => {
 		const missionLinks = chapter.contents.map ((missionContent) => {
 			return (
@@ -70,7 +72,7 @@ function App () {
 	const routes = commonRoutes.concat (missionRoutes);
 
 	return (
-		<BrowserRouter>
+		<BrowserRouter basename={process.env.PUBLIC_URL}>
 			{routes.map ((route) => {
 				return <Route key={route.url} path={route.url} exact render={() => route.component}/>
 			})}
