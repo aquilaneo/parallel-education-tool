@@ -1287,7 +1287,7 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 	missionContents.addMissionContent ({
 		chapterName: "2章 並列プログラミング入門",
 		chapterNameURL: "chapter2",
-		missionTitle: "8.行列計算1",
+		missionTitle: "8.行列計算",
 		missionExplanation: <div>
 			並列処理を使用して行列計算を行ってみましょう。
 		</div>,
@@ -1339,7 +1339,7 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 	missionContents.addMissionContent ({
 		chapterName: "3章 並列プログラミング基礎",
 		chapterNameURL: "chapter3",
-		missionTitle: "1.並列化できないアルゴリズム",
+		missionTitle: "1.並列化困難なアルゴリズム",
 		missionExplanation: <div>
 			<div>世の中には並列化が難しいアルゴリズムも存在します。</div>
 			<div>今回使用するフィボナッチ数列は有名な例です。フィボナッチ数列は、</div>
@@ -1386,7 +1386,7 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 	});
 }
 
-// ステージ3-4
+// ステージ3-2
 {
 	const twoDimensionalArrays = new Mission.TwoDimensionalArrays ();
 	const oneDimensionalArrays = new Mission.OneDimensionalArrays ();
@@ -1396,10 +1396,10 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 	missionContents.addMissionContent ({
 		chapterName: "3章 並列プログラミング基礎",
 		chapterNameURL: "chapter3",
-		missionTitle: "4.排他制御1",
+		missionTitle: "2.排他制御1",
 		missionExplanation: <div>複数スレッドからグローバル領域の同じ場所に書き込みを行う時には注意が必要です。</div>,
 		missionSummary: "複数スレッドからグローバル領域の同じ場所に書き込みを行う際、逐次プログラミングでは起こらないある現象に注意が必要です。",
-		missionID: "mission3-04",
+		missionID: "mission3-02",
 		score: new Mission.MissionScore (),
 		defaultProgram: "",
 		program: "",
@@ -1433,7 +1433,7 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 	});
 }
 
-// ステージ3-5
+// ステージ3-3
 {
 	const twoDimensionalArrays = new Mission.TwoDimensionalArrays ();
 	const oneDimensionalArrays = new Mission.OneDimensionalArrays ();
@@ -1443,13 +1443,13 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 	missionContents.addMissionContent ({
 		chapterName: "3章 並列プログラミング基礎",
 		chapterNameURL: "chapter3",
-		missionTitle: "5.排他制御2",
+		missionTitle: "3.排他制御2",
 		missionExplanation: <div>
 			<div>前回のステージでは変数「Sum」への加算処理が各スレッドで衝突してしまい、誤った結果が計算されてしまいました。</div>
 			<div>ミューテックスを使うと複数スレッドから安全にグローバル領域に書き込みを行うことができます。</div>
 		</div>,
 		missionSummary: "安全に複数スレッドからグローバル領域に書き込みを行うにはどうしたら良いでしょうか。",
-		missionID: "mission3-05",
+		missionID: "mission3-03",
 		score: new Mission.MissionScore (),
 		defaultProgram: "",
 		program: "",
@@ -1489,7 +1489,7 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 	});
 }
 
-// ステージ3-6
+// ステージ3-4
 {
 	const twoDimensionalArrays = new Mission.TwoDimensionalArrays ();
 	const oneDimensionalArrays = new Mission.OneDimensionalArrays ();
@@ -1499,13 +1499,13 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 	missionContents.addMissionContent ({
 		chapterName: "3章 並列プログラミング基礎",
 		chapterNameURL: "chapter3",
-		missionTitle: "6.デッドロック1",
+		missionTitle: "4.デッドロック1",
 		missionExplanation: <div>
 			<div>ミューテックスは便利な機能ですが、使い方に注意しないとプログラムがフリーズする原因となります。</div>
 			<div>このステージではあらかじめ用意されたプログラムを実行し、その現象を確認してみます。プログラムは編集不可になっています。</div>
 		</div>,
 		missionSummary: "ミューテックスは便利な機能ですが、使い方に注意しないとプログラムがフリーズする原因となります。",
-		missionID: "mission3-06",
+		missionID: "mission3-04",
 		score: new Mission.MissionScore (),
 		defaultProgram: "<xml xmlns=\"https://developers.google.com/blockly/xml\"><block type=\"entry_point\" id=\"5e{JeNdzKRK}Nyg(x2Ul\" x=\"58\" y=\"59\"><statement name=\"routine\"><block type=\"thread_create\" id=\"M-u)d9Kj*Y0/p(xZa|?@\"><field name=\"thread_function_name\">スレッドA</field><value name=\"thread_name\"><shadow type=\"text\" id=\"b3V,_dF.((/@2N[?,}ai\"><field name=\"TEXT\">スレッド1</field></shadow></value><value name=\"argument1\"><shadow type=\"math_number\" id=\"/hk3C)59^~}gn1tdebqQ\"><field name=\"NUM\">0</field></shadow></value><value name=\"argument2\"><shadow type=\"math_number\" id=\"sKJQMZNlyr(WidSgzrxU\"><field name=\"NUM\">0</field></shadow></value><value name=\"argument3\"><shadow type=\"math_number\" id=\"p{{-gLjtOJ.ZmC3m3[+s\"><field name=\"NUM\">0</field></shadow></value><next><block type=\"thread_create\" id=\"]7i*2m~H-f?,G#}EkOM5\"><field name=\"thread_function_name\">スレッドB</field><value name=\"thread_name\"><shadow type=\"text\" id=\"~fgy!ViH%TLLg?TE/][#\"><field name=\"TEXT\">スレッド2</field></shadow></value><value name=\"argument1\"><shadow type=\"math_number\" id=\"mBzH?(v~goBow8|`n90O\"><field name=\"NUM\">0</field></shadow></value><value name=\"argument2\"><shadow type=\"math_number\" id=\"pho}#mIGcCjwW,nmS?:A\"><field name=\"NUM\">0</field></shadow></value><value name=\"argument3\"><shadow type=\"math_number\" id=\"sZ`sj+xw?X7{#f8hz9Md\"><field name=\"NUM\">0</field></shadow></value><next><block type=\"thread_join\" id=\"+ozu|.Uvf2wuBGQrPk/0\"><value name=\"thread_name\"><shadow type=\"text\" id=\"r5c{3j/+plxClP{*0sa*\"><field name=\"TEXT\">スレッド1</field></shadow></value><next><block type=\"thread_join\" id=\"D@`ZWgGn/),/PPZ%Da]z\"><value name=\"thread_name\"><shadow type=\"text\" id=\"?Awa9y@$}Rp/|Kk1{{y$\"><field name=\"TEXT\">スレッド2</field></shadow></value></block></next></block></next></block></next></block></statement></block><block type=\"function_definition\" id=\"uf]-n=qS=[Vr3;LnO^[,\" x=\"60\" y=\"306\"><field name=\"name\">スレッドA</field><statement name=\"routine\"><block type=\"controls_repeat_ext\" id=\"Mupq}=Zy`:XL4yjbHE]-\"><value name=\"TIMES\"><shadow type=\"math_number\" id=\"k7y-97P3^N/(Bhh1g%Dn\"><field name=\"NUM\">10</field></shadow></value><statement name=\"DO\"><block type=\"mutex_lock\" id=\"~LQ3KvQ%HXSr?+(,dncg\"><value name=\"mutex_id\"><shadow type=\"text\" id=\"GIa!2HaLbxqsA{tG%NP2\"><field name=\"TEXT\">Value1</field></shadow></value><next><block type=\"global_variable_write\" id=\"gUnjd.Q_N,N}cQ$4S@5r\"><field name=\"name\">Value1</field><value name=\"value\"><shadow type=\"math_number\" id=\"t#TDnVY9)Wp3:W7DVlh7\"><field name=\"NUM\">0</field></shadow><block type=\"math_arithmetic\" id=\"Z}`!9,U30Ks;KVkW_=r+\"><field name=\"OP\">ADD</field><value name=\"A\"><shadow type=\"math_number\" id=\"OaA0qK:[_vk~a$Zo-J,~\"><field name=\"NUM\">0</field></shadow><block type=\"global_variable_read\" id=\"Q+9Z%(pn5n@8@zQ*O:Y)\"><field name=\"name\">Value1</field></block></value><value name=\"B\"><shadow type=\"math_number\" id=\"0=dbF)3y::1D$AvqYxj{\"><field name=\"NUM\">1</field></shadow></value></block></value><next><block type=\"mutex_lock\" id=\"PfTJ}wsEc$duOCE}.C6P\"><value name=\"mutex_id\"><shadow type=\"text\" id=\"{,RhKFK@WS8vm]-i?D$a\"><field name=\"TEXT\">Value2</field></shadow></value><next><block type=\"global_variable_write\" id=\"*eP0cs;iTrb_E2:cIGeK\"><field name=\"name\">Value2</field><value name=\"value\"><shadow type=\"math_number\"><field name=\"NUM\">0</field></shadow><block type=\"math_arithmetic\" id=\"6RORErS-`-R~IV@aH~CY\"><field name=\"OP\">ADD</field><value name=\"A\"><shadow type=\"math_number\"><field name=\"NUM\">0</field></shadow><block type=\"global_variable_read\" id=\"NaSG4hOaj3kmKHlAMm!h\"><field name=\"name\">Value2</field></block></value><value name=\"B\"><shadow type=\"math_number\" id=\"wY9bHW.;KUY|+Ko=ex4]\"><field name=\"NUM\">1</field></shadow></value></block></value><next><block type=\"mutex_unlock\" id=\"M*5{g$gJBP@$OEjpe.7@\"><value name=\"mutex_id\"><shadow type=\"text\" id=\"y*5}tO=)dU^GQEy6#:AJ\"><field name=\"TEXT\">Value1</field></shadow></value><next><block type=\"mutex_unlock\" id=\"aaGJ8;pJ/dkTp}pyhRGd\"><value name=\"mutex_id\"><shadow type=\"text\" id=\"Kcy!4Q]oo52+mc2^4na3\"><field name=\"TEXT\">Value2</field></shadow></value></block></next></block></next></block></next></block></next></block></next></block></statement></block></statement></block><block type=\"function_definition\" id=\"aUCR?li!A[up^OHB)jOL\" x=\"58\" y=\"718\"><field name=\"name\">スレッドB</field><statement name=\"routine\"><block type=\"controls_repeat_ext\" id=\"$nrcvf$r_xi(|48Gl/_y\"><value name=\"TIMES\"><shadow type=\"math_number\" id=\"[JWavU]@MY#e=/K#$|6R\"><field name=\"NUM\">10</field></shadow></value><statement name=\"DO\"><block type=\"mutex_lock\" id=\"8d79oZE?F#zllNK4MH30\"><value name=\"mutex_id\"><shadow type=\"text\" id=\"`|uv_51`=ok;Dp6D!ch=\"><field name=\"TEXT\">Value2</field></shadow></value><next><block type=\"global_variable_write\" id=\"/gw98b(]sXhl9nwHex[`\"><field name=\"name\">Value2</field><value name=\"value\"><shadow type=\"math_number\"><field name=\"NUM\">0</field></shadow><block type=\"math_arithmetic\" id=\"0?{WuOu@cs[?qy~nNhz{\"><field name=\"OP\">ADD</field><value name=\"A\"><shadow type=\"math_number\"><field name=\"NUM\">0</field></shadow><block type=\"global_variable_read\" id=\"hU-xleuOFO+qD^nd/e0p\"><field name=\"name\">Value2</field></block></value><value name=\"B\"><shadow type=\"math_number\" id=\"*[4+1nr9C/;MWTjw(tBk\"><field name=\"NUM\">1</field></shadow></value></block></value><next><block type=\"mutex_lock\" id=\"gXO.n~jgmhq_d^vz28so\"><value name=\"mutex_id\"><shadow type=\"text\" id=\";wm9.jLUa}KUBX|b$1/H\"><field name=\"TEXT\">Value1</field></shadow></value><next><block type=\"global_variable_write\" id=\"J%;WuZwa}NkolQb,X}Fb\"><field name=\"name\">Value1</field><value name=\"value\"><shadow type=\"math_number\"><field name=\"NUM\">0</field></shadow><block type=\"math_arithmetic\" id=\"5{e|@0aE;+GOwDC.x`~e\"><field name=\"OP\">ADD</field><value name=\"A\"><shadow type=\"math_number\"><field name=\"NUM\">0</field></shadow><block type=\"global_variable_read\" id=\"!*+^F}f(g-thw9(YaiD*\"><field name=\"name\">Value1</field></block></value><value name=\"B\"><shadow type=\"math_number\" id=\"n?9Q/`2#T;SeqAp@9i,9\"><field name=\"NUM\">1</field></shadow></value></block></value><next><block type=\"mutex_unlock\" id=\"Y~.[l(bmK5A{3xQr(qJ9\"><value name=\"mutex_id\"><shadow type=\"text\" id=\"@I#/5v!nB1p-^=;o_gNY\"><field name=\"TEXT\">Value2</field></shadow></value><next><block type=\"mutex_unlock\" id=\"Fz~zI.XOyC-Q}v8Q1jgo\"><value name=\"mutex_id\"><shadow type=\"text\" id=\"/(05zQx#,.Y3^sB7OJoW\"><field name=\"TEXT\">Value1</field></shadow></value></block></next></block></next></block></next></block></next></block></next></block></statement></block></statement></block></xml>",
 		program: "",
@@ -1535,7 +1535,7 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 	});
 }
 
-// ステージ3-7
+// ステージ3-5
 {
 	const twoDimensionalArrays = new Mission.TwoDimensionalArrays ();
 	const oneDimensionalArrays = new Mission.OneDimensionalArrays ();
@@ -1545,7 +1545,7 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 	missionContents.addMissionContent ({
 		chapterName: "3章 並列プログラミング基礎",
 		chapterNameURL: "chapter3",
-		missionTitle: "7.デッドロック2",
+		missionTitle: "5.デッドロック2",
 		missionExplanation: <div>
 			<div>
 				先ほどのような、お互いに相手のスレッドのロック解除を待ってしまいプログラムが先に進まなくなる現象を
@@ -1554,7 +1554,7 @@ function isEqual (consoleOutputs: string, correctValue: number) {
 			<div>このような現象を防止するにはどのようにすれば良いでしょうか。先ほどのプログラムを改造して動作を改善してみましょう。</div>
 		</div>,
 		missionSummary: "デッドロックを防止するにはどのようにすれば良いでしょうか。",
-		missionID: "mission3-07",
+		missionID: "mission3-05",
 		score: new Mission.MissionScore (),
 		defaultProgram: "<xml xmlns=\"https://developers.google.com/blockly/xml\"><block type=\"entry_point\" id=\"5e{JeNdzKRK}Nyg(x2Ul\" x=\"58\" y=\"59\"><statement name=\"routine\"><block type=\"thread_create\" id=\"M-u)d9Kj*Y0/p(xZa|?@\"><field name=\"thread_function_name\">スレッドA</field><value name=\"thread_name\"><shadow type=\"text\" id=\"b3V,_dF.((/@2N[?,}ai\"><field name=\"TEXT\">スレッド1</field></shadow></value><value name=\"argument1\"><shadow type=\"math_number\" id=\"/hk3C)59^~}gn1tdebqQ\"><field name=\"NUM\">0</field></shadow></value><value name=\"argument2\"><shadow type=\"math_number\" id=\"sKJQMZNlyr(WidSgzrxU\"><field name=\"NUM\">0</field></shadow></value><value name=\"argument3\"><shadow type=\"math_number\" id=\"p{{-gLjtOJ.ZmC3m3[+s\"><field name=\"NUM\">0</field></shadow></value><next><block type=\"thread_create\" id=\"]7i*2m~H-f?,G#}EkOM5\"><field name=\"thread_function_name\">スレッドB</field><value name=\"thread_name\"><shadow type=\"text\" id=\"~fgy!ViH%TLLg?TE/][#\"><field name=\"TEXT\">スレッド2</field></shadow></value><value name=\"argument1\"><shadow type=\"math_number\" id=\"mBzH?(v~goBow8|`n90O\"><field name=\"NUM\">0</field></shadow></value><value name=\"argument2\"><shadow type=\"math_number\" id=\"pho}#mIGcCjwW,nmS?:A\"><field name=\"NUM\">0</field></shadow></value><value name=\"argument3\"><shadow type=\"math_number\" id=\"sZ`sj+xw?X7{#f8hz9Md\"><field name=\"NUM\">0</field></shadow></value><next><block type=\"thread_join\" id=\"+ozu|.Uvf2wuBGQrPk/0\"><value name=\"thread_name\"><shadow type=\"text\" id=\"r5c{3j/+plxClP{*0sa*\"><field name=\"TEXT\">スレッド1</field></shadow></value><next><block type=\"thread_join\" id=\"D@`ZWgGn/),/PPZ%Da]z\"><value name=\"thread_name\"><shadow type=\"text\" id=\"?Awa9y@$}Rp/|Kk1{{y$\"><field name=\"TEXT\">スレッド2</field></shadow></value></block></next></block></next></block></next></block></statement></block><block type=\"function_definition\" id=\"uf]-n=qS=[Vr3;LnO^[,\" x=\"60\" y=\"306\"><field name=\"name\">スレッドA</field><statement name=\"routine\"><block type=\"controls_repeat_ext\" id=\"Mupq}=Zy`:XL4yjbHE]-\"><value name=\"TIMES\"><shadow type=\"math_number\" id=\"k7y-97P3^N/(Bhh1g%Dn\"><field name=\"NUM\">10</field></shadow></value><statement name=\"DO\"><block type=\"mutex_lock\" id=\"~LQ3KvQ%HXSr?+(,dncg\"><value name=\"mutex_id\"><shadow type=\"text\" id=\"GIa!2HaLbxqsA{tG%NP2\"><field name=\"TEXT\">Value1</field></shadow></value><next><block type=\"global_variable_write\" id=\"gUnjd.Q_N,N}cQ$4S@5r\"><field name=\"name\">Value1</field><value name=\"value\"><shadow type=\"math_number\" id=\"t#TDnVY9)Wp3:W7DVlh7\"><field name=\"NUM\">0</field></shadow><block type=\"math_arithmetic\" id=\"Z}`!9,U30Ks;KVkW_=r+\"><field name=\"OP\">ADD</field><value name=\"A\"><shadow type=\"math_number\" id=\"OaA0qK:[_vk~a$Zo-J,~\"><field name=\"NUM\">0</field></shadow><block type=\"global_variable_read\" id=\"Q+9Z%(pn5n@8@zQ*O:Y)\"><field name=\"name\">Value1</field></block></value><value name=\"B\"><shadow type=\"math_number\" id=\"0=dbF)3y::1D$AvqYxj{\"><field name=\"NUM\">1</field></shadow></value></block></value><next><block type=\"mutex_lock\" id=\"PfTJ}wsEc$duOCE}.C6P\"><value name=\"mutex_id\"><shadow type=\"text\" id=\"{,RhKFK@WS8vm]-i?D$a\"><field name=\"TEXT\">Value2</field></shadow></value><next><block type=\"global_variable_write\" id=\"*eP0cs;iTrb_E2:cIGeK\"><field name=\"name\">Value2</field><value name=\"value\"><shadow type=\"math_number\"><field name=\"NUM\">0</field></shadow><block type=\"math_arithmetic\" id=\"6RORErS-`-R~IV@aH~CY\"><field name=\"OP\">ADD</field><value name=\"A\"><shadow type=\"math_number\"><field name=\"NUM\">0</field></shadow><block type=\"global_variable_read\" id=\"NaSG4hOaj3kmKHlAMm!h\"><field name=\"name\">Value2</field></block></value><value name=\"B\"><shadow type=\"math_number\" id=\"wY9bHW.;KUY|+Ko=ex4]\"><field name=\"NUM\">1</field></shadow></value></block></value><next><block type=\"mutex_unlock\" id=\"M*5{g$gJBP@$OEjpe.7@\"><value name=\"mutex_id\"><shadow type=\"text\" id=\"y*5}tO=)dU^GQEy6#:AJ\"><field name=\"TEXT\">Value1</field></shadow></value><next><block type=\"mutex_unlock\" id=\"aaGJ8;pJ/dkTp}pyhRGd\"><value name=\"mutex_id\"><shadow type=\"text\" id=\"Kcy!4Q]oo52+mc2^4na3\"><field name=\"TEXT\">Value2</field></shadow></value></block></next></block></next></block></next></block></next></block></next></block></statement></block></statement></block><block type=\"function_definition\" id=\"aUCR?li!A[up^OHB)jOL\" x=\"58\" y=\"718\"><field name=\"name\">スレッドB</field><statement name=\"routine\"><block type=\"controls_repeat_ext\" id=\"$nrcvf$r_xi(|48Gl/_y\"><value name=\"TIMES\"><shadow type=\"math_number\" id=\"[JWavU]@MY#e=/K#$|6R\"><field name=\"NUM\">10</field></shadow></value><statement name=\"DO\"><block type=\"mutex_lock\" id=\"8d79oZE?F#zllNK4MH30\"><value name=\"mutex_id\"><shadow type=\"text\" id=\"`|uv_51`=ok;Dp6D!ch=\"><field name=\"TEXT\">Value2</field></shadow></value><next><block type=\"global_variable_write\" id=\"/gw98b(]sXhl9nwHex[`\"><field name=\"name\">Value2</field><value name=\"value\"><shadow type=\"math_number\"><field name=\"NUM\">0</field></shadow><block type=\"math_arithmetic\" id=\"0?{WuOu@cs[?qy~nNhz{\"><field name=\"OP\">ADD</field><value name=\"A\"><shadow type=\"math_number\"><field name=\"NUM\">0</field></shadow><block type=\"global_variable_read\" id=\"hU-xleuOFO+qD^nd/e0p\"><field name=\"name\">Value2</field></block></value><value name=\"B\"><shadow type=\"math_number\" id=\"*[4+1nr9C/;MWTjw(tBk\"><field name=\"NUM\">1</field></shadow></value></block></value><next><block type=\"mutex_lock\" id=\"gXO.n~jgmhq_d^vz28so\"><value name=\"mutex_id\"><shadow type=\"text\" id=\";wm9.jLUa}KUBX|b$1/H\"><field name=\"TEXT\">Value1</field></shadow></value><next><block type=\"global_variable_write\" id=\"J%;WuZwa}NkolQb,X}Fb\"><field name=\"name\">Value1</field><value name=\"value\"><shadow type=\"math_number\"><field name=\"NUM\">0</field></shadow><block type=\"math_arithmetic\" id=\"5{e|@0aE;+GOwDC.x`~e\"><field name=\"OP\">ADD</field><value name=\"A\"><shadow type=\"math_number\"><field name=\"NUM\">0</field></shadow><block type=\"global_variable_read\" id=\"!*+^F}f(g-thw9(YaiD*\"><field name=\"name\">Value1</field></block></value><value name=\"B\"><shadow type=\"math_number\" id=\"n?9Q/`2#T;SeqAp@9i,9\"><field name=\"NUM\">1</field></shadow></value></block></value><next><block type=\"mutex_unlock\" id=\"Y~.[l(bmK5A{3xQr(qJ9\"><value name=\"mutex_id\"><shadow type=\"text\" id=\"@I#/5v!nB1p-^=;o_gNY\"><field name=\"TEXT\">Value2</field></shadow></value><next><block type=\"mutex_unlock\" id=\"Fz~zI.XOyC-Q}v8Q1jgo\"><value name=\"mutex_id\"><shadow type=\"text\" id=\"/(05zQx#,.Y3^sB7OJoW\"><field name=\"TEXT\">Value1</field></shadow></value></block></next></block></next></block></next></block></next></block></next></block></statement></block></statement></block></xml>",
 		program: "",
