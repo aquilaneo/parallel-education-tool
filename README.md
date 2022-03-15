@@ -13,3 +13,7 @@
 ## 使用ライブラリ、フレームワーク
 * Blockly
 * React
+
+## ライセンス
+このソフトウェアはMIT Licenseにより公開されています。<br>
+This software is released under the MIT License.
