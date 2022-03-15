@@ -1,3 +1,9 @@
+/*
+	Copyright (c) 2022 aquilaneo
+	This software is released under the MIT License.
+	LICENSE file is in the root directory of this repository.
+*/
+
 export class VariableCanvas {
 	canvas: HTMLCanvasElement | null = null;
 	context: CanvasRenderingContext2D | null = null;

@@ -1,3 +1,9 @@
+/*
+	Copyright (c) 2022 aquilaneo
+	This software is released under the MIT License.
+	LICENSE file is in the root directory of this repository.
+*/
+
 import React, {useEffect, useRef, useState} from 'react';
 import {Link} from "react-router-dom";
 import Blockly, {WorkspaceSvg} from "blockly";

@@ -1,3 +1,9 @@
+/*
+	Copyright (c) 2022 aquilaneo
+	This software is released under the MIT License.
+	LICENSE file is in the root directory of this repository.
+*/
+
 export function assertIsDefined<T> (value: T): asserts value is NonNullable<T> {
 	if (value === undefined || value === null) {
 		throw new Error (`Error: valueの値が${value}です！`);

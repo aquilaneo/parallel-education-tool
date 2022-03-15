@@ -1,3 +1,9 @@
+/*
+	Copyright (c) 2022 aquilaneo
+	This software is released under the MIT License.
+	LICENSE file is in the root directory of this repository.
+*/
+
 import React, {DetailedReactHTMLElement, ReactNode} from "react";
 
 export class SplitView extends React.Component<{ children: ReactNode[], id?: string }> {
